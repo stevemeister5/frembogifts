@@ -1,0 +1,16 @@
+{
+  "name": "frembo-gifts",
+  "frameworkPreset": "create-tailwind",
+  "builds": [
+    {
+      "src": "index.html",
+      "use": "@ver/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.html"
+    }
+  ]
+}
