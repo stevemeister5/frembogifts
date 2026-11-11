@@ -1,0 +1,20 @@
+{
+  "name": "frembogifts",
+  "version": "1.0.0",
+  "description": "A faithful recreation of [Purpink.co.ke](https://www.purpink.co.ke/) built with static HTML and Tailwind CSS for easy deployment on Vercel.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "body-parser": "^2.4.0",
+    "cors": "^2.8.6",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "sqlite3": "^6.0.1"
+  }
+}

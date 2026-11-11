@@ -98,16 +98,16 @@
   </style>
 </head>
 <body>
+
   <!-- Navigation -->
   <nav class="navbar fixed top w-full z-50">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
       <a href="#" class="font-display text-2xl font-bold tracking-tighter" style="color: var(--accent);">FremboGifts</a>
       
       <div class="hidden md:flex items-center gap-8">
-        <a href="#flowers" class="nav-link">Flowers</a>
-        <a href="#hampers" class="nav-link">Hampers</a>
-        <a href="#gifts" class="nav-link">Gifts</a>
-        <a href="#accessories" class="nav-link">Accessories</a>
+        <a href="#budget" class="nav-link">Budget</a>
+        <a href="#premium" class="nav-link">Premium</a>
+        <a href="#about" class="nav-link">About</a>
       </div>
       
       <div class="relative">
@@ -121,24 +121,14 @@
         </a>
       </div>
     </div>
-    
-    <!-- Mobile menu button -->
-    <button class="md:hidden p-2" id="menuBtn">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="3" y1="6" x2="21" y2="6"></line>
-        <line x1="3" y1="12" x2="21" y2="12"></line>
-        <line x1="3" y1="18" x2="21" y2="18"></line>
-      </svg>
-    </button>
   </nav>
 
   <!-- Mobile menu -->
   <div class="mobile-menu" id="mobileMenu">
-    <a href="#flowers" class="font-display text-2xl font-bold mb-6">FremboGifts</a>
-    <a href="#flowers" class="nav-link mb-3">Flowers</a>
-    <a href="#hampers" class="nav-link mb-3">Hampers</a>
-    <a href="#gifts" class="nav-link mb-3">Gifts</a>
-    <a href="#accessories" class="nav-link mb-3">Accessories</a>
+    <a href="#budget" class="font-display text-2xl font-bold mb-6">FremboGifts</a>
+    <a href="#budget" class="nav-link mb-3">Budget</a>
+    <a href="#premium" class="nav-link mb-3">Premium</a>
+    <a href="#about" class="nav-link mb-3">About</a>
     <div class="mt-8">
       <a href="#" class="relative">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -174,158 +164,123 @@
 
   <!-- Hero Section -->
   <section class="hero">
-    <span class="hero-badge">Same-day delivery in Nairobi — order before 4pm</span>
-    <h1 class="hero-title font-display">Find the Perfect Gift</h1>
-    <p class="hero-description">Same-day delivery in Nairobi — order before 4pm<br>Next-day delivery to all towns across Kenya<br>Pay easily at checkout with M-Pesa, Visa or Mastercard</p>
+    <span class="hero-badge">Same-day delivery in Dar es Salaam & Arusha</span>
+    <h1 class="hero-title font-display">Taste of Tanzania</h1>
+    <p class="hero-description">Authentic local brands, Kakakuwe Coffee, Konyagi Gin & Maasai Shuka<br>Budget for average Tanzanian (30K TZS) | Premium for tourists/special occasions (180K TZS)</p>
     
     <div class="grid grid-cols-2 gap-4 mt-6">
       <select class="border rounded p-2" style="border-color: #e2e2e2;">
-        <option>Select category</option>
-        <option>Flowers</option>
-        <option>Hampers</option>
-        <option>Gifts</option>
+        <option>Select tier</option>
+        <option>Budget (TSh 30K)</option>
+        <option>Premium (TSh 180K)</option>
       </select>
       <select class="border rounded p-2" style="border-color: #e2e2e2;">
         <option>Select occasion</option>
         <option>Birthday</option>
         <option>Anniversary</option>
-        <option>Wedding</option>
+        <option>Honeymoon/Safari</option>
       </select>
     </div>
   </section>
 
   <!-- Categories -->
   <div class="categories">
-    <a href="#" class="category-tag active">All</a>
-    <a href="#" class="category-tag">Flowers</a>
-    <a href="#" class="category-tag">Hampers</a>
-    <a href="#" class="category-tag">Gifts</a>
-    <a href="#" class="category-tag">Accessories</a>
+    <a href="#budget" class="category-tag active budget-tier">Budget (TSh 30K)</a>
+    <a href="#premium" class="category-tag premium-tier">Premium (TSh 180K)</a>
+    <a href="#budget-products" class="category-tag">Budget Products</a>
+    <a href="#premium-products" class="category-tag">Premium Products</a>
   </div>
 
-  <!-- Products Grid -->
-  <main class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      
-      <!-- Product 1 -->
-      <div class="product-card">
-        <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/roses-bouquet.jpg" alt="Red Roses Bouquet" class="product-image">
-        <div class="product-info">
-          <h3 class="product-title">Red Roses Bouquet</h3>
-          <p class="product-price">From KSh2,450.00</p>
-          <div class="product-options">
-            <button class="option-btn active">Regular</button>
-            <button class="option-btn">Light Pink</button>
-            <button class="option-btn">White</button>
-            <button class="option-btn">Yellow</button>
+  <!-- Budget Section -->
+  <section id="budget" class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="font-display text-3xl mb-6">Budget Tier - Average Tanzanian & Budget Tourists</h2>
+      <p class="text-muted/80 mb-8">Authentic Tanzania under $15 - perfect for everyday gifting and compact souvenir hunting</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Product 1 -->
+        <div class="product-card">
+          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/roses-bouquet.jpg" alt="Maji Moto Hamper" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">"Maji Moto" Hamper</h3>
+            <p class="product-price">30,000 TZS ($12)</p>
+            <p class="product-options text-xs text-muted/80">Konyagi (50ml mini) + Kashata + BiskVit + Tanzania keychain</p>
+          </div>
+        </div>
+        <!-- Product 2 -->
+        <div class="product-card">
+          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/flower-box.jpg" alt="Simba Safari Mini" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">"Simba Safari" Mini</h3>
+            <p class="product-price">25,000 TZS ($10)</p>
+            <p class="product-options text-xs text-muted/80">Konyagi (50ml mini) or non-alc + Wangwange + Biscuit + Simba card</p>
+          </div>
+        </div>
+        <!-- Product 3 -->
+        <div class="product-card">
+          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/basket.jpg" alt="Gifts for Him Konyagi" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">"Gifts for Him" Konyagi</h3>
+            <p class="product-price">30,000 TZS ($12)</p>
+            <p class="product-options text-xs text-muted/80">Konyagi (50ml mini) + peanuts + Chipsi Mayai voucher keychain</p>
           </div>
         </div>
       </div>
-      
-      <!-- Product 2 -->
-      <div class="product-card">
-        <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/flower-box.jpg" alt="Flower Box" class="product-image">
-        <div class="product-info">
-          <h3 class="product-title">Premium Flower Box</h3>
-          <p class="product-price">From KSh3,200.00</p>
-          <div class="product-options">
-            <button class="option-btn active">Rose</button>
-            <button class="option-btn">Mixed</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Product 3 -->
-      <div class="product-card">
-        <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/basket.jpg" alt="Flower Basket" class="product-image">
-        <div class="product-info">
-          <h3 class="product-title">Flower Basket</h3>
-          <p class="product-price">From KSh2,800.00</p>
-          <div class="product-options">
-            <button class="option-btn active">Standard</button>
-            <button class="option-btn">Premium</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Product 4 -->
-      <div class="product-card">
-        <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/hampers.jpg" alt="Gift Hamper" class="product-image">
-        <div class="product-info">
-          <h3 class="product-title">Chocolate Hamper</h3>
-          <p class="product-price">From KSh3,500.00</p>
-          <div class="product-options">
-            <button class="option-btn active">Chocolate</button>
-            <button class="option-btn">Wine</button>
-          </div>
-        </div>
-      </div>
-      
     </div>
-    
-    <!-- Load more -->
-    <div class="mt-8 text-center">
-      <button class="px-6 py-3 bg-accent text-white rounded hover:bg-accent-dark transition">Load More</button>
-    </div>
-  </main>
+  </section>
 
-  <!-- Sidebar Filters (desktop) -->
-  <div class="hidden lg:block">
-    <!-- Left filters -->
-    <div class="lg:w-1/4 mb-8">
-      <div class="filter-section">
-        <h4>Shop By Style</h4>
-        <a href="#" class="filter-chip active">All</a>
-        <a href="#" class="filter-chip">Bouquets</a>
-        <a href="#" class="filter-chip">Flower Boxes</a>
-        <a href="#" class="filter-chip">Flower Baskets</a>
-        <a href="#" class="filter-chip">Flower Hampers</a>
-      </div>
-      
-      <div class="filter-section">
-        <h4>Shop By Flower Type</h4>
-        <a href="#" class="filter-chip active">All</a>
-        <a href="#" class="filter-chip">🌹 Roses</a>
-        <a href="#" class="filter-chip">🌸 Carnations</a>
-        <a href="#" class="filter-chip">🌼 Lilies</a>
-        <a href="#" class="filter-chip">🌻 Sunflowers</a>
-      </div>
-      
-      <div class="filter-section">
-        <h4>Price Range</h4>
-        <input type="range" min="0" max="100" class="price-range" id="priceRange1">
-        <div class="flex justify-between text-xs mt-2">
-          <span>Below 5K</span>
-          <span>10K</span>
-          <span>20K</span>
-          <span>Big Gestures</span>
+  <!-- Premium Section -->
+  <section id="premium" class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="font-display text-3xl mb-6">Premium Tier - Tourists & Special Occasions</h2>
+      <p class="text-muted/80 mb-8">Authentic Tanzania souvenirs & luxury gifting - $60-80 includes full Maasai Shuka</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Product 4 -->
+        <div class="product-card">
+          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/hampers.jpg" alt="Shuka & Coffee Hamper" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">"Shuka & Coffee" Hamper</h3>
+            <p class="product-price">180,000 TZS ($72)</p>
+            <p class="product-options text-xs text-muted/80">Kakakuwe Coffee (250g) + Konyagi Gin (375ml) + Full Maasai Shuka + Mbeya Tea (50g) + canvas tote</p>
+          </div>
+        </div>
+        <!-- Product 5 -->
+        <div class="product-card">
+          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/roses-bouquet.jpg" alt="Kilimanjaro Sunset" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">"Kilimanjaro Sunset"</h3>
+            <p class="product-price">180,000 TZS ($72)</p>
+            <p class="product-options text-xs text-muted/80">Kakakuwe Coffee (250g) + Konyagi Gin (375ml) + Full Maasai Shuka + Mbeya Tea (50g) + honey (250g) + tote</p>
+          </div>
+        </div>
+        <!-- Product 6 -->
+        <div class="product-card">
+          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/flower-box.jpg" alt="Zanzibar Spice & Stone" class="product-image">
+          <div class="product-info">
+            <h3 class="product-title">"Zanzibar Spice & Stone"</h3>
+            <p class="product-price">200,000 TZS ($80)</p>
+            <p class="product-options text-xs text-muted/80">Leather keychain + Clove Kreteks (small pack) + Zanzibar Arabic coffee (50g) + Pemba pepper (15g) + Stone Town card set</p>
+          </div>
         </div>
       </div>
     </div>
-    
-    <!-- Right filters -->
-    <div class="lg:w-3/4">
-      <div class="filter-section">
-        <h4>Shop By Occasion</h4>
-        <div class="budget-tags">
-          <span class="active">Romance</span>
-          <span>Sympathy & Funeral</span>
-          <span>New Baby</span>
-          <span>Get Well Soon</span>
-        </div>
-      </div>
-      
-      <div class="filter-section">
-        <h4>Budget</h4>
-        <div class="budget-tags">
-          <span class="active">Below 5K</span>
-          <span>Below 10K</span>
-          <span>Below 20K</span>
-          <span>Big Gestures</span>
-        </div>
-      </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="font-display text-3xl mb-6">Taste of Tanzania</h2>
+      <p class="text-muted/80 mb-8">We curate authentic local experiences in gift form - from Kakakuwe Coffee in Arusha to Konyagi Gin from Dar es Salaam, and full-size Maasai Shuka for cultural pride.</p>
+      <p class="text-muted/80">Dual-market design: Average Tanzanian gifting (Budget) and tourist souvenir (Premium). No subscriptions. No corporate focus. Delivery fees separate.</p>
+      <ul class="space-y-4 text-muted/80">
+        <li>✓ Full Maasai Shuka in Premium, keychain in Budget</li>
+        <li>✓ Kakakuwe Coffee (Arusha region)</li>
+        <li>✓ Konyagi Gin (Tanzania's own spirit)</li>
+        <li>✓ Mbeya Tea & local honey</li>
+        <li>✓ Zanzibar spices & stone town history</li>
+        <li>✓ Luggage-friendly sizes for travelers</li>
+      </ul>
     </div>
-  </div>
+  </section>
 
   <!-- Footer -->
   <footer class="footer">
@@ -333,42 +288,38 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
         <div>
           <h4 class="font-display text-xl mb-4" style="color: white;">FremboGifts</h4>
-          <p class="text-sm" style="color: #a8a7a5;">Same-day delivery in Nairobi — order before 4pm<br>Next-day delivery to all towns across Kenya</p>
+          <p class="text-sm" style="color: #a8a7a5;">Authentic Tanzania in gift form - from Shuka to Coffee to Konyagi</p>
         </div>
         
         <div>
-          <h4 class="font-semibold mb-4" style="color: white;">Shop</h4>
-          <a href="#" class="footer-link">Flowers</a>
-          <a href="#" class="footer-link">Hampers</a>
-          <a href="#" class="footer-link">Gifts</a>
-          <a href="#" class="footer-link">Accessories</a>
+          <h4 class="font-semibold mb-4" style="color: white;">Budget</h4>
+          <a href="#" class="footer-link">"Maji Moto" Hamper - 30,000 TZS</a>
+          <a href="#" class="footer-link">"Simba Safari" Mini - 25,000 TZS</a>
+          <a href="#" class="footer-link">"Gifts for Him" Konyagi - 30,000 TZS</a>
         </div>
         
         <div>
-          <h4 class="font-semibold mb-4" style="color: white;">Information</h4>
-          <a href="#" class="footer-link">Delivery Policy</a>
-          <a href="#" class="footer-link">Returns & Refunds</a>
-          <a href="#" class="footer-link">Flower Care Guide</a>
-          <a href="#" class="footer-link">FAQs</a>
+          <h4 class="font-semibold mb-4" style="color: white;">Premium</h4>
+          <a href="#" class="footer-link">"Shuka & Coffee" Hamper - 180,000 TZS</a>
+          <a href="#" class="footer-link">"Kilimanjaro Sunset" - 180,000 TZS</a>
+          <a href="#" class="footer-link">"Zanzibar Spice & Stone" - 200,000 TZS</a>
         </div>
         
         <div>
-          <h4 class="font-semibold mb-4" style="color: white;">Contact</h4>
-          <a href="#" class="footer-link">Call Us: +254702100100</a>
-          <a href="#" class="footer-link">WhatsApp to Order</a>
-          <a href="#" class="footer-link">Facebook</a>
-          <a href="#" class="footer-link">Instagram</a>
-          <a href="#" class="footer-link">TikTok</a>
+          <h4 class="font-semibold mb-4" style="color: white;">Info</h4>
+          <a href="#" class="footer-link">How it Works</a>
+          <a href="#" class="footer-link">Delivery & Fees</a>
+          <a href="#" class="footer-link">Terms & Conditions</a>
         </div>
       </div>
       
       <div class="border-t border-white/10 pt-6 text-center">
         <p class="text-sm" style="color: #a8a7a5;">&copy; 2026 FremboGifts Ltd. All rights reserved.</p>
         <div class="mt-2">
-          <a href="#" class="text-xs" style="color: #a8a7a5;">Shipping Policy</a>
-          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Refund Policy</a>
-          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Privacy Policy</a>
-          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Terms of Service</a>
+          <a href="#" class="text-xs" style="color: #a8a7a5;">Budget Tier</a>
+          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Premium Tier</a>
+          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Local Brands</a>
+          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Dual-Market</a>
         </div>
       </div>
     </div>
@@ -394,23 +345,35 @@
       });
     });
     
-    // Filter chips
-    const filterChips = document.querySelectorAll('.filter-chip');
-    filterChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        filterChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
+    // Budget/Premium filter
+    const budgetTier = document.querySelectorAll('.budget-tier');
+    const premiumTier = document.querySelectorAll('.premium-tier');
+    const budgetProducts = document.querySelectorAll('.budget-products');
+    const premiumProducts = document.querySelectorAll('.premium-products');
+    
+    budgetTier.forEach(tag => {
+      tag.addEventListener('click', () => {
+        budgetTier.forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        // Show budget products, hide premium
+        budgetProducts.forEach(p => p.style.display = 'block');
+        premiumProducts.forEach(p => p.style.display = 'none');
       });
     });
     
-    // Budget tags
-    const budgetTags = document.querySelectorAll('.budget-tags span');
-    budgetTags.forEach(tag => {
+    premiumTier.forEach(tag => {
       tag.addEventListener('click', () => {
-        budgetTags.forEach(t => t.classList.remove('active'));
+        premiumTier.forEach(t => t.classList.remove('active'));
         tag.classList.add('active');
+        // Show premium products, hide budget
+        premiumProducts.forEach(p => p.style.display = 'block');
+        budgetProducts.forEach(p => p.style.display = 'none');
       });
     });
+    
+    // Initial: show budget products
+    budgetProducts.forEach(p => p.style.display = 'block');
+    premiumProducts.forEach(p => p.style.display = 'none');
     
     // Cart badge update
     const cartLinks = document.querySelectorAll('.navbar a[href*="cart"]');
