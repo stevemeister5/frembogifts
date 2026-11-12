@@ -26,7 +26,7 @@ From the repository root, run `npm install`, configure the Postgres environment 
 Repository root/
 ├── server.js          - Express API and server-rendered storefront route
 ├── views/index.ejs    - Dynamic storefront template
-├── admin.html         - Admin interface
+├── views/admin.ejs    - Server-rendered admin interface
 ├── vercel.json        - Vercel routing and function configuration
 ├── package.json       - App scripts and runtime dependencies
 ├── package-lock.json  - Locked npm dependencies

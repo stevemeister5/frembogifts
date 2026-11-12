@@ -154,4 +154,4 @@ classDiagram
    - Update the `views/index.ejs` CSS variables, navigation bar, hero banner, product cards, and checkout drawers with the new palette.
    - Add the floating WhatsApp direct inquiry action.
    - Adapt the checkout form to support Tanzanian landmark addresses and the surprise delivery toggle.
-   - Apply the matching palette to `admin.html` for a cohesive brand experience.
+   - Apply the matching palette to `views/admin.ejs` for a cohesive brand experience.

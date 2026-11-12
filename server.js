@@ -821,11 +821,11 @@ app.delete('/api/campaigns/:id', requireAdmin, async (req, res) => {
 
 // Admin Page Routes
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.render('admin');
 });
 
 app.get('/admin.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.redirect(301, '/admin');
 });
 
 // Catch-all: serve frontend for any non-API routes

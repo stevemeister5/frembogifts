@@ -32,7 +32,7 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 .
 ├── server.js
 ├── views/index.ejs
-├── admin.html
+├── views/admin.ejs
 ├── vercel.json
 ├── package.json
 ├── test/storefront.test.js
@@ -394,7 +394,7 @@ Each product designed for BOTH:
 |----------|-------------|
 | `server.js` | Express API and dynamic page routes |
 | `views/index.ejs` | Server-rendered storefront |
-| `admin.html` | Admin interface |
+| `views/admin.ejs` | Server-rendered admin interface |
 | `vercel.json` | Vercel function routing and included files |
 | `test/storefront.test.js` | EJS rendering and escaping tests |
 
