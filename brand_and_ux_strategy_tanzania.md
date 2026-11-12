@@ -151,7 +151,7 @@ classDiagram
 
 1. **Brand & Palette Selection**: Confirm if you want to proceed with **Option 1 (Tanzanite & Champagne Gold)** or one of the alternatives.
 2. **Implementation Plan**:
-   - Update `index.html` CSS variables, navigation bar, hero banner, product cards, and checkout drawers with the new palette.
+   - Update the `views/index.ejs` CSS variables, navigation bar, hero banner, product cards, and checkout drawers with the new palette.
    - Add the floating WhatsApp direct inquiry action.
    - Adapt the checkout form to support Tanzanian landmark addresses and the surprise delivery toggle.
    - Apply the matching palette to `admin.html` for a cohesive brand experience.

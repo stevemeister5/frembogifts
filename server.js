@@ -250,6 +250,26 @@ app.get('/api/setup', async (req, res) => {
   }
 });
 
+app.get('/', async (req, res) => {
+  try {
+    const [productsResult, offersResult, campaignsResult] = await Promise.all([
+      sql`SELECT * FROM products WHERE is_active = 1 ORDER BY tier, price_tzs ASC`,
+      sql`SELECT * FROM offers WHERE is_active = 1 ORDER BY id ASC`,
+      sql`SELECT * FROM campaigns WHERE is_active = 1 ORDER BY id ASC`
+    ]);
+
+    res.set('Cache-Control', 'no-store');
+    res.render('index', {
+      products: productsResult.rows,
+      offers: offersResult.rows,
+      campaigns: campaignsResult.rows
+    });
+  } catch (error) {
+    console.error('Error rendering storefront:', error);
+    res.status(500).send('Unable to load the Giftopia storefront.');
+  }
+});
+
 // ===== AUTHENTICATION ROUTES =====
 
 // POST /api/auth/register - Sign up new customer
@@ -815,10 +835,7 @@ app.use((req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ success: false, message: 'API route not found' });
   }
-  if (req.path === '/admin') {
-    return res.sendFile(path.join(__dirname, 'admin.html'));
-  }
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.status(404).send('Page not found');
 });
 
 // Start local server when run directly

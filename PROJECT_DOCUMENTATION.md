@@ -5,7 +5,7 @@
 Giftopia is a dual-market gift and delivery service targeting both **average Tanzanian citizens** and **tourists** visiting Tanzania. The project includes a complete static website built with Tailwind CSS and Google Fonts, comprehensive market research, regulatory compliance documentation, pricing analysis, and 8 curated gift products.
 
 **Last Updated**: November 2024  
-**Deployment Target**: Vercel (static HTML)  
+**Deployment Target**: Vercel (Express serverless function with EJS storefront)
 **Business Model**: One-time purchases only (no subscriptions, no corporate focus)  
 **Alcohol Policy**: Konyagi Gin included from launch (Tanzania's local spirit)
 
@@ -22,16 +22,17 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Dual targeting**: Average Tanzanians + tourists with luggage-friendly items
 
 ### 1.2 Website Specifications
-- **Framework**: Static HTML with Tailwind CSS CDN
+- **Framework**: Express serverless API with an EJS-rendered storefront and Tailwind CSS CDN
 - **Fonts**: Playfair Display (headings) + Inter (body) from Google Fonts
 - **Responsive**: Mobile-first design, works phone to desktop
-- **No build step**: Deploy directly to Vercel
+- **Deployment**: Vercel builds the Node.js function and serves the admin interface
 - **File count**: 9 files total (see folder structure)
 
 ### 1.3 Folder Structure
 ```
 /home/quackyduck/Documents/Giftopia/
-├── index.html          | 20KB | Adapted website with 8 products
+├── views/index.ejs     | Storefront rendered with live database data
+├── server.js           | Express API and storefront routes
 ├── vercel.json         | 234B | Vercel deployment config
 ├── README.md           | 1.8KB | Deployment instructions
 ├── public/             | -    | Asset directory
@@ -44,7 +45,7 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 
 ---
 
-## 2. WEBSITE FEATURES (index.html)
+## 2. WEBSITE FEATURES (views/index.ejs)
 
 ### 2.1 Design Overview
 - **Hero Section**: "Taste of Tanzania" branding, dual-tier selector (Budget/Premium)
@@ -389,8 +390,9 @@ Each product designed for BOTH:
 ### 7.2 File Details
 | **File** | **Size** | **Lines** | **Purpose** |
 |----------|----------|-----------|-------------|
-| index.html | 20KB | 389 | Main website with 8 products, tier filtering, dual-market design |
-| vercel.json | 234B | 5 | Vercel deployment configuration |
+| views/index.ejs | - | - | Server-rendered storefront with database products and tier filtering |
+| server.js | - | - | Express API and dynamic page routes |
+| vercel.json | - | - | Vercel function routing and file inclusion |
 | README.md | 1.8KB | ~50 | Deployment instructions |
 | RESEARCH_FINDINGS.md | 17.9KB | ~250 | Market analysis |
 | REGULATORY_REQUIREMENTS.md | 13.5KB | ~200 | Alcohol compliance guide |
@@ -400,10 +402,9 @@ Each product designed for BOTH:
 | public/ | - | - | Asset directory (empty, for future use) |
 
 ### 7.3 Vercel Deployment
-- **Build Command**: (leave empty for static HTML)
-- **Output Directory**: (leave empty, root index.html)
-- **Framework**: Static HTML
-- **Environment Variables**: None required
+- **Build**: Defined by `vercel.json` using the Vercel Node.js runtime
+- **Storefront**: Rendered by Express from `views/index.ejs`
+- **Environment Variables**: Vercel Postgres integration variables and `JWT_SECRET`
 - **Custom Domain**: Optional (configure in Vercel dashboard)
 
 ### 7.4 M-Pesa Integration (Planned)
@@ -463,7 +464,7 @@ Each product designed for BOTH:
 ## 9. NEXT IMMEDIATE STEPS
 
 ### **Week 1-2: Pre-Launch Setup**
-- [ ] Finalize website content (index.html already adapted)
+- [ ] Finalize server-rendered storefront content in `views/index.ejs`
 - [ ] Register business with BRELA (TSh 500,000)
 - [ ] Apply for LGA trade license
 - [ ] Apply for Liquor Dealer License + Delivery Permit

@@ -1,6 +1,6 @@
-# Giftopia - 1:1 Purpink.co.ke Clone
+# Giftopia Storefront
 
-A faithful recreation of [Purpink.co.ke](https://www.purpink.co.ke/) built with static HTML and Tailwind CSS for easy deployment on Vercel.
+Giftopia is an Express application deployed on Vercel. Its storefront is rendered from an EJS template using live product, offer, and campaign data from Vercel Postgres.
 
 ## Features
 
@@ -19,26 +19,21 @@ A faithful recreation of [Purpink.co.ke](https://www.purpink.co.ke/) built with 
 
 ## Deployment on Vercel
 
-1. Push this repository to GitHub/GitLab
-2. Connect your repository to Vercel
-3. Deploy - Vercel will automatically detect the static HTML
+1. Connect the repository to Vercel and provision Vercel Postgres.
+2. Deploy using the included `vercel.json` configuration.
+3. For a new database, call `/api/setup` once to create the tables and seed initial data.
 
-Alternatively, deploy directly:
-- Go to [Vercel](https://vercel.com)
-- Click "New Project"
-- Import this repository
-- Set the build command to: (leave empty for static HTML)
-- Set the output directory to: (leave empty)
-- Click Deploy
+Configure the Postgres environment variables through the Vercel integration. Set `JWT_SECRET` to a strong secret for production authentication.
 
 ## Project Structure
 
 ```
 Giftopia/
-├── index.html    - Main HTML file with full UI copy
-├── vercel.json   - Vercel deployment configuration
-├── public/       - Additional assets can be placed here
-└── README.md     - This file
+├── server.js          - Express API and server-rendered storefront route
+├── views/index.ejs    - Dynamic storefront template
+├── admin.html         - Admin interface
+├── vercel.json        - Vercel routing and function configuration
+└── README.md          - This file
 ```
 
 ## UI Elements Copied from Purpink

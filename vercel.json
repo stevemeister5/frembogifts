@@ -4,12 +4,8 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["index.html", "admin.html"]
+        "includeFiles": ["views/**", "admin.html"]
       }
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
     },
     {
       "src": "admin.html",
@@ -31,7 +27,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "index.html"
+      "dest": "server.js"
     }
   ]
 }
