@@ -188,27 +188,8 @@ async function initDatabaseTables() {
   `;
 
   await sql`
-    CREATE TABLE IF NOT EXISTS campaigns (
-      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       description TEXT,
-      start_date TIMESTAMP,
-      end_date TIMESTAMP,
-      is_active INTEGER DEFAULT 1,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
-
-  }
-
-  // Seed default products if empty
-  const productCountResult = await sql`SELECT COUNT(*) as count FROM products`;
-  if (parseInt(productCountResult.rows[0].count, 10) === 0) {
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=600&q=80')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80')`;
