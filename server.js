@@ -3,6 +3,7 @@ const cors = require('cors');
 const { sql } = require('@vercel/postgres');
 const path = require('path');
 const crypto = require('crypto');
+const resolveProductImage = require('./product-images');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -309,6 +310,7 @@ app.get('/', async (req, res) => {
     res.render('index', {
       products: productsResult.rows.map(product => ({
         ...product,
+        image_url: resolveProductImage(product),
         occasions: normalizeProductOccasions(product.occasions) || []
       })),
       offers: offersResult.rows,
@@ -598,7 +600,13 @@ app.get('/api/products', async (req, res) => {
       }
     }
     res.set('Cache-Control', 'no-store');
-    res.json({ success: true, products: rows });
+    res.json({
+      success: true,
+      products: rows.map(product => ({
+        ...product,
+        image_url: resolveProductImage(product)
+      }))
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -612,7 +620,7 @@ app.get('/api/products/:id', async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
-    res.json({ success: true, product: rows[0] });
+    res.json({ success: true, product: { ...rows[0], image_url: resolveProductImage(rows[0]) } });
   } catch (error) {
     console.error('Error fetching product:', error);
     res.status(500).json({ success: false, message: error.message });

@@ -33,6 +33,9 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.match(html, /id="filterResultCount"/);
   assert.match(html, /All Collections/);
   assert.match(html, /Give a little Tanzania\./);
+  assert.match(html, /class="hero-gallery"/);
+  assert.match(html, /src="\/assets\/images\/zanzibar-spice\.jpg"/);
+  assert.match(html, /src="\/assets\/images\/thinking-of-you\.jpg"/);
   assert.match(html, /visitors finding a meaningful keepsake/);
   assert.match(html, /Shop by occasion or find a Tanzania keepsake/);
   assert.match(html, /href="\/assets\/styles\.css"/);

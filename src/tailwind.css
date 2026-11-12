@@ -44,6 +44,68 @@ html {
   padding-block: 2.75rem;
 }
 
+.hero-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+.hero-copy {
+  text-align: center;
+}
+
+.hero-gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 0.75rem;
+  height: 12rem;
+}
+
+.hero-gallery figure {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  background-color: #e8e5df;
+}
+
+.hero-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-gallery figcaption {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.5rem;
+  background: rgb(14 23 38 / 72%);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.hero-gallery__stack {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.hero-tier-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
 .collection-filter,
 .occasion-filter {
   border: 1px solid #d6d3ce;
@@ -148,6 +210,31 @@ textarea {
 }
 
 @media (min-width: 1024px) {
+  .hero-layout {
+    display: grid;
+    grid-template-areas:
+      'copy gallery'
+      'filters gallery';
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 1.5rem 4rem;
+  }
+
+  .hero-copy {
+    grid-area: copy;
+    text-align: left;
+  }
+
+  .hero-gallery {
+    grid-area: gallery;
+    height: 27rem;
+  }
+
+  .hero-tier-filters {
+    grid-area: filters;
+    justify-content: flex-start;
+  }
+
   #storefrontMain {
     padding-inline: 2rem;
   }
