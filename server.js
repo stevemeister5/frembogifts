@@ -136,6 +136,9 @@ async function initDatabaseTables() {
       total_usd NUMERIC(10, 2) NOT NULL,
       discount_tzs INTEGER DEFAULT 0,
       payment_method TEXT DEFAULT 'mpesa',
+      neighborhood TEXT,
+      landmark TEXT,
+      is_surprise BOOLEAN DEFAULT false,
       status TEXT DEFAULT 'confirmed',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
@@ -145,6 +148,14 @@ async function initDatabaseTables() {
     await sql`ALTER TABLE orders ALTER COLUMN total_usd TYPE NUMERIC(10, 2);`;
   } catch (e) {
     // Column might already be numeric
+  }
+
+  try {
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS neighborhood TEXT;`;
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS landmark TEXT;`;
+    await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS is_surprise BOOLEAN DEFAULT false;`;
+  } catch (e) {
+    // Columns might already exist
   }
 
   await sql`
@@ -437,7 +448,7 @@ app.post('/api/cart', requireAuth, async (req, res) => {
 // POST /api/orders - Place a new order
 app.post('/api/orders', async (req, res) => {
   try {
-    const { recipient_name, phone, city, gift_message, items, total_tzs, total_usd, discount_tzs, payment_method } = req.body;
+    const { recipient_name, phone, city, neighborhood, landmark, is_surprise, gift_message, items, total_tzs, total_usd, discount_tzs, payment_method } = req.body;
     if (!recipient_name || !phone || !items || !total_tzs) {
       return res.status(400).json({ success: false, message: 'Missing required order details' });
     }
@@ -448,13 +459,14 @@ app.post('/api/orders', async (req, res) => {
     const parsedTotalTzs = Math.round(Number(total_tzs) || 0);
     const parsedTotalUsd = Number(total_usd != null ? total_usd : (parsedTotalTzs / 2500)).toFixed(2);
     const parsedDiscount = Math.round(Number(discount_tzs) || 0);
+    const surpriseFlag = Boolean(is_surprise);
 
     const { rows } = await sql`
       INSERT INTO orders (
-        order_number, user_id, recipient_name, phone, city, gift_message,
+        order_number, user_id, recipient_name, phone, city, neighborhood, landmark, is_surprise, gift_message,
         items, total_tzs, total_usd, discount_tzs, payment_method, status
       ) VALUES (
-        ${orderNumber}, ${userId}, ${recipient_name}, ${phone}, ${city || 'Dar es Salaam'}, ${gift_message || ''},
+        ${orderNumber}, ${userId}, ${recipient_name}, ${phone}, ${city || 'Dar es Salaam'}, ${neighborhood || ''}, ${landmark || ''}, ${surpriseFlag}, ${gift_message || ''},
         ${itemsStr}, ${parsedTotalTzs}, ${parsedTotalUsd}, ${parsedDiscount}, ${payment_method || 'mpesa'}, 'confirmed'
       ) RETURNING *
     `;

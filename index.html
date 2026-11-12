@@ -7,67 +7,78 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #faf8f5;
-      --fg: #2d2a25;
-      --muted: #6b6a66;
-      --accent: #d59697;
-      --accent-dark: #b87577;
+      --tanzanite: #0E1726;
+      --gold: #C5A059;
+      --gold-dark: #A88237;
+      --gold-light: #FBF6EC;
+      --gold-border: #EBD8B8;
+      --bg: #FAF8F5;
+      --border: #E8E5DF;
     }
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background-color: var(--bg);
-      color: var(--fg);
+      color: #0E1726;
       margin: 0;
       overflow-x: hidden;
     }
-    .font-display { font-family: 'Playfair Display', serif; }
+    .font-display { font-family: 'Playfair Display', Georgia, serif; }
     .product-card {
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1), box-shadow 0.28s cubic-bezier(0.16,1,0.3,1);
     }
     .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -8px rgba(14,23,38,0.14);
     }
+    .gold-shimmer { background: linear-gradient(135deg, #C5A059 0%, #E8D3A2 50%, #C5A059 100%); }
+    .tanzanite-bg { background: linear-gradient(135deg, #0E1726 0%, #16213E 100%); }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #FAF8F5; }
+    ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 999px; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-[#FAF8F5]">
 
   <!-- Toast Notification Container -->
   <div id="storeToastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
 
   <!-- Dynamic Active Campaign Announcement Bar -->
-  <div id="campaignBanner" class="bg-gray-900 text-white text-xs py-2 px-4 text-center font-medium">
+  <div id="campaignBanner" class="tanzanite-bg text-white text-xs py-2 px-4 text-center font-semibold">
     <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
-      <span class="inline-block w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
+      <span class="inline-block w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span>
       <span id="campaignBannerText">Same-day delivery in Dar es Salaam & Arusha | Authentic Tanzania Gifts</span>
     </div>
   </div>
 
   <!-- Dynamic Promotional Offers Ribbon -->
-  <div id="offersRibbon" class="bg-[#ffe8e9] text-[#b87577] text-xs py-1.5 px-4 text-center font-medium border-b border-[#f3d3d4] hidden">
+  <div id="offersRibbon" class="bg-[#FBF6EC] text-[#0E1726] text-xs py-1.5 px-4 text-center font-medium border-b border-[#EBD8B8] hidden">
     <div class="max-w-7xl mx-auto flex items-center justify-center gap-4 flex-wrap" id="offersList">
       <!-- Dynamic Offers Injected Here -->
     </div>
   </div>
 
   <!-- Navigation Bar -->
-  <nav class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+  <nav class="bg-white/95 backdrop-blur-md border-b border-[#E8E5DF] sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
       
       <!-- Brand Logo -->
-      <a href="/" class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-[#d59697] flex items-center gap-2">
-        <span>FremboGifts</span>
+      <a href="/" class="flex items-center gap-3 group">
+        <span class="w-9 h-9 rounded-xl gold-shimmer flex items-center justify-center text-[#0E1726] font-extrabold text-sm shadow-md group-hover:scale-105 transition-transform">FG</span>
+        <div>
+          <span class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0E1726] leading-none">FremboGifts</span>
+          <span class="block text-[9px] uppercase tracking-widest text-[#C5A059] font-bold mt-0.5">Dar es Salaam • Gifting Studio</span>
+        </div>
       </a>
 
       <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center gap-7">
-        <button onclick="setTierFilter('all')" class="nav-tier-btn text-sm font-semibold text-gray-900 hover:text-[#d59697] transition" data-tier="all">All Gifts</button>
-        <button onclick="setTierFilter('budget')" class="nav-tier-btn text-sm font-medium text-gray-600 hover:text-[#d59697] transition" data-tier="budget">Budget Tier (30K TZS)</button>
-        <button onclick="setTierFilter('premium')" class="nav-tier-btn text-sm font-medium text-gray-600 hover:text-[#d59697] transition" data-tier="premium">Premium Tier (180K TZS)</button>
-        <a href="#about" class="text-sm font-medium text-gray-600 hover:text-[#d59697] transition">About Tanzania</a>
+        <button onclick="setTierFilter('all')" class="nav-tier-btn text-sm font-semibold text-gray-900 hover:text-[#C5A059] transition" data-tier="all">All Gifts</button>
+        <button onclick="setTierFilter('budget')" class="nav-tier-btn text-sm font-medium text-gray-600 hover:text-[#C5A059] transition" data-tier="budget">Budget Tier (30K TZS)</button>
+        <button onclick="setTierFilter('premium')" class="nav-tier-btn text-sm font-medium text-gray-600 hover:text-[#C5A059] transition" data-tier="premium">Premium Tier (180K TZS)</button>
+        <a href="#about" class="text-sm font-medium text-gray-600 hover:text-[#C5A059] transition">About Tanzania</a>
         <a href="/admin" id="navAdminLink" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition font-medium border border-gray-200 hidden">Admin</a>
       </div>
 
@@ -76,7 +87,7 @@
         
         <!-- Search Trigger / Input -->
         <div class="relative hidden sm:block">
-          <input type="text" id="searchInput" oninput="handleSearch(event)" placeholder="Search coffee, shuka..." class="pl-9 pr-4 py-1.5 text-xs border border-gray-200 rounded-full w-44 lg:w-56 focus:outline-none focus:ring-2 focus:ring-[#d59697] bg-gray-50 focus:bg-white transition">
+          <input type="text" id="searchInput" oninput="handleSearch(event)" placeholder="Search coffee, shuka..." class="pl-9 pr-4 py-1.5 text-xs border border-gray-200 rounded-full w-44 lg:w-56 focus:outline-none focus:ring-2 focus:ring-[#C5A059] bg-gray-50 focus:bg-white transition">
           <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </div>
 
@@ -89,15 +100,15 @@
         </div>
 
         <!-- Cart Button -->
-        <button onclick="toggleCartDrawer(true)" class="relative p-2 text-gray-700 hover:text-[#d59697] transition" aria-label="Shopping Cart">
+        <button onclick="toggleCartDrawer(true)" class="relative p-2 text-gray-700 hover:text-[#C5A059] transition" aria-label="Shopping Cart">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
           </svg>
-          <span id="cartCountBadge" class="absolute top-1 right-1 w-5 h-5 bg-[#d59697] text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+          <span id="cartCountBadge" class="absolute top-1 right-1 w-5 h-5 gold-shimmer text-[#0E1726] text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-sm">0</span>
         </button>
 
         <!-- Mobile Menu Toggle -->
-        <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-700 hover:text-[#d59697]">
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-700 hover:text-[#C5A059]">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
       </div>
@@ -105,7 +116,7 @@
 
     <!-- Mobile Search input bar -->
     <div class="sm:hidden px-4 pb-3">
-      <input type="text" id="mobileSearchInput" oninput="handleSearch(event)" placeholder="Search gifts, flowers, shuka..." class="w-full pl-9 pr-4 py-2 text-xs border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#d59697] bg-gray-50">
+      <input type="text" id="mobileSearchInput" oninput="handleSearch(event)" placeholder="Search gifts, flowers, shuka..." class="w-full pl-9 pr-4 py-2 text-xs border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#C5A059] bg-gray-50">
     </div>
   </nav>
 
@@ -114,7 +125,7 @@
     <div class="fixed right-0 top-0 bottom-0 w-72 bg-white p-6 shadow-xl flex flex-col justify-between">
       <div>
         <div class="flex items-center justify-between pb-4 border-b border-gray-100">
-          <span class="font-display text-xl font-bold text-[#d59697]">FremboGifts</span>
+          <span class="font-display text-xl font-bold text-[#0E1726]">FremboGifts</span>
           <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
         </div>
         <div class="flex flex-col gap-3 mt-6">
@@ -123,7 +134,7 @@
           <button onclick="setTierFilter('premium'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50 text-purple-700">Premium Tier (180K TZS)</button>
           <a href="#about" onclick="toggleMobileMenu()" class="font-medium py-2 border-b border-gray-50">About Tanzania</a>
           <button onclick="openAccountDrawer(); toggleMobileMenu()" id="mobileAccountLink" class="text-left font-medium py-2 border-b border-gray-50 hidden text-emerald-700">My Account & Payment Details</button>
-          <a href="/admin" class="font-medium py-2 text-[#d59697] flex items-center justify-between">
+          <a href="/admin" class="font-medium py-2 text-[#C5A059] flex items-center justify-between">
             <span>Admin Portal</span>
             <span class="text-xs">&rarr;</span>
           </a>
@@ -136,9 +147,9 @@
   </div>
 
   <!-- Hero Section -->
-  <section class="bg-gradient-to-b from-[#fffbf0] via-[#faf8f5] to-[#faf8f5] py-12 sm:py-16 px-4">
+  <section class="relative bg-gradient-to-b from-[#F0EBE0] via-[#FAF8F5] to-[#FAF8F5] py-14 sm:py-20 px-4 border-b border-[#E8E5DF] overflow-hidden">
     <div class="max-w-7xl mx-auto text-center">
-      <span class="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-[#d59697] text-white uppercase tracking-wider mb-4 shadow-sm">
+      <span class="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-[#C5A059] text-white uppercase tracking-wider mb-4 shadow-sm">
         Authentic Tanzania Experiences
       </span>
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight max-w-4xl mx-auto leading-tight">
@@ -150,13 +161,13 @@
 
       <!-- Quick Tiers Selector -->
       <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <button onclick="setTierFilter('all')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-[#d59697] text-white shadow-sm">
+        <button onclick="setTierFilter('all')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-[#C5A059] text-white shadow-sm">
           All Collections
         </button>
-        <button onclick="setTierFilter('budget')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#d59697]">
+        <button onclick="setTierFilter('budget')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#C5A059]">
           Budget Tier (~30K TZS / $12)
         </button>
-        <button onclick="setTierFilter('premium')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#d59697]">
+        <button onclick="setTierFilter('premium')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#C5A059]">
           Premium Tier (~180K TZS / $72)
         </button>
       </div>
@@ -164,13 +175,13 @@
   </section>
 
   <!-- Filter & Controls Section -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 mb-8">
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 mb-8">
     <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       
       <!-- Tier Filter Tabs -->
       <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
         <span class="text-xs font-semibold uppercase text-gray-400 mr-1 hidden sm:inline">Collection:</span>
-        <button onclick="setTierFilter('all')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-[#d59697] text-white" data-tier="all">
+        <button onclick="setTierFilter('all')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-[#C5A059] text-white" data-tier="all">
           All (<span id="countAll">0</span>)
         </button>
         <button onclick="setTierFilter('budget')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-gray-100 text-gray-700 hover:bg-gray-200" data-tier="budget">
@@ -184,7 +195,7 @@
       <!-- Sort & Active Status Info -->
       <div class="flex items-center gap-3">
         <label for="sortSelect" class="text-xs font-semibold text-gray-500 uppercase">Sort by:</label>
-        <select id="sortSelect" onchange="handleSortChange()" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#d59697] bg-white">
+        <select id="sortSelect" onchange="handleSortChange()" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#C5A059] bg-[#FAF8F5]">
           <option value="featured">Featured / Default</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
@@ -200,10 +211,10 @@
     <!-- Section Title & Current Filter Badge -->
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h2 id="gridTitle" class="font-display text-2xl sm:text-3xl font-bold text-gray-900">All Gifts</h2>
-        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Showing all authentic Tanzania gift arrangements and hampers</p>
+        <h2 id="gridTitle" class="font-display text-2xl sm:text-3xl font-extrabold text-[#0E1726]">All Gift Hampers</h2>
+        <p id="gridSubtitle" class="text-xs text-gray-500 mt-1">Showing all authentic Tanzanian handcrafted hampers &amp; flower arrangements</p>
       </div>
-      <div id="filterResultCount" class="text-xs font-medium text-gray-500">
+      <div id="filterResultCount" class="text-xs font-bold text-[#A88237] bg-[#FBF6EC] px-3 py-1.5 rounded-full border border-[#EBD8B8]">
         Loading...
       </div>
     </div>
@@ -233,12 +244,12 @@
 
     <!-- Empty State -->
     <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-gray-200 p-8 my-6">
-      <div class="w-16 h-16 bg-rose-50 text-[#d59697] rounded-full flex items-center justify-center mx-auto mb-4">
+      <div class="w-16 h-16 bg-[#FBF6EC] text-[#C5A059] rounded-full flex items-center justify-center mx-auto mb-4">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
       <h3 class="font-display text-xl font-bold text-gray-900">No gifts found</h3>
       <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Try adjusting your search terms or clearing tier filters.</p>
-      <button onclick="clearAllFilters()" class="mt-4 px-4 py-2 bg-[#d59697] text-white rounded-lg text-sm font-medium hover:bg-[#b87577] transition">
+      <button onclick="clearAllFilters()" class="mt-4 px-4 py-2 bg-[#C5A059] text-white rounded-lg text-sm font-medium hover:bg-[#0E1726] transition">
         Reset Filters
       </button>
     </div>
@@ -249,17 +260,17 @@
     <div class="max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-[#d59697]">Cultural Heritage</span>
+          <span class="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Urithi Wetu &bull; Cultural Heritage</span>
           <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-4">Authentic Tanzania in Gift Form</h2>
           <p class="text-gray-600 leading-relaxed mb-6">
             FremboGifts sources directly from local Tanzanian cooperatives and artisans: Kakakuwe coffee from Mount Meru in Arusha, authentic Konyagi spirit from Dar es Salaam, handwoven Maasai Shuka blankets, and organic spice blends from Zanzibar's historic Stone Town.
           </p>
           <div class="grid grid-cols-2 gap-4">
-            <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+            <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E5DF]">
               <h4 class="font-bold text-gray-900">Budget Tier (30K)</h4>
               <p class="text-xs text-gray-500 mt-1">Designed for everyday local birthdays, thank-yous, and compact souvenirs.</p>
             </div>
-            <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+            <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E5DF]">
               <h4 class="font-bold text-gray-900">Premium Tier (180K)</h4>
               <p class="text-xs text-gray-500 mt-1">Includes luxury full Maasai Shuka textiles, artisanal spirits & keepsake boxes.</p>
             </div>
@@ -277,12 +288,12 @@
   </section>
 
   <!-- Footer -->
-  <footer class="bg-[#2d2a25] text-[#a8a7a5] py-12 px-4">
+  <footer class="tanzanite-bg text-gray-400 py-12 px-4">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
       <div>
         <h4 class="font-display text-2xl font-bold text-white mb-3">FremboGifts</h4>
         <p class="text-xs leading-relaxed">
-          Tanzania's premier online gift boutique replicating standard African gift delivery with modern local authenticity.
+          Tanzania's premier curated gift boutique. Same-day hamper delivery in Dar es Salaam, Arusha &amp; Zanzibar. <em class="font-display italic text-[#C5A059] block mt-2 not-italic">"Zawadi Zenye Thamani, Kumbukumbu za Milele"</em>
         </p>
       </div>
       <div>
@@ -306,13 +317,13 @@
       <div>
         <h5 class="text-sm font-semibold text-white uppercase tracking-wider mb-3">Store Administration</h5>
         <p class="text-xs mb-3">Protected portal to manage products, offers, campaigns and database.</p>
-        <a href="/admin" class="inline-block px-4 py-2 bg-[#d59697] text-white rounded-lg text-xs font-bold hover:bg-[#b87577] transition shadow-sm">
+        <a href="/admin" class="inline-block px-4 py-2 bg-[#C5A059] text-[#0E1726] rounded-xl text-xs font-bold hover:bg-[#A88237] hover:text-white transition shadow-sm">
           Admin Portal &rarr;
         </a>
       </div>
     </div>
     <div class="max-w-7xl mx-auto pt-8 border-t border-white/10 text-center text-xs">
-      &copy; 2026 FremboGifts Ltd. All rights reserved.
+      &copy; 2026 FremboGifts Studio Ltd &mdash; Dar es Salaam, Tanzania. All rights reserved.
     </div>
   </footer>
 
@@ -322,7 +333,7 @@
       
       <!-- Auth Modal Tabs -->
       <div class="flex border-b border-gray-100 bg-gray-50/50">
-        <button onclick="setAuthModalMode('login')" id="authTabLogin" class="flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-[#d59697] text-gray-900 transition">
+        <button onclick="setAuthModalMode('login')" id="authTabLogin" class="flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-[#C5A059] text-[#0E1726] transition">
           Sign In
         </button>
         <button onclick="setAuthModalMode('register')" id="authTabRegister" class="flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-gray-900 transition">
@@ -337,17 +348,17 @@
         <form id="loginForm" onsubmit="handleUserLogin(event)" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Email Address</label>
-            <input type="email" id="loginEmail" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="you@example.com">
+            <input type="email" id="loginEmail" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="you@example.com">
           </div>
           <div>
             <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Password</label>
-            <input type="password" id="loginPassword" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="••••••••">
+            <input type="password" id="loginPassword" required class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="••••••••">
           </div>
-          <button type="submit" id="loginSubmitBtn" class="w-full py-3 bg-[#d59697] text-white rounded-xl text-sm font-bold hover:bg-[#b87577] transition shadow-md">
+          <button type="submit" id="loginSubmitBtn" class="w-full py-3 tanzanite-bg text-white rounded-xl text-sm font-bold hover:opacity-90 transition shadow-md">
             Sign In to My Account
           </button>
           <div class="text-center text-xs text-gray-500 pt-2">
-            Admin access? <a href="/admin" class="text-[#d59697] font-semibold underline">Go to Admin Portal</a>
+            Admin access? <a href="/admin" class="text-[#C5A059] font-semibold underline">Go to Admin Portal</a>
           </div>
         </form>
 
@@ -355,24 +366,24 @@
         <form id="registerForm" onsubmit="handleUserRegister(event)" class="space-y-3.5 hidden">
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-0.5">Full Name *</label>
-            <input type="text" id="regName" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. Stephen Reuben">
+            <input type="text" id="regName" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="e.g. Stephen Reuben">
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-0.5">Email Address *</label>
-            <input type="email" id="regEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="you@example.com">
+            <input type="email" id="regEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="you@example.com">
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-0.5">Password (min 6 chars) *</label>
-            <input type="password" id="regPassword" required minlength="6" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="••••••••">
+            <input type="password" id="regPassword" required minlength="6" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="••••••••">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-0.5">Phone Number</label>
-              <input type="tel" id="regPhone" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="+255 ...">
+              <input type="tel" id="regPhone" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="+255 ...">
             </div>
             <div>
               <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-0.5">Default City</label>
-              <select id="regCity" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <select id="regCity" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none">
                 <option value="Dar es Salaam">Dar es Salaam</option>
                 <option value="Arusha">Arusha</option>
                 <option value="Zanzibar">Zanzibar</option>
@@ -382,7 +393,7 @@
 
           <!-- Save Payment Details for later -->
           <div class="pt-2 border-t border-gray-100">
-            <label class="block text-[11px] font-semibold text-[#d59697] uppercase mb-1">Save Payment Method for Later</label>
+            <label class="block text-[11px] font-semibold text-[#C5A059] uppercase mb-1">Save Payment Method for Later</label>
             <div class="grid grid-cols-2 gap-2 mb-2">
               <label class="flex items-center gap-1.5 p-2 rounded-lg border border-gray-200 text-xs cursor-pointer">
                 <input type="radio" name="regPaymentMethod" value="mpesa" checked onchange="toggleRegPaymentFields('mpesa')">
@@ -405,7 +416,7 @@
             </div>
           </div>
 
-          <button type="submit" id="regSubmitBtn" class="w-full py-2.5 bg-[#d59697] text-white rounded-xl text-sm font-bold hover:bg-[#b87577] transition shadow-md mt-2">
+          <button type="submit" id="regSubmitBtn" class="w-full py-2.5 tanzanite-bg text-white rounded-xl text-xs font-bold hover:opacity-90 transition shadow-md mt-2">
             Create Account & Save Details
           </button>
         </form>
@@ -426,7 +437,7 @@
         <!-- Drawer Header -->
         <div class="p-6 border-b border-gray-100 flex items-center justify-between">
           <div class="flex items-center gap-2.5">
-            <span class="w-8 h-8 rounded-full bg-[#ffe8e9] text-[#d59697] flex items-center justify-center font-bold text-sm">
+            <span class="w-8 h-8 rounded-full bg-[#FBF6EC] text-[#C5A059] flex items-center justify-center font-bold text-sm">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             </span>
             <div>
@@ -444,7 +455,7 @@
           <div class="bg-gray-50 p-5 rounded-2xl border border-gray-200">
             <div class="flex items-center justify-between mb-3">
               <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-[#d59697]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                <svg class="w-4 h-4 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
                 <span>Saved Payment Details</span>
               </h4>
               <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">For Faster Checkout</span>
@@ -453,7 +464,7 @@
             <form onsubmit="saveUserPaymentDetails(event)" class="space-y-3">
               <div>
                 <label class="block text-[11px] font-semibold text-gray-600 mb-1">Preferred Method</label>
-                <select id="accPaymentMethod" onchange="toggleAccPaymentFields()" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d59697]">
+                <select id="accPaymentMethod" onchange="toggleAccPaymentFields()" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#C5A059]">
                   <option value="mpesa">M-Pesa Tanzania Mobile Money</option>
                   <option value="tigopesa">Tigo Pesa Mobile Money</option>
                   <option value="card">Credit / Debit Card</option>
@@ -463,29 +474,29 @@
               <!-- M-Pesa details -->
               <div id="accMpesaGroup">
                 <label class="block text-[11px] font-semibold text-gray-600 mb-1">M-Pesa Phone Number</label>
-                <input type="tel" id="accMpesaNumber" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d59697]" placeholder="+255 712 345 678">
+                <input type="tel" id="accMpesaNumber" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#C5A059]" placeholder="+255 712 345 678">
               </div>
 
               <!-- Card details -->
               <div id="accCardGroup" class="hidden space-y-2">
                 <div>
                   <label class="block text-[11px] font-semibold text-gray-600 mb-1">Cardholder Name</label>
-                  <input type="text" id="accCardHolder" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d59697]" placeholder="e.g. Stephen Reuben">
+                  <input type="text" id="accCardHolder" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#C5A059]" placeholder="e.g. Stephen Reuben">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                   <div>
                     <label class="block text-[11px] font-semibold text-gray-600 mb-1">Card Last 4 Digits</label>
-                    <input type="text" id="accCardLast4" maxlength="4" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d59697]" placeholder="4242">
+                    <input type="text" id="accCardLast4" maxlength="4" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#C5A059]" placeholder="4242">
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-gray-600 mb-1">Expiry (MM/YY)</label>
-                    <input type="text" id="accCardExp" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d59697]" placeholder="12/28">
+                    <input type="text" id="accCardExp" class="w-full text-xs p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#C5A059]" placeholder="12/28">
                   </div>
                 </div>
               </div>
 
               <div class="pt-2">
-                <button type="submit" id="savePaymentBtn" class="w-full py-2 bg-[#d59697] text-white rounded-lg text-xs font-bold hover:bg-[#b87577] transition shadow-sm">
+                <button type="submit" id="savePaymentBtn" class="w-full py-2 bg-[#C5A059] text-white rounded-lg text-xs font-bold hover:bg-[#0E1726] transition shadow-sm">
                   Save Payment Information
                 </button>
               </div>
@@ -496,7 +507,7 @@
           <div>
             <h4 class="text-xs font-bold text-gray-900 uppercase tracking-wider mb-3 flex items-center justify-between">
               <span>My Order History</span>
-              <button onclick="fetchUserOrders()" class="text-[#d59697] hover:underline text-[11px] font-semibold">Refresh</button>
+              <button onclick="fetchUserOrders()" class="text-[#C5A059] hover:underline text-[11px] font-semibold">Refresh</button>
             </h4>
             <div id="userOrdersList" class="space-y-2">
               <p class="text-xs text-gray-400">Loading orders...</p>
@@ -524,7 +535,7 @@
         <!-- Cart Drawer Header -->
         <div class="p-6 border-b border-gray-100 flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-[#d59697]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <svg class="w-5 h-5 text-[#C5A059]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
             <h3 class="font-display text-lg font-bold text-gray-900">Your Gift Cart</h3>
           </div>
           <button onclick="toggleCartDrawer(false)" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
@@ -555,7 +566,7 @@
             </div>
           </div>
 
-          <button onclick="openCheckoutModal()" id="checkoutBtn" class="w-full py-3 bg-[#d59697] text-white rounded-xl text-sm font-bold hover:bg-[#b87577] transition shadow-md disabled:opacity-50">
+          <button onclick="openCheckoutModal()" id="checkoutBtn" class="w-full py-3 bg-[#C5A059] text-white rounded-xl text-sm font-bold hover:bg-[#0E1726] transition shadow-md disabled:opacity-50">
             Proceed to Checkout
           </button>
         </div>
@@ -576,22 +587,45 @@
       <form onsubmit="completeOrder(event)" class="p-6 space-y-3.5">
         <div>
           <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Recipient Name *</label>
-          <input type="text" id="orderRecipient" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. Neema Mwangi">
+          <input type="text" id="orderRecipient" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="e.g. Neema Mwangi">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Phone Number *</label>
-            <input type="tel" id="orderPhone" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="+255 712 345 678">
+            <label class="block text-xs font-bold text-[#0E1726] uppercase mb-1">Simu ya Mpokeaji *</label>
+            <input type="tel" id="orderPhone" required class="w-full px-3 py-2 border border-[#E8E5DF] rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none bg-[#FAF8F5]" placeholder="+255 754 123 456">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Delivery City *</label>
-            <select id="orderCity" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+            <label class="block text-xs font-bold text-[#0E1726] uppercase mb-1">Mji (City) *</label>
+            <select id="orderCity" class="w-full px-3 py-2 border border-[#E8E5DF] rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none bg-[#FAF8F5]">
               <option value="Dar es Salaam">Dar es Salaam</option>
               <option value="Arusha">Arusha</option>
               <option value="Zanzibar">Zanzibar</option>
               <option value="Mwanza">Mwanza</option>
+              <option value="Dodoma">Dodoma</option>
+              <option value="Moshi">Moshi</option>
+              <option value="Morogoro">Morogoro</option>
             </select>
           </div>
+        </div>
+
+        <!-- LANDMARK-BASED ADDRESS (Tanzania UX essential) -->
+        <div class="p-3.5 bg-[#FAF8F5] rounded-2xl border border-[#E8E5DF] space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-[#0E1726] uppercase mb-1">Mtaa / Eneo (Neighborhood) *</label>
+            <input type="text" id="orderNeighborhood" required class="w-full px-3 py-2 border border-[#E8E5DF] rounded-xl text-xs focus:ring-2 focus:ring-[#C5A059] focus:outline-none bg-white" placeholder="e.g. Mikocheni B, Masaki, Sinza, Mbezi Beach, Ilala...">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-[#0E1726] uppercase mb-1">Alama / Maelekezo (Landmark / Directions)</label>
+            <input type="text" id="orderLandmark" class="w-full px-3 py-2 border border-[#E8E5DF] rounded-xl text-xs focus:ring-2 focus:ring-[#C5A059] focus:outline-none bg-white" placeholder="e.g. Nyuma ya Shoppers Supermarket, karibu na kituo cha mwendokasi...">
+          </div>
+          <!-- SURPRISE DELIVERY TOGGLE -->
+          <label class="flex items-start gap-2.5 cursor-pointer pt-1">
+            <input type="checkbox" id="orderIsSurprise" class="mt-0.5 rounded w-4 h-4 border-[#E8E5DF] text-[#C5A059]">
+            <div>
+              <span class="text-xs font-bold text-[#0E1726]">🎁 Zawadi ya Kushtukiza! (Surprise Delivery)</span>
+              <p class="text-[11px] text-gray-500 leading-snug mt-0.5">Rider hatamwambia mpokeaji kuhusu zawadi mpaka atakapofika getin — siri italindwa!</p>
+            </div>
+          </label>
         </div>
 
         <!-- PAYMENT METHOD SELECTION -->
@@ -615,11 +649,11 @@
 
         <div>
           <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Gift Card Message</label>
-          <textarea id="orderNote" rows="2" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="Write a personalized note for the gift card..."></textarea>
+          <textarea id="orderNote" rows="2" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="Write a personalized note for the gift card..."></textarea>
         </div>
 
         <div class="pt-2">
-          <button type="submit" class="w-full py-3 bg-[#d59697] text-white rounded-xl text-sm font-bold hover:bg-[#b87577] transition shadow-md">
+          <button type="submit" class="w-full py-3 bg-[#C5A059] text-white rounded-xl text-sm font-bold hover:bg-[#0E1726] transition shadow-md">
             Confirm & Place Order (<span id="checkoutTotalBtn">0 TZS</span>)
           </button>
         </div>
@@ -642,7 +676,7 @@
         <p><span class="text-gray-500">Recipient:</span> <span id="confirmedRecipient" class="font-medium text-gray-900">-</span></p>
         <p><span class="text-gray-500">Area:</span> <span id="confirmedCity" class="font-medium text-gray-900">-</span></p>
       </div>
-      <button onclick="closeSuccessModal()" class="w-full py-2.5 bg-gray-900 text-white rounded-xl text-sm font-semibold hover:bg-gray-800 transition">
+      <button onclick="closeSuccessModal()" class="w-full py-2.5 tanzanite-bg text-white rounded-xl text-sm font-bold hover:opacity-90 transition">
         Continue Shopping
       </button>
     </div>
@@ -736,8 +770,8 @@
 
       if (user) {
         container.innerHTML = `
-          <button onclick="openAccountDrawer()" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-semibold text-gray-800 hover:border-[#d59697] transition bg-gray-50">
-            <span class="w-5 h-5 rounded-full bg-[#d59697] text-white flex items-center justify-center text-[10px]">
+          <button onclick="openAccountDrawer()" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-xs font-semibold text-gray-800 hover:border-[#C5A059] transition bg-gray-50">
+            <span class="w-5 h-5 rounded-full bg-[#C5A059] text-white flex items-center justify-center text-[10px]">
               ${user.name ? user.name[0].toUpperCase() : 'U'}
             </span>
             <span class="max-w-[100px] truncate">${escapeHtml(user.name.split(' ')[0])}</span>
@@ -776,13 +810,13 @@
       const regForm = document.getElementById('registerForm');
 
       if (mode === 'login') {
-        loginTab.className = 'flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-[#d59697] text-gray-900 transition';
+        loginTab.className = 'flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-[#C5A059] text-[#0E1726] transition';
         regTab.className = 'flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-gray-900 transition';
         loginForm.classList.remove('hidden');
         regForm.classList.add('hidden');
       } else {
         loginTab.className = 'flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-gray-900 transition';
-        regTab.className = 'flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-[#d59697] text-gray-900 transition';
+        regTab.className = 'flex-1 py-3.5 text-xs font-bold text-center border-b-2 border-[#C5A059] text-[#0E1726] transition';
         loginForm.classList.add('hidden');
         regForm.classList.remove('hidden');
       }
@@ -980,7 +1014,7 @@
             <div class="p-3 bg-white rounded-xl border border-gray-200 text-xs shadow-sm">
               <div class="flex justify-between font-bold text-gray-900 mb-1">
                 <span class="font-mono">${escapeHtml(o.order_number)}</span>
-                <span class="text-[#d59697]">${Number(o.total_tzs).toLocaleString()} TZS</span>
+                <span class="text-[#C5A059]">${Number(o.total_tzs).toLocaleString()} TZS</span>
               </div>
               <p class="text-gray-500">For ${escapeHtml(o.recipient_name)} (${escapeHtml(o.city || 'Dar es Salaam')})</p>
               <div class="flex justify-between items-center text-[10px] text-gray-400 mt-2 pt-2 border-t border-gray-100">
@@ -1121,7 +1155,7 @@
             <img src="${item.image_url || 'https://via.placeholder.com/80'}" class="w-14 h-14 object-cover rounded-lg bg-gray-200 flex-shrink-0" alt="">
             <div class="flex-1 min-w-0">
               <h4 class="font-bold text-xs text-gray-900 truncate">${escapeHtml(item.name)}</h4>
-              <p class="text-xs font-semibold text-[#d59697] mt-0.5">${Number(item.price_tzs).toLocaleString()} TZS</p>
+              <p class="text-xs font-semibold text-[#C5A059] mt-0.5">${Number(item.price_tzs).toLocaleString()} TZS</p>
               <div class="flex items-center gap-2 mt-2">
                 <button onclick="updateCartItemQty(${item.id}, -1)" class="w-5 h-5 bg-white border border-gray-200 rounded flex items-center justify-center text-xs font-bold hover:bg-gray-100">-</button>
                 <span class="text-xs font-bold text-gray-800">${item.quantity}</span>
@@ -1192,7 +1226,7 @@
         }
         badge.classList.remove('hidden');
       } else {
-        notice.innerHTML = `<a href="javascript:openAuthModal('login')" class="text-[#d59697] font-semibold underline">Sign in</a> to use saved payment details`;
+        notice.innerHTML = `<a href="javascript:openAuthModal('login')" class="text-[#C5A059] font-semibold underline">Sign in</a> to use saved payment details`;
         badge.classList.add('hidden');
       }
 
@@ -1208,6 +1242,9 @@
       const recipient_name = document.getElementById('orderRecipient').value.trim();
       const phone = document.getElementById('orderPhone').value.trim();
       const city = document.getElementById('orderCity').value;
+      const neighborhood = (document.getElementById('orderNeighborhood') || {value:''}).value.trim();
+      const landmark = (document.getElementById('orderLandmark') || {value:''}).value.trim();
+      const is_surprise = (document.getElementById('orderIsSurprise') || {checked:false}).checked;
       const gift_message = document.getElementById('orderNote').value.trim();
       const payment_method = document.querySelector('input[name="orderPaymentMethod"]:checked').value;
 
@@ -1223,6 +1260,9 @@
         recipient_name,
         phone,
         city,
+        neighborhood,
+        landmark,
+        is_surprise,
         gift_message,
         items: cart,
         total_tzs,
@@ -1283,10 +1323,10 @@
           const list = document.getElementById('offersList');
           list.innerHTML = activeOffers.map(o => `
             <span class="inline-flex items-center gap-1.5">
-              <span class="font-bold bg-[#d59697] text-white text-[10px] px-1.5 py-0.5 rounded">${o.discount_percent}% OFF</span>
+              <span class="font-bold bg-[#C5A059] text-white text-[10px] px-1.5 py-0.5 rounded">${o.discount_percent}% OFF</span>
               <span>${escapeHtml(o.title)} - ${escapeHtml(o.description || '')}</span>
             </span>
-          `).join('<span class="text-[#d59697]">•</span>');
+          `).join('<span class="text-[#C5A059]">•</span>');
           ribbon.classList.remove('hidden');
         }
       } catch (e) {}
@@ -1324,10 +1364,10 @@
       currentTier = tier;
       document.querySelectorAll('.tier-pill').forEach(btn => {
         if (btn.getAttribute('data-tier') === tier) {
-          btn.classList.add('bg-[#d59697]', 'text-white');
+          btn.classList.add('bg-[#C5A059]', 'text-white');
           btn.classList.remove('bg-gray-100', 'text-gray-700');
         } else {
-          btn.classList.remove('bg-[#d59697]', 'text-white');
+          btn.classList.remove('bg-[#C5A059]', 'text-white');
           btn.classList.add('bg-gray-100', 'text-gray-700');
         }
       });
@@ -1423,17 +1463,31 @@
           <div class="p-5 pt-0">
             <div class="flex items-baseline justify-between mb-4">
               <div>
-                <span class="text-lg font-extrabold text-[#d59697]">${Number(p.price_tzs).toLocaleString()} TZS</span>
+                <span class="text-lg font-extrabold text-[#C5A059]">${Number(p.price_tzs).toLocaleString()} TZS</span>
                 <span class="text-xs text-gray-400 font-medium ml-1">($${p.price_usd || Math.round(p.price_tzs / 2500)})</span>
               </div>
             </div>
-            <button onclick="addToCart(${p.id})" class="w-full py-2.5 bg-[#d59697] text-white rounded-xl text-xs font-bold hover:bg-[#b87577] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <button onclick="addToCart(${p.id})" class="py-2.5 w-full bg-[#0E1726] text-[#C5A059] rounded-xl text-xs font-bold hover:bg-[#16213E] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
               <span>Add to Cart</span>
             </button>
+            <button onclick="openWA('order')" class="py-2.5 w-full mt-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
+              <span>Agiza kwa WhatsApp</span>
+            </button
           </div>
         </div>
       `).join('');
+    }
+
+    function openWA(topic) {
+      let msg = 'Habari FremboGifts! 🎁 Nina swali kuhusu zawadi na hampers zenu.';
+      if (topic === 'order') msg = 'Habari FremboGifts! Ningependa kuweka oda ya zawadi moja kwa moja.';
+      if (topic === 'custom') msg = 'Habari FremboGifts! Ningependa kuandaa Custom Hamper ya kipekee.';
+      if (topic === 'card') msg = 'Habari FremboGifts! Nisaidie kuandika ujumbe mzuri wa kadi ya zawadi.';
+      if (topic === 'track') msg = 'Habari FremboGifts! Naomba kufuatilia maendeleo ya oda yangu.';
+      window.open('https://wa.me/255700000000?text=' + encodeURIComponent(msg), '_blank');
+      document.getElementById('waMenu').classList.add('hidden');
     }
 
     function escapeHtml(str) {
