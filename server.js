@@ -14,6 +14,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+  initDatabaseTables().catch(console.error);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
