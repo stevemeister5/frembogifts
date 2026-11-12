@@ -38,6 +38,15 @@ test('renders live storefront data and safely serializes it for client-side inte
   const applicationScript = html.match(/<script>([\s\S]*?)<\/script>/);
   assert.ok(applicationScript);
   assert.doesNotThrow(() => new Function(applicationScript[1]));
+
+  const productCardTemplate = applicationScript[1].match(
+    /grid\.innerHTML = filtered\.map\(p => `([\s\S]*?)`\)\.join\(''\);/
+  );
+  assert.ok(productCardTemplate);
+  assert.match(
+    productCardTemplate[1],
+    /<span>Agiza kwa WhatsApp<\/span>\s*<\/button>\s*<\/div>\s*<\/div>/
+  );
 });
 
 test('renders the empty catalog and hides the offers ribbon when no active records exist', async () => {
