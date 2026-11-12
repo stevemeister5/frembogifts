@@ -33,6 +33,19 @@
       transform: translateY(-6px);
       box-shadow: 0 24px 48px -8px rgba(14,23,38,0.14);
     }
+    #storefrontMain {
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 80rem;
+      margin-inline: auto;
+      padding-inline: 1rem;
+    }
+    @media (min-width: 640px) {
+      #storefrontMain { padding-inline: 1.5rem; }
+    }
+    @media (min-width: 1024px) {
+      #storefrontMain { padding-inline: 2rem; }
+    }
     #productsGrid {
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -226,7 +239,7 @@
   </section>
 
   <!-- Main Dynamic Products Grid -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
+  <main id="storefrontMain" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
     <div class="mb-5">
       <h2 id="gridTitle" class="font-display text-2xl font-bold text-gray-900">All Gifts</h2>
       <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Showing all authentic Tanzania gift arrangements and hampers</p>
