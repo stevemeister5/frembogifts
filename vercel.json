@@ -1,13 +1,15 @@
 {
-  "name": "frembo-gifts",
-  "frameworkPreset": "create-tailwind",
   "builds": [
     {
-      "src": "index.html",
-      "use": "@ver/static"
+      "src": "server.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server.js"
+    },
     {
       "src": "/(.*)",
       "dest": "index.html"

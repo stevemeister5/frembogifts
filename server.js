@@ -1,28 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const sqlite3 = require('sqlite3');
+const { sql } = require('@vercel/postgres');
 const path = require('path');
-const dbPath = path.resolve(__dirname, 'frembogifts.db');
 
-const { Database } = sqlite3;
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// ===== Database Setup =====
-async function setupDatabase() {
-  db = new Database(dbPath, (err) => {
-  if (err) {
-    console.error('Database connection failed: ', err);
-    process.exit(1);
-  }
-  console.log('Connected to database');
-});
+// Database tables are expected to exist in the Vercel Postgres database.
+// Create tables manually in the Vercel Postgres dashboard if needed.
+// The API routes below assume the following tables exist:
+// - products (id, name, tier, price_tzs, price_usd, description, is_active, created_at)
+// - offers (id, title, description, discount_percent, min_tier, start_date, end_date, is_active, created_at)
+// - campaigns (id, title, description, start_date, end_date, is_active, created_at)
 
   await db.exec(`
     CREATE TABLE IF NOT EXISTS products (
@@ -91,25 +87,20 @@ setupDatabase();
 
 // ===== API Routes - Products =====
 
-// GET all products (with optional tier filter)
+// GET all active products
 app.get('/api/products', async (req, res) => {
-  const tier = req.query.tier;
-  let query = 'SELECT * FROM products WHERE is_active = 1';
-  const params = [];
-
-  if (tier) {
-    query += ' AND tier = ?';
-    params.push(tier);
+  try {
+    const { rows } = await sql`SELECT * FROM products WHERE is_active = 1`;
+    res.json({ success: true, products: rows });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
-
-  query += ' ORDER BY tier, price_tzs ASC';
-  const products = await db.all(query, params);
-  res.json({ success: true, products });
 });
 
 // GET single product
 app.get('/api/products/:id', async (req, res) => {
-  const product = await db.get('SELECT * FROM products WHERE id = ?', [req.params.id]);
+  const product = await sql`SELECT * FROM products WHERE id = ${req.params.id} AND is_active = 1`;
   if (product) {
     res.json({ success: true, product });
   } else {
@@ -124,30 +115,20 @@ app.post('/api/products', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing required fields: name, tier, price_tzs' });
   }
 
-  const result = await db.run(
-    "INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES (?, ?, ?, ?, ?)",
-    [name, tier, price_tzs, price_usd || null, description || '']
-  );
-
-  const newProduct = await db.get('SELECT * FROM products WHERE id = ?', [result.lastID]);
+  await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, is_active, created_at) VALUES (${name}, ${tier}, ${price_tzs}, ${price_usd}, ${description || ''}, 1, CURRENT_TIMESTAMP) RETURNING *`
   res.json({ success: true, product: newProduct });
 });
 
 // PUT - Admin: Update product
 app.put('/api/products/:id', async (req, res) => {
   const { name, tier, price_tzs, price_usd, description, is_active } = req.body;
-  await db.run(
-    "UPDATE products SET name = ?, tier = ?, price_tzs = ?, price_usd = ?, description = ?, is_active = ? WHERE id = ?",
-    [name, tier, price_tzs, price_usd, description, is_active === true ? 1 : 0, req.params.id]
-  );
-
-  const updatedProduct = await db.get('SELECT * FROM products WHERE id = ?', [req.params.id]);
+  await sql`UPDATE products SET name = ${name}, tier = ${tier}, price_tzs = ${price_tzs}, price_usd = ${price_usd}, description = ${description || ''}, is_active = ${is_active === true ? 1 : 0}, updated_at = CURRENT_TIMESTAMP WHERE id = ${req.params.id}`
   res.json({ success: true, product: updatedProduct });
 });
 
 // DELETE - Admin: Delete product (soft delete)
 app.delete('/api/products/:id', async (req, res) => {
-  await db.run('UPDATE products SET is_active = 0 WHERE id = ?', [req.params.id]);
+  await sql`UPDATE products SET is_active = 0 WHERE id = ${req.params.id}`;
   res.json({ success: true });
 });
 
@@ -161,43 +142,62 @@ app.get('/api/offers', async (req, res) => {
 
 // POST - Admin: Add new offer
 app.post('/api/offers', async (req, res) => {
-  const { title, description, discount_percent, min_tier, start_date, end_date } = req.body;
-  if (!title || discount_percent === undefined) {
-    return res.status(400).json({ success: false, message: 'Missing required fields: title, discount_percent' });
+  // GET all active offers
+app.get('/api/offers', async (req, res) => {
+  try {
+    const { rows } = await sql`SELECT * FROM offers WHERE is_active = 1`;
+    res.json({ success: true, offers: rows });
+  } catch (error) {
+    console.error('Error fetching offers:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
+});
 
-  await db.run(
-    "INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date) VALUES (?, ?, ?, ?, ?, ?)",
-    [title, description || '', discount_percent, min_tier || 'both', start_date || null, end_date || null]
-  );
+// POST - Admin: Add new offer
+app.post('/api/offers', async (req, res) => {
+  try {
+    const { title, description, discount_percent, min_tier, start_date, end_date } = req.body;
+    if (!title || discount_percent === undefined) {
+      return res.status(400).json({ success: false, message: 'Missing required fields: title, discount_percent' });
+    }
 
-  const newOffer = await db.get('SELECT * FROM offers WHERE id = last_insert_rowid()');
-  res.json({ success: true, offer: newOffer });
+    const { rows } = await sql`INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date, is_active, created_at) VALUES (${title}, ${description || ''}, ${discount_percent}, ${min_tier || 'both'}, ${start_date || null}, ${end_date || null}, 1, CURRENT_TIMESTAMP) RETURNING *`;
+    res.json({ success: true, offer: rows[0] });
+  } catch (error) {
+    console.error('Error creating offer:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // PUT - Admin: Update offer
 app.put('/api/offers/:id', async (req, res) => {
-  const { title, description, discount_percent, min_tier, start_date, end_date, is_active } = req.body;
-  await db.run(
-    "UPDATE offers SET title = ?, description = ?, discount_percent = ?, min_tier = ?, start_date = ?, end_date = ?, is_active = ? WHERE id = ?",
-    [title, description, discount_percent, min_tier, start_date, end_date, is_active === true ? 1 : 0, req.params.id]
-  );
-
-  const updatedOffer = await db.get('SELECT * FROM offers WHERE id = ?', [req.params.id]);
-  res.json({ success: true, offer: updatedOffer });
+  try {
+    const { title, description, discount_percent, min_tier, start_date, end_date, is_active } = req.body;
+    await sql`UPDATE offers SET title = ${title}, description = ${description || ''}, discount_percent = ${discount_percent}, min_tier = ${min_tier || 'both'}, start_date = ${start_date || null}, end_date = ${end_date || null}, is_active = ${is_active === true ? 1 : 0}, updated_at = CURRENT_TIMESTAMP WHERE id = ${req.params.id}`;
+    const { rows } = await sql`SELECT * FROM offers WHERE id = ${req.params.id}`;
+    res.json({ success: true, offer: rows[0] });
+  } catch (error) {
+    console.error('Error updating offer:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // DELETE - Admin: Delete offer
 app.delete('/api/offers/:id', async (req, res) => {
-  await db.run('UPDATE offers SET is_active = 0 WHERE id = ?', [req.params.id]);
-  res.json({ success: true });
+  try {
+    await sql`UPDATE offers SET is_active = 0 WHERE id = ${req.params.id}`;
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting offer:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // ===== API Routes - Campaigns =====
 
 // GET all active campaigns
 app.get('/api/campaigns', async (req, res) => {
-  const campaigns = await db.all('SELECT * FROM campaigns WHERE is_active = 1');
+  await sql`SELECT * FROM campaigns WHERE is_active = 1`;
   res.json({ success: true, campaigns });
 });
 
@@ -208,29 +208,34 @@ app.post('/api/campaigns', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Missing required field: title' });
   }
 
-  await db.run(
-    "INSERT INTO campaigns (title, description, start_date, end_date) VALUES (?, ?, ?, ?)",
-    [title, description || '', start_date || null, end_date || null]
-  );
-
-  const newCampaign = await db.get('SELECT * FROM campaigns WHERE id = last_insert_rowid()');
+  await sql`INSERT INTO campaigns (title, description, start_date, end_date, is_active, created_at) VALUES (${title}, ${description || ''}, ${start_date || null}, ${end_date || null}, 1, CURRENT_TIMESTAMP) RETURNING *`
   res.json({ success: true, campaign: newCampaign });
 });
 
 // PUT - Admin: Update campaign
 app.put('/api/campaigns/:id', async (req, res) => {
   const { title, description, start_date, end_date, is_active } = req.body;
-  await db.run(
-    "UPDATE campaigns SET title = ?, description = ?, start_date = ?, end_date = ?, is_active = ? WHERE id = ?",
-    [title, description, start_date, end_date, is_active === true ? 1 : 0, req.params.id]
-  );
-
-  const updatedCampaign = await db.get('SELECT * FROM campaigns WHERE id = ?', [req.params.id]);
+  await sql`UPDATE campaigns SET title = ${title}, description = ${description || ''}, start_date = ${start_date || null}, end_date = ${end_date || null}, is_active = ${is_active === true ? 1 : 0}, updated_at = CURRENT_TIMESTAMP WHERE id = ${req.params.id}`
   res.json({ success: true, campaign: updatedCampaign });
 });
 
 // DELETE - Admin: Delete campaign
 app.delete('/api/campaigns/:id', async (req, res) => {
-  await db.run('UPDATE campaigns SET is_active = 0 WHERE id = ?', [req.params.id]);
-  res.json({ success: true });
+  try {
+    await sql`UPDATE campaigns SET is_active = 0 WHERE id = ${req.params.id}`;
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting campaign:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
+
+// Catch-all: serve frontend for any non-API routes
+app.use('*', (req, res) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ success: false, message: 'API route not found' });
+  }
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+module.exports = app;
