@@ -133,13 +133,19 @@ async function initDatabaseTables() {
       gift_message TEXT,
       items TEXT NOT NULL,
       total_tzs INTEGER NOT NULL,
-      total_usd INTEGER NOT NULL,
+      total_usd NUMERIC(10, 2) NOT NULL,
       discount_tzs INTEGER DEFAULT 0,
       payment_method TEXT DEFAULT 'mpesa',
       status TEXT DEFAULT 'confirmed',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
+
+  try {
+    await sql`ALTER TABLE orders ALTER COLUMN total_usd TYPE NUMERIC(10, 2);`;
+  } catch (e) {
+    // Column might already be numeric
+  }
 
   await sql`
     CREATE TABLE IF NOT EXISTS products (
@@ -439,6 +445,9 @@ app.post('/api/orders', async (req, res) => {
     const orderNumber = 'FG-' + Math.floor(100000 + Math.random() * 900000);
     const userId = req.user ? req.user.id : null;
     const itemsStr = typeof items === 'string' ? items : JSON.stringify(items);
+    const parsedTotalTzs = Math.round(Number(total_tzs) || 0);
+    const parsedTotalUsd = Number(total_usd != null ? total_usd : (parsedTotalTzs / 2500)).toFixed(2);
+    const parsedDiscount = Math.round(Number(discount_tzs) || 0);
 
     const { rows } = await sql`
       INSERT INTO orders (
@@ -446,7 +455,7 @@ app.post('/api/orders', async (req, res) => {
         items, total_tzs, total_usd, discount_tzs, payment_method, status
       ) VALUES (
         ${orderNumber}, ${userId}, ${recipient_name}, ${phone}, ${city || 'Dar es Salaam'}, ${gift_message || ''},
-        ${itemsStr}, ${total_tzs}, ${total_usd || Math.round(total_tzs / 2500)}, ${discount_tzs || 0}, ${payment_method || 'mpesa'}, 'confirmed'
+        ${itemsStr}, ${parsedTotalTzs}, ${parsedTotalUsd}, ${parsedDiscount}, ${payment_method || 'mpesa'}, 'confirmed'
       ) RETURNING *
     `;
 
