@@ -198,15 +198,6 @@ async function initDatabaseTables() {
     );
   `;
 
-  // Ensure default administrator exists
-  const adminCheck = await sql`SELECT id FROM users WHERE role = 'admin' LIMIT 1`;
-  if (adminCheck.rows.length === 0) {
-    const { hash, salt } = hashPassword('Admin123!');
-    await sql`
-      INSERT INTO users (email, password_hash, salt, name, role, phone, city, payment_method, mpesa_number)
-      VALUES ('admin@frembogifts.com', ${hash}, ${salt}, 'Frembo Administrator', 'admin', '+255 700 000 000', 'Dar es Salaam', 'mpesa', '+255 700 000 000')
-      ON CONFLICT (email) DO NOTHING
-    `;
   }
 
   // Seed default products if empty
@@ -253,7 +244,7 @@ app.get('/api/setup', async (req, res) => {
     await initDatabaseTables();
     res.json({
       success: true,
-      message: 'Database tables, default admin account (admin@frembogifts.com), and seeds initialized successfully'
+      message: 'Database tables initialized and seeds initialized successfully'
     });
   } catch (error) {
     console.error('Error during database setup:', error);
@@ -311,14 +302,6 @@ app.post('/api/auth/login', async (req, res) => {
     }
 
     const cleanEmail = email.toLowerCase().trim();
-    let { rows } = await sql`SELECT * FROM users WHERE email = ${cleanEmail}`;
-
-    // Auto-bootstrap default admin if logging in as admin and table is clean
-    if (rows.length === 0 && cleanEmail === 'admin@frembogifts.com' && password === 'Admin123!') {
-      await initDatabaseTables();
-      const refetched = await sql`SELECT * FROM users WHERE email = 'admin@frembogifts.com'`;
-      rows = refetched.rows;
-    }
 
     if (rows.length === 0) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
