@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FremboGifts - Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --fg: #2d2a25;
+      --muted: #6b6a66;
+      --accent: #d59697;
+      --accent-dark: #b87577;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7f6f2;
+      color: var(--fg);
+    }
+    .font-display { font-family: 'Playfair Display', serif; }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+    .border-accent { border-color: var(--accent); }
+    .hover-accent:hover { background-color: var(--accent-dark); }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
+
+  <!-- Admin Top Navbar -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <div class="flex items-center gap-4">
+        <a href="/" class="font-display text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-2">
+          <span>FremboGifts</span>
+          <span class="text-xs bg-[#d59697] text-white font-sans font-semibold px-2 py-0.5 rounded uppercase tracking-wider">Admin</span>
+        </a>
+        <div class="hidden sm:flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Vercel Postgres Live</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="fetchAllData()" class="text-sm px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center gap-1.5 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+        <button onclick="triggerSetup()" class="text-sm px-3 py-1.5 rounded-lg border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 flex items-center gap-1.5 transition" title="Ensure database tables & default seeds exist">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7c-2 0-3 1-3 3zm0 5h16"/></svg>
+          <span class="hidden sm:inline">DB Setup / Seed</span>
+        </button>
+        <a href="/" target="_blank" class="text-sm px-3 py-1.5 rounded-lg bg-[#d59697] text-white hover:bg-[#b87577] flex items-center gap-1.5 font-medium transition shadow-sm">
+          <span>View Live Store</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    
+    <!-- Stats Overview Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider">Total Products</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1" id="statTotalProducts">-</p>
+        <div class="text-xs text-gray-500 mt-1"><span id="statActiveProducts">-</span> active</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-amber-600 uppercase tracking-wider">Budget Tier</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1" id="statBudgetProducts">-</p>
+        <div class="text-xs text-gray-500 mt-1">Average 30K TZS</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-purple-600 uppercase tracking-wider">Premium Tier</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1" id="statPremiumProducts">-</p>
+        <div class="text-xs text-gray-500 mt-1">Average 180K TZS</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+        <p class="text-xs font-medium text-rose-600 uppercase tracking-wider">Active Offers</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1" id="statOffers">-</p>
+        <div class="text-xs text-gray-500 mt-1">Promotional discounts</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm col-span-2 lg:col-span-1">
+        <p class="text-xs font-medium text-blue-600 uppercase tracking-wider">Campaigns</p>
+        <p class="text-2xl font-bold text-gray-900 mt-1" id="statCampaigns">-</p>
+        <div class="text-xs text-gray-500 mt-1">Marketing specials</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="border-b border-gray-200 mb-6 flex flex-wrap gap-2 sm:gap-4">
+      <button onclick="switchTab('products')" id="tabBtn-products" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-[#d59697] text-[#d59697] transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        <span>Products Catalog</span>
+        <span id="tabCount-products" class="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+      </button>
+      <button onclick="switchTab('offers')" id="tabBtn-offers" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-gray-600 hover:text-gray-900 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+        <span>Special Offers</span>
+        <span id="tabCount-offers" class="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+      </button>
+      <button onclick="switchTab('campaigns')" id="tabBtn-campaigns" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-gray-600 hover:text-gray-900 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
+        <span>Marketing Campaigns</span>
+        <span id="tabCount-campaigns" class="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+      </button>
+      <button onclick="switchTab('system')" id="tabBtn-system" class="tab-btn px-4 py-2.5 font-medium text-sm border-b-2 border-transparent text-gray-600 hover:text-gray-900 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span>Database & Tools</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: PRODUCTS -->
+    <div id="tabContent-products" class="tab-content block">
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <!-- Products Action Bar -->
+        <div class="p-4 sm:p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="relative">
+              <input type="text" id="productSearch" oninput="filterProductsTable()" placeholder="Search products..." class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm w-60 focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <select id="productTierFilter" onchange="filterProductsTable()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option value="all">All Tiers</option>
+              <option value="budget">Budget Tier (30K)</option>
+              <option value="premium">Premium Tier (180K)</option>
+            </select>
+            <select id="productStatusFilter" onchange="filterProductsTable()" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option value="all">All Status</option>
+              <option value="active">Active Only</option>
+              <option value="inactive">Inactive Only</option>
+            </select>
+          </div>
+          <button onclick="openProductModal()" class="px-4 py-2 bg-[#d59697] text-white rounded-lg text-sm font-medium hover:bg-[#b87577] transition flex items-center justify-center gap-2 shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Add Product</span>
+          </button>
+        </div>
+
+        <!-- Products Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-700">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-3">Product</th>
+                <th class="px-6 py-3">Tier</th>
+                <th class="px-6 py-3">Price (TZS)</th>
+                <th class="px-6 py-3">Price (USD)</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="productsTableBody" class="divide-y divide-gray-200">
+              <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading products...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: OFFERS -->
+    <div id="tabContent-offers" class="tab-content hidden">
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold text-gray-900">Active & Configured Offers</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Special discounts applied automatically to eligible customer orders</p>
+          </div>
+          <button onclick="openOfferModal()" class="px-4 py-2 bg-[#d59697] text-white rounded-lg text-sm font-medium hover:bg-[#b87577] transition flex items-center gap-2 shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Add New Offer</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-700">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-3">Offer Title</th>
+                <th class="px-6 py-3">Discount</th>
+                <th class="px-6 py-3">Applicable Tier</th>
+                <th class="px-6 py-3">Dates</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="offersTableBody" class="divide-y divide-gray-200">
+              <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Loading offers...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: CAMPAIGNS -->
+    <div id="tabContent-campaigns" class="tab-content hidden">
+      <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between">
+          <div>
+            <h3 class="font-semibold text-gray-900">Promotional Campaigns</h3>
+            <p class="text-xs text-gray-500 mt-0.5">Seasonal marketing banners displayed on the storefront hero</p>
+          </div>
+          <button onclick="openCampaignModal()" class="px-4 py-2 bg-[#d59697] text-white rounded-lg text-sm font-medium hover:bg-[#b87577] transition flex items-center gap-2 shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Add Campaign</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-700">
+            <thead class="bg-gray-50 text-xs uppercase text-gray-500 border-b border-gray-200">
+              <tr>
+                <th class="px-6 py-3">Campaign</th>
+                <th class="px-6 py-3">Description</th>
+                <th class="px-6 py-3">Timeline</th>
+                <th class="px-6 py-3">Status</th>
+                <th class="px-6 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="campaignsTableBody" class="divide-y divide-gray-200">
+              <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Loading campaigns...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: DATABASE & TOOLS -->
+    <div id="tabContent-system" class="tab-content hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <h3 class="font-semibold text-gray-900 text-lg mb-2">Vercel Postgres Diagnostics</h3>
+          <p class="text-sm text-gray-600 mb-4">Run health checks or reinitialize tables and sample data safely.</p>
+          
+          <div class="space-y-3">
+            <button onclick="checkApiHealth()" class="w-full py-2.5 px-4 rounded-lg border border-gray-300 text-sm font-medium hover:bg-gray-50 flex items-center justify-between transition">
+              <span>Test API Status (`/api`)</span>
+              <span id="apiHealthStatus" class="text-xs text-gray-500">Not checked</span>
+            </button>
+            <button onclick="triggerSetup()" class="w-full py-2.5 px-4 rounded-lg bg-amber-500 text-white text-sm font-medium hover:bg-amber-600 flex items-center justify-between transition shadow-sm">
+              <span>Re-run Table Setup & Seeds (`/api/setup`)</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+          <h3 class="font-semibold text-gray-900 text-lg mb-2">Quick Store Links</h3>
+          <p class="text-sm text-gray-600 mb-4">Direct URLs to test live customer-facing endpoints.</p>
+          <div class="space-y-2 text-sm">
+            <a href="/api/products" target="_blank" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-700 flex justify-between items-center">
+              <code>GET /api/products</code>
+              <span class="text-xs text-blue-600">Open &rarr;</span>
+            </a>
+            <a href="/api/offers" target="_blank" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-700 flex justify-between items-center">
+              <code>GET /api/offers</code>
+              <span class="text-xs text-blue-600">Open &rarr;</span>
+            </a>
+            <a href="/api/campaigns" target="_blank" class="block p-3 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-700 flex justify-between items-center">
+              <code>GET /api/campaigns</code>
+              <span class="text-xs text-blue-600">Open &rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PRODUCT MODAL (Add / Edit) -->
+  <div id="productModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+        <h3 id="productModalTitle" class="font-display text-lg font-bold text-gray-900">Add New Product</h3>
+        <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+      </div>
+      <form id="productForm" onsubmit="saveProduct(event)" class="p-6 space-y-4">
+        <input type="hidden" id="productId">
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Product Name *</label>
+          <input type="text" id="productName" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. Kakakuwe Coffee Gift Set">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Price in TZS *</label>
+            <input type="number" id="productPriceTZS" required min="0" step="500" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="30000">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Price in USD ($)</label>
+            <input type="number" id="productPriceUSD" min="0" step="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="12">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Tier Collection *</label>
+            <select id="productTier" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option value="budget">Budget (Standard: ~30,000 TZS)</option>
+              <option value="premium">Premium (Standard: ~180,000 TZS)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Status</label>
+            <select id="productIsActive" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option value="1">Active (Visible)</option>
+              <option value="0">Inactive (Hidden)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Image URL</label>
+          <input type="url" id="productImage" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="https://images.unsplash.com/photo-...">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Description & Gift Contents</label>
+          <textarea id="productDescription" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="Details of the gift set, ingredients, flowers stem count, etc."></textarea>
+        </div>
+        <div class="flex justify-end gap-3 pt-3 border-t border-gray-100">
+          <button type="button" onclick="closeProductModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition">Cancel</button>
+          <button type="submit" id="productSubmitBtn" class="px-5 py-2 bg-[#d59697] text-white rounded-lg text-sm font-semibold hover:bg-[#b87577] transition shadow-sm">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- OFFER MODAL (Add / Edit) -->
+  <div id="offerModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+        <h3 id="offerModalTitle" class="font-display text-lg font-bold text-gray-900">Add New Offer</h3>
+        <button onclick="closeOfferModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+      </div>
+      <form id="offerForm" onsubmit="saveOffer(event)" class="p-6 space-y-4">
+        <input type="hidden" id="offerId">
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Offer Title *</label>
+          <input type="text" id="offerTitle" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. Flash Weekend Special">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Discount (%) *</label>
+            <input type="number" id="offerDiscount" required min="1" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="15">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Applicable Tier</label>
+            <select id="offerMinTier" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option value="both">All Products (Both Tiers)</option>
+              <option value="budget">Budget Tier Only</option>
+              <option value="premium">Premium Tier Only</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Description</label>
+          <input type="text" id="offerDescription" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. 15% off all weekend gift orders">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Start Date</label>
+            <input type="date" id="offerStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">End Date</label>
+            <input type="date" id="offerEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Status</label>
+          <select id="offerIsActive" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+            <option value="1">Active</option>
+            <option value="0">Inactive</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3 pt-3 border-t border-gray-100">
+          <button type="button" onclick="closeOfferModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition">Cancel</button>
+          <button type="submit" id="offerSubmitBtn" class="px-5 py-2 bg-[#d59697] text-white rounded-lg text-sm font-semibold hover:bg-[#b87577] transition shadow-sm">Save Offer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN MODAL (Add / Edit) -->
+  <div id="campaignModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+        <h3 id="campaignModalTitle" class="font-display text-lg font-bold text-gray-900">Add Campaign</h3>
+        <button onclick="closeCampaignModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+      </div>
+      <form id="campaignForm" onsubmit="saveCampaign(event)" class="p-6 space-y-4">
+        <input type="hidden" id="campaignId">
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Campaign Title *</label>
+          <input type="text" id="campaignTitle" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. Valentine Season Exclusive">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Description / Tagline</label>
+          <textarea id="campaignDescription" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="Special edition holiday arrangements and custom hampers"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Start Date</label>
+            <input type="date" id="campaignStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">End Date</label>
+            <input type="date" id="campaignEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Status</label>
+          <select id="campaignIsActive" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+            <option value="1">Active</option>
+            <option value="0">Inactive</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3 pt-3 border-t border-gray-100">
+          <button type="button" onclick="closeCampaignModal()" class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition">Cancel</button>
+          <button type="submit" id="campaignSubmitBtn" class="px-5 py-2 bg-[#d59697] text-white rounded-lg text-sm font-semibold hover:bg-[#b87577] transition shadow-sm">Save Campaign</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let products = [];
+    let offers = [];
+    let campaigns = [];
+
+    // Toast Notification helper
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const bgColor = type === 'success' ? 'bg-gray-900 text-white' : 'bg-rose-600 text-white';
+      toast.className = `${bgColor} px-4 py-3 rounded-xl shadow-lg text-sm flex items-center justify-between gap-3 transform transition-all duration-300 opacity-0 translate-y-2`;
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-white/70 hover:text-white">&times;</button>
+      `;
+      container.appendChild(toast);
+      requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+      });
+      setTimeout(() => {
+        toast.classList.add('opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Tab switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('border-[#d59697]', 'text-[#d59697]');
+        btn.classList.add('border-transparent', 'text-gray-600');
+      });
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.add('hidden');
+      });
+
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.classList.add('border-[#d59697]', 'text-[#d59697]');
+        activeBtn.classList.remove('border-transparent', 'text-gray-600');
+      }
+      const activeContent = document.getElementById(`tabContent-${tabId}`);
+      if (activeContent) {
+        activeContent.classList.remove('hidden');
+      }
+    }
+
+    // Fetch All Data
+    async function fetchAllData() {
+      await Promise.all([fetchProducts(), fetchOffers(), fetchCampaigns()]);
+      updateDashboardStats();
+    }
+
+    // Fetch Products
+    async function fetchProducts() {
+      try {
+        const res = await fetch('/api/products?all=true');
+        const data = await res.json();
+        if (data.success) {
+          products = data.products || [];
+          renderProductsTable(products);
+          document.getElementById('tabCount-products').textContent = products.length;
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        showToast('Failed to load products: ' + err.message, 'error');
+      }
+    }
+
+    // Render Products Table
+    function renderProductsTable(list) {
+      const tbody = document.getElementById('productsTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No products found. Click "Add Product" to create one.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(p => `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4 flex items-center gap-3">
+            <img src="${p.image_url || 'https://via.placeholder.com/100x100?text=No+Image'}" alt="" class="w-12 h-12 object-cover rounded-lg bg-gray-100 flex-shrink-0" onerror="this.src='https://via.placeholder.com/100x100?text=Gift'">
+            <div>
+              <p class="font-semibold text-gray-900">${escapeHtml(p.name)}</p>
+              <p class="text-xs text-gray-500 line-clamp-1 max-w-xs">${escapeHtml(p.description || 'No description')}</p>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${p.tier === 'budget' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-purple-800'}">
+              ${p.tier === 'budget' ? 'Budget' : 'Premium'}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+            ${Number(p.price_tzs).toLocaleString()} TZS
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+            $${p.price_usd || Math.round(p.price_tzs / 2500)}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <button onclick="toggleProductStatus(${p.id}, ${p.is_active ? 0 : 1})" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold cursor-pointer transition ${p.is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}" title="Click to toggle active status">
+              <span class="w-1.5 h-1.5 mr-1.5 rounded-full ${p.is_active ? 'bg-emerald-500' : 'bg-gray-400'}"></span>
+              ${p.is_active ? 'Active' : 'Inactive'}
+            </button>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+            <button onclick="editProduct(${p.id})" class="text-xs px-2.5 py-1.5 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium transition">Edit</button>
+            <button onclick="deleteProduct(${p.id})" class="text-xs px-2.5 py-1.5 rounded-md border border-rose-200 text-rose-600 hover:bg-rose-50 font-medium transition">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Filter Products Table
+    function filterProductsTable() {
+      const q = document.getElementById('productSearch').value.toLowerCase();
+      const tier = document.getElementById('productTierFilter').value;
+      const status = document.getElementById('productStatusFilter').value;
+
+      const filtered = products.filter(p => {
+        const matchesQuery = p.name.toLowerCase().includes(q) || (p.description && p.description.toLowerCase().includes(q));
+        const matchesTier = tier === 'all' || p.tier === tier;
+        const matchesStatus = status === 'all' || (status === 'active' && p.is_active) || (status === 'inactive' && !p.is_active);
+        return matchesQuery && matchesTier && matchesStatus;
+      });
+      renderProductsTable(filtered);
+    }
+
+    // Product Modal Handlers
+    function openProductModal(prod = null) {
+      document.getElementById('productForm').reset();
+      if (prod) {
+        document.getElementById('productModalTitle').textContent = 'Edit Product #' + prod.id;
+        document.getElementById('productId').value = prod.id;
+        document.getElementById('productName').value = prod.name;
+        document.getElementById('productPriceTZS').value = prod.price_tzs;
+        document.getElementById('productPriceUSD').value = prod.price_usd || '';
+        document.getElementById('productTier').value = prod.tier;
+        document.getElementById('productImage').value = prod.image_url || '';
+        document.getElementById('productDescription').value = prod.description || '';
+        document.getElementById('productIsActive').value = prod.is_active ? '1' : '0';
+      } else {
+        document.getElementById('productModalTitle').textContent = 'Add New Product';
+        document.getElementById('productId').value = '';
+        document.getElementById('productTier').value = 'budget';
+        document.getElementById('productIsActive').value = '1';
+      }
+      document.getElementById('productModal').classList.remove('hidden');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productModal').classList.add('hidden');
+    }
+
+    function editProduct(id) {
+      const prod = products.find(p => p.id === id);
+      if (prod) openProductModal(prod);
+    }
+
+    async function saveProduct(e) {
+      e.preventDefault();
+      const id = document.getElementById('productId').value;
+      const payload = {
+        name: document.getElementById('productName').value.trim(),
+        price_tzs: parseInt(document.getElementById('productPriceTZS').value, 10),
+        price_usd: document.getElementById('productPriceUSD').value ? parseInt(document.getElementById('productPriceUSD').value, 10) : Math.round(parseInt(document.getElementById('productPriceTZS').value, 10) / 2500),
+        tier: document.getElementById('productTier').value,
+        image_url: document.getElementById('productImage').value.trim() || 'https://via.placeholder.com/400x250?text=Product+Image',
+        description: document.getElementById('productDescription').value.trim(),
+        is_active: document.getElementById('productIsActive').value === '1'
+      };
+
+      try {
+        let res;
+        if (id) {
+          res = await fetch(`/api/products/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch('/api/products', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+        const data = await res.json();
+        if (data.success) {
+          showToast(id ? 'Product updated successfully!' : 'Product added successfully!');
+          closeProductModal();
+          fetchProducts();
+        } else {
+          showToast(data.message || 'Error saving product', 'error');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    async function toggleProductStatus(id, newStatus) {
+      const prod = products.find(p => p.id === id);
+      if (!prod) return;
+      try {
+        const res = await fetch(`/api/products/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...prod, is_active: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Product ${newStatus ? 'activated' : 'deactivated'}`);
+          fetchProducts();
+        }
+      } catch (err) {
+        showToast('Error toggling status', 'error');
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Are you sure you want to delete this product?')) return;
+      try {
+        const res = await fetch(`/api/products/${id}?permanent=true`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Product deleted');
+          fetchProducts();
+        } else {
+          showToast(data.message || 'Error deleting product', 'error');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    // Fetch Offers
+    async function fetchOffers() {
+      try {
+        const res = await fetch('/api/offers?all=true');
+        const data = await res.json();
+        if (data.success) {
+          offers = data.offers || [];
+          renderOffersTable(offers);
+          document.getElementById('tabCount-offers').textContent = offers.length;
+        }
+      } catch (err) {
+        console.error('Error fetching offers:', err);
+      }
+    }
+
+    // Render Offers Table
+    function renderOffersTable(list) {
+      const tbody = document.getElementById('offersTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-8 text-center text-gray-500">No offers found. Click "Add New Offer".</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(o => `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4">
+            <p class="font-semibold text-gray-900">${escapeHtml(o.title)}</p>
+            <p class="text-xs text-gray-500">${escapeHtml(o.description || '')}</p>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-rose-100 text-rose-700">
+              ${o.discount_percent}% OFF
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap capitalize text-gray-700 text-xs">
+            ${o.min_tier || 'both'}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+            ${formatDate(o.start_date)} - ${formatDate(o.end_date)}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${o.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'}">
+              ${o.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+            <button onclick="editOffer(${o.id})" class="text-xs px-2.5 py-1.5 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium">Edit</button>
+            <button onclick="deleteOffer(${o.id})" class="text-xs px-2.5 py-1.5 rounded-md border border-rose-200 text-rose-600 hover:bg-rose-50 font-medium">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openOfferModal(o = null) {
+      document.getElementById('offerForm').reset();
+      if (o) {
+        document.getElementById('offerModalTitle').textContent = 'Edit Offer #' + o.id;
+        document.getElementById('offerId').value = o.id;
+        document.getElementById('offerTitle').value = o.title;
+        document.getElementById('offerDiscount').value = o.discount_percent;
+        document.getElementById('offerMinTier').value = o.min_tier || 'both';
+        document.getElementById('offerDescription').value = o.description || '';
+        document.getElementById('offerStartDate').value = o.start_date ? o.start_date.split('T')[0] : '';
+        document.getElementById('offerEndDate').value = o.end_date ? o.end_date.split('T')[0] : '';
+        document.getElementById('offerIsActive').value = o.is_active ? '1' : '0';
+      } else {
+        document.getElementById('offerModalTitle').textContent = 'Add New Offer';
+        document.getElementById('offerId').value = '';
+        document.getElementById('offerMinTier').value = 'both';
+        document.getElementById('offerIsActive').value = '1';
+      }
+      document.getElementById('offerModal').classList.remove('hidden');
+    }
+
+    function closeOfferModal() {
+      document.getElementById('offerModal').classList.add('hidden');
+    }
+
+    function editOffer(id) {
+      const o = offers.find(x => x.id === id);
+      if (o) openOfferModal(o);
+    }
+
+    async function saveOffer(e) {
+      e.preventDefault();
+      const id = document.getElementById('offerId').value;
+      const payload = {
+        title: document.getElementById('offerTitle').value.trim(),
+        discount_percent: parseInt(document.getElementById('offerDiscount').value, 10),
+        min_tier: document.getElementById('offerMinTier').value,
+        description: document.getElementById('offerDescription').value.trim(),
+        start_date: document.getElementById('offerStartDate').value || null,
+        end_date: document.getElementById('offerEndDate').value || null,
+        is_active: document.getElementById('offerIsActive').value === '1'
+      };
+
+      try {
+        let res;
+        if (id) {
+          res = await fetch(`/api/offers/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch('/api/offers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+        const data = await res.json();
+        if (data.success) {
+          showToast(id ? 'Offer updated!' : 'Offer added!');
+          closeOfferModal();
+          fetchOffers();
+        } else {
+          showToast(data.message || 'Error saving offer', 'error');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    async function deleteOffer(id) {
+      if (!confirm('Are you sure you want to delete this offer?')) return;
+      try {
+        const res = await fetch(`/api/offers/${id}?permanent=true`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Offer deleted');
+          fetchOffers();
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    // Fetch Campaigns
+    async function fetchCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns?all=true');
+        const data = await res.json();
+        if (data.success) {
+          campaigns = data.campaigns || [];
+          renderCampaignsTable(campaigns);
+          document.getElementById('tabCount-campaigns').textContent = campaigns.length;
+        }
+      } catch (err) {
+        console.error('Error fetching campaigns:', err);
+      }
+    }
+
+    // Render Campaigns Table
+    function renderCampaignsTable(list) {
+      const tbody = document.getElementById('campaignsTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-gray-500">No campaigns found. Click "Add Campaign".</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(c => `
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-6 py-4">
+            <p class="font-semibold text-gray-900">${escapeHtml(c.title)}</p>
+          </td>
+          <td class="px-6 py-4 text-xs text-gray-600 max-w-sm">
+            ${escapeHtml(c.description || '-')}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
+            ${formatDate(c.start_date)} - ${formatDate(c.end_date)}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${c.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'}">
+              ${c.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
+            <button onclick="editCampaign(${c.id})" class="text-xs px-2.5 py-1.5 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 font-medium">Edit</button>
+            <button onclick="deleteCampaign(${c.id})" class="text-xs px-2.5 py-1.5 rounded-md border border-rose-200 text-rose-600 hover:bg-rose-50 font-medium">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openCampaignModal(c = null) {
+      document.getElementById('campaignForm').reset();
+      if (c) {
+        document.getElementById('campaignModalTitle').textContent = 'Edit Campaign #' + c.id;
+        document.getElementById('campaignId').value = c.id;
+        document.getElementById('campaignTitle').value = c.title;
+        document.getElementById('campaignDescription').value = c.description || '';
+        document.getElementById('campaignStartDate').value = c.start_date ? c.start_date.split('T')[0] : '';
+        document.getElementById('campaignEndDate').value = c.end_date ? c.end_date.split('T')[0] : '';
+        document.getElementById('campaignIsActive').value = c.is_active ? '1' : '0';
+      } else {
+        document.getElementById('campaignModalTitle').textContent = 'Add New Campaign';
+        document.getElementById('campaignId').value = '';
+        document.getElementById('campaignIsActive').value = '1';
+      }
+      document.getElementById('campaignModal').classList.remove('hidden');
+    }
+
+    function closeCampaignModal() {
+      document.getElementById('campaignModal').classList.add('hidden');
+    }
+
+    function editCampaign(id) {
+      const c = campaigns.find(x => x.id === id);
+      if (c) openCampaignModal(c);
+    }
+
+    async function saveCampaign(e) {
+      e.preventDefault();
+      const id = document.getElementById('campaignId').value;
+      const payload = {
+        title: document.getElementById('campaignTitle').value.trim(),
+        description: document.getElementById('campaignDescription').value.trim(),
+        start_date: document.getElementById('campaignStartDate').value || null,
+        end_date: document.getElementById('campaignEndDate').value || null,
+        is_active: document.getElementById('campaignIsActive').value === '1'
+      };
+
+      try {
+        let res;
+        if (id) {
+          res = await fetch(`/api/campaigns/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch('/api/campaigns', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+        const data = await res.json();
+        if (data.success) {
+          showToast(id ? 'Campaign updated!' : 'Campaign added!');
+          closeCampaignModal();
+          fetchCampaigns();
+        } else {
+          showToast(data.message || 'Error saving campaign', 'error');
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    async function deleteCampaign(id) {
+      if (!confirm('Are you sure you want to delete this campaign?')) return;
+      try {
+        const res = await fetch(`/api/campaigns/${id}?permanent=true`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          showToast('Campaign deleted');
+          fetchCampaigns();
+        }
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+      }
+    }
+
+    // Dashboard Stats update
+    function updateDashboardStats() {
+      const total = products.length;
+      const active = products.filter(p => p.is_active).length;
+      const budget = products.filter(p => p.tier === 'budget').length;
+      const premium = products.filter(p => p.tier === 'premium').length;
+      const activeOffers = offers.filter(o => o.is_active).length;
+      const activeCampaigns = campaigns.filter(c => c.is_active).length;
+
+      document.getElementById('statTotalProducts').textContent = total;
+      document.getElementById('statActiveProducts').textContent = active;
+      document.getElementById('statBudgetProducts').textContent = budget;
+      document.getElementById('statPremiumProducts').textContent = premium;
+      document.getElementById('statOffers').textContent = activeOffers;
+      document.getElementById('statCampaigns').textContent = activeCampaigns;
+    }
+
+    // Diagnostics / Tools
+    async function checkApiHealth() {
+      const el = document.getElementById('apiHealthStatus');
+      el.textContent = 'Checking...';
+      try {
+        const res = await fetch('/api');
+        const data = await res.json();
+        if (data.success) {
+          el.textContent = '● OK (200)';
+          el.className = 'text-xs text-emerald-600 font-semibold';
+          showToast('API is healthy and online');
+        } else {
+          el.textContent = '● Error';
+          el.className = 'text-xs text-rose-600 font-semibold';
+        }
+      } catch (err) {
+        el.textContent = '● Failed';
+        el.className = 'text-xs text-rose-600 font-semibold';
+        showToast('API check failed: ' + err.message, 'error');
+      }
+    }
+
+    async function triggerSetup() {
+      if (!confirm('Run database setup and ensure default tables and seeds exist in Vercel Postgres?')) return;
+      try {
+        const res = await fetch('/api/setup');
+        const data = await res.json();
+        if (data.success) {
+          showToast('Database setup & seeds confirmed!');
+          fetchAllData();
+        } else {
+          showToast('Setup error: ' + data.message, 'error');
+        }
+      } catch (err) {
+        showToast('Setup failed: ' + err.message, 'error');
+      }
+    }
+
+    // Helper functions
+    function formatDate(dateStr) {
+      if (!dateStr) return 'N/A';
+      try {
+        const d = new Date(dateStr);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', fetchAllData);
+  </script>
+</body>
+</html>

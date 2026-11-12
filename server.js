@@ -70,14 +70,14 @@ app.get('/api/setup', async (req, res) => {
 
     const productCountResult = await sql`SELECT COUNT(*) as count FROM products`;
     if (parseInt(productCountResult.rows[0].count, 10) === 0) {
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80')`;
+      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80')`;
     }
 
     const offerCountResult = await sql`SELECT COUNT(*) as count FROM offers`;
@@ -101,17 +101,27 @@ app.get('/api/setup', async (req, res) => {
 
 // ===== API Routes - Products =====
 
-// GET all active products (with optional tier filter)
+// GET products (with optional tier filter, or all=true for admin)
 app.get('/api/products', async (req, res) => {
   try {
-    const { tier } = req.query;
+    const { tier, all } = req.query;
     let rows;
-    if (tier) {
-      const result = await sql`SELECT * FROM products WHERE is_active = 1 AND tier = ${tier} ORDER BY tier, price_tzs ASC`;
-      rows = result.rows;
+    if (all === 'true') {
+      if (tier) {
+        const result = await sql`SELECT * FROM products WHERE tier = ${tier} ORDER BY id DESC`;
+        rows = result.rows;
+      } else {
+        const result = await sql`SELECT * FROM products ORDER BY id DESC`;
+        rows = result.rows;
+      }
     } else {
-      const result = await sql`SELECT * FROM products WHERE is_active = 1 ORDER BY tier, price_tzs ASC`;
-      rows = result.rows;
+      if (tier) {
+        const result = await sql`SELECT * FROM products WHERE is_active = 1 AND tier = ${tier} ORDER BY tier, price_tzs ASC`;
+        rows = result.rows;
+      } else {
+        const result = await sql`SELECT * FROM products WHERE is_active = 1 ORDER BY tier, price_tzs ASC`;
+        rows = result.rows;
+      }
     }
     res.json({ success: true, products: rows });
   } catch (error) {
@@ -123,7 +133,7 @@ app.get('/api/products', async (req, res) => {
 // GET single product
 app.get('/api/products/:id', async (req, res) => {
   try {
-    const { rows } = await sql`SELECT * FROM products WHERE id = ${req.params.id} AND is_active = 1`;
+    const { rows } = await sql`SELECT * FROM products WHERE id = ${req.params.id}`;
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
@@ -153,9 +163,9 @@ app.post('/api/products', async (req, res) => {
 // PUT - Admin: Update product
 app.put('/api/products/:id', async (req, res) => {
   try {
-    const { name, tier, price_tzs, price_usd, description, is_active } = req.body;
+    const { name, tier, price_tzs, price_usd, description, image_url, is_active } = req.body;
     const active = is_active === undefined ? 1 : (is_active === true || is_active === 1 || is_active === '1' ? 1 : 0);
-    await sql`UPDATE products SET name = ${name}, tier = ${tier}, price_tzs = ${price_tzs}, price_usd = ${price_usd || null}, description = ${description || ''}, is_active = ${active} WHERE id = ${req.params.id}`;
+    await sql`UPDATE products SET name = ${name}, tier = ${tier}, price_tzs = ${price_tzs}, price_usd = ${price_usd || null}, description = ${description || ''}, image_url = ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}, is_active = ${active} WHERE id = ${req.params.id}`;
     const { rows } = await sql`SELECT * FROM products WHERE id = ${req.params.id}`;
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Product not found' });
@@ -167,11 +177,22 @@ app.put('/api/products/:id', async (req, res) => {
   }
 });
 
-// DELETE - Admin: Delete product (soft delete)
+// DELETE - Admin: Delete product (soft delete by default, permanent if ?permanent=true)
 app.delete('/api/products/:id', async (req, res) => {
   try {
-    await sql`UPDATE products SET is_active = 0 WHERE id = ${req.params.id}`;
-    res.json({ success: true });
+    const { permanent } = req.query;
+    if (permanent === 'true') {
+      const { rowCount } = await sql`DELETE FROM products WHERE id = ${req.params.id}`;
+      if (rowCount === 0) {
+        return res.status(404).json({ success: false, message: 'Product not found' });
+      }
+      return res.json({ success: true, message: 'Product permanently deleted' });
+    }
+    const { rowCount } = await sql`UPDATE products SET is_active = 0 WHERE id = ${req.params.id}`;
+    if (rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Product not found' });
+    }
+    res.json({ success: true, message: 'Product deactivated' });
   } catch (error) {
     console.error('Error deleting product:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -180,10 +201,18 @@ app.delete('/api/products/:id', async (req, res) => {
 
 // ===== API Routes - Offers =====
 
-// GET all active offers
+// GET offers (active only by default, or all=true for admin)
 app.get('/api/offers', async (req, res) => {
   try {
-    const { rows } = await sql`SELECT * FROM offers WHERE is_active = 1`;
+    const { all } = req.query;
+    let rows;
+    if (all === 'true') {
+      const result = await sql`SELECT * FROM offers ORDER BY id DESC`;
+      rows = result.rows;
+    } else {
+      const result = await sql`SELECT * FROM offers WHERE is_active = 1 ORDER BY id ASC`;
+      rows = result.rows;
+    }
     res.json({ success: true, offers: rows });
   } catch (error) {
     console.error('Error fetching offers:', error);
@@ -227,8 +256,19 @@ app.put('/api/offers/:id', async (req, res) => {
 // DELETE - Admin: Delete offer
 app.delete('/api/offers/:id', async (req, res) => {
   try {
-    await sql`UPDATE offers SET is_active = 0 WHERE id = ${req.params.id}`;
-    res.json({ success: true });
+    const { permanent } = req.query;
+    if (permanent === 'true') {
+      const { rowCount } = await sql`DELETE FROM offers WHERE id = ${req.params.id}`;
+      if (rowCount === 0) {
+        return res.status(404).json({ success: false, message: 'Offer not found' });
+      }
+      return res.json({ success: true, message: 'Offer permanently deleted' });
+    }
+    const { rowCount } = await sql`UPDATE offers SET is_active = 0 WHERE id = ${req.params.id}`;
+    if (rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Offer not found' });
+    }
+    res.json({ success: true, message: 'Offer deactivated' });
   } catch (error) {
     console.error('Error deleting offer:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -237,10 +277,18 @@ app.delete('/api/offers/:id', async (req, res) => {
 
 // ===== API Routes - Campaigns =====
 
-// GET all active campaigns
+// GET campaigns (active only by default, or all=true for admin)
 app.get('/api/campaigns', async (req, res) => {
   try {
-    const { rows } = await sql`SELECT * FROM campaigns WHERE is_active = 1`;
+    const { all } = req.query;
+    let rows;
+    if (all === 'true') {
+      const result = await sql`SELECT * FROM campaigns ORDER BY id DESC`;
+      rows = result.rows;
+    } else {
+      const result = await sql`SELECT * FROM campaigns WHERE is_active = 1 ORDER BY id ASC`;
+      rows = result.rows;
+    }
     res.json({ success: true, campaigns: rows });
   } catch (error) {
     console.error('Error fetching campaigns:', error);
@@ -284,18 +332,41 @@ app.put('/api/campaigns/:id', async (req, res) => {
 // DELETE - Admin: Delete campaign
 app.delete('/api/campaigns/:id', async (req, res) => {
   try {
-    await sql`UPDATE campaigns SET is_active = 0 WHERE id = ${req.params.id}`;
-    res.json({ success: true });
+    const { permanent } = req.query;
+    if (permanent === 'true') {
+      const { rowCount } = await sql`DELETE FROM campaigns WHERE id = ${req.params.id}`;
+      if (rowCount === 0) {
+        return res.status(404).json({ success: false, message: 'Campaign not found' });
+      }
+      return res.json({ success: true, message: 'Campaign permanently deleted' });
+    }
+    const { rowCount } = await sql`UPDATE campaigns SET is_active = 0 WHERE id = ${req.params.id}`;
+    if (rowCount === 0) {
+      return res.status(404).json({ success: false, message: 'Campaign not found' });
+    }
+    res.json({ success: true, message: 'Campaign deactivated' });
   } catch (error) {
     console.error('Error deleting campaign:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
+// Admin Page Routes
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.get('/admin.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 // Catch-all: serve frontend for any non-API routes
 app.use((req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ success: false, message: 'API route not found' });
+  }
+  if (req.path === '/admin') {
+    return res.sendFile(path.join(__dirname, 'admin.html'));
   }
   res.sendFile(path.join(__dirname, 'index.html'));
 });

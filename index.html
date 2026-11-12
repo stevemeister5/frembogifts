@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FremboGifts - Online Gift & Flower Delivery</title>
+  <title>FremboGifts - Authentic Tanzania Gifts & Flower Delivery</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #faf8f5;
@@ -15,12 +15,8 @@
       --muted: #6b6a66;
       --accent: #d59697;
       --accent-dark: #b87577;
-      --secondary: #8fa6a;
       --card: #ffffff;
     }
-    
-    * { box-sizing: border-box; }
-    
     body {
       font-family: 'Inter', sans-serif;
       background-color: var(--bg);
@@ -28,362 +24,814 @@
       margin: 0;
       overflow-x: hidden;
     }
-    
     .font-display { font-family: 'Playfair Display', serif; }
+    .bg-accent { background-color: var(--accent); }
+    .text-accent { color: var(--accent); }
+    .border-accent { border-color: var(--accent); }
+    .hover-accent:hover { background-color: var(--accent-dark); }
     
-    .navbar { background: white; box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1); }
-    
-    .nav-link { color: var(--fg); text-decoration: none; font-weight: 500; transition: color 0.2s; }
-    .nav-link:hover { color: var(--accent); }
-    
-    .search-input { border: 1px solid #e2e2e2; border-radius: 20px; padding: 0 16px; height: 40px; width: 250px; }
-    
-    .cart-badge { background: var(--accent); color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; top: 8px; right: 8px; }
-    
-    .hero { background: linear-gradient(135deg, #fffbf0 0%, #faf8f5 100%); padding: 6rem 2rem 4rem; }
-    
-    .hero-badge { background: var(--accent); color: white; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 1rem; }
-    
-    .hero-title { font-size: 3.5rem; font-weight: 700; line-height: 1.1; margin-bottom: 1rem; }
-    
-    .hero-description { font-size: 1.2rem; color: var(--muted); line-height: 1.8; max-width: 600px; margin-bottom: 2rem; }
-    
-    .categories { background: white; padding: 2rem; margin-top: -4rem; margin-bottom: 2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-    
-    .category-tag { padding: 0.6rem 1.2rem; border: 1px solid #e2e2e2; border-radius: 20px; font-size: 0.85rem; text-decoration: none; color: var(--muted); margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block; transition: all 0.2s; }
-    .category-tag:hover, .category-tag.active { background: var(--accent); color: white; border-color: var(--accent); }
-    
-    .product-card { background: var(--card); border-radius: 12px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; height: 100%; }
-    .product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-    
-    .product-image { width: 100%; height: 250px; object-fit: cover; background: #f5f0eb; }
-    
-    .product-info { padding: 1.5rem; }
-    
-    .product-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; height: 3.5em; overflow: hidden; }
-    
-    .product-price { color: var(--accent); font-weight: 600; font-size: 1.2rem; margin-bottom: 1rem; }
-    
-    .product-options { display: flex; gap: 0.5rem; margin-top: 1rem; }
-    
-    .option-btn { flex: 1; padding: 0.5rem; border: 1px solid #e2e2e2; border-radius: 6px; font-size: 0.75rem; text-align: center; cursor: pointer; transition: background 0.2s; }
-    .option-btn:hover { background: #f5f0eb; }
-    .option-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-    
-    .filter-chip { padding: 0.5rem 1rem; border: 1px solid #e2e2e2; border-radius: 20px; font-size: 0.8rem; color: var(--muted); text-decoration: none; margin-right: 0.5rem; margin-bottom: 0.5rem; display: inline-block; transition: all 0.2s; }
-    .filter-chip:hover, .filter-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
-    
-    .filter-section { background: white; padding: 1.5rem; margin-bottom: 1rem; border-radius: 8px; }
-    
-    .filter-section h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 1rem; }
-    
-    .price-range { width: 100%; height: 4px; background: #e2e2e2; border-radius: 2; margin: 1rem 0; }
-    .price-range input { width: 50%; height: 100%; background: var(--accent); border: none; border-radius: 2px; cursor: pointer; }
-    
-    .budget-tags span { padding: 0.4rem 0.8rem; border: 1px solid #e2e2e2; border-radius: 20px; font-size: 0.75rem; color: var(--muted); margin-right: 0.3rem; margin-bottom: 0.3rem; display: inline-block; cursor: pointer; transition: all 0.2s; }
-    .budget-tags span:hover, .budget-tags span.active { background: var(--accent); color: white; border-color: var(--accent); }
-    
-    .footer { background: #2d2a25; color: #a8a7a5; padding: 4rem 2rem 2rem; }
-    
-    .footer-link { color: #a8a7a5; text-decoration: none; font-size: 0.85rem; margin-bottom: 0.5rem; display: block; transition: color 0.2s; }
-    .footer-link:hover { color: var(--accent); }
-    
-    .social-links a { width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; color: white; font-size: 1.2rem; text-decoration: none; transition: background 0.2s; }
-    .social-links a:hover { background: var(--accent); }
-    
-    .mobile-menu { position: fixed; right: 0; top: 0; bottom: 0; width: 300px; background: white; box-shadow: -10px 0 20px rgba(0,0,0,0.1); padding: 2rem; transform: translateX(100%); transition: transform 0.3s; }
-    .mobile-menu.open { transform: translateX(0); }
-    
-    .badge { display: inline-block; padding: 0.2rem 0.6rem; background: #ffe8e9; color: var(--accent); font-size: 0.7rem; border-radius: 4px; margin-left: 0.4rem; }
+    .product-card {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+    }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-  <!-- Navigation -->
-  <nav class="navbar fixed top w-full z-50">
-    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-      <a href="#" class="font-display text-2xl font-bold tracking-tighter" style="color: var(--accent);">FremboGifts</a>
+  <!-- Dynamic Active Campaign Announcement Bar -->
+  <div id="campaignBanner" class="bg-gray-900 text-white text-xs py-2 px-4 text-center font-medium transition-all duration-300">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-rose-400 animate-pulse"></span>
+      <span id="campaignBannerText">Same-day delivery in Dar es Salaam & Arusha | Authentic Tanzania Gifts</span>
+    </div>
+  </div>
+
+  <!-- Dynamic Promotional Offers Ribbon -->
+  <div id="offersRibbon" class="bg-[#ffe8e9] text-[#b87577] text-xs py-1.5 px-4 text-center font-medium border-b border-[#f3d3d4] hidden">
+    <div class="max-w-7xl mx-auto flex items-center justify-center gap-4 flex-wrap" id="offersList">
+      <!-- Dynamic Offers Injected Here -->
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="bg-white border-b border-gray-100 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
       
+      <!-- Brand Logo -->
+      <a href="/" class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-[#d59697] flex items-center gap-2">
+        <span>FremboGifts</span>
+      </a>
+
+      <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center gap-8">
-        <a href="#budget" class="nav-link">Budget</a>
-        <a href="#premium" class="nav-link">Premium</a>
-        <a href="#about" class="nav-link">About</a>
+        <button onclick="setTierFilter('all')" class="nav-tier-btn text-sm font-medium hover:text-[#d59697] transition text-gray-900 font-semibold" data-tier="all">All Gifts</button>
+        <button onclick="setTierFilter('budget')" class="nav-tier-btn text-sm font-medium hover:text-[#d59697] transition text-gray-600" data-tier="budget">Budget Tier (30K TZS)</button>
+        <button onclick="setTierFilter('premium')" class="nav-tier-btn text-sm font-medium hover:text-[#d59697] transition text-gray-600" data-tier="premium">Premium Tier (180K TZS)</button>
+        <a href="#about" class="text-sm font-medium text-gray-600 hover:text-[#d59697] transition">About Tanzania</a>
+        <a href="/admin" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition font-medium border border-gray-200">Admin</a>
       </div>
-      
-      <div class="relative">
-        <a href="#" class="relative">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="9" cy="21" r="1"></circle>
-            <circle cx="20" cy="21" r="1"></circle>
-            <path d="M1 1l4 4l14 14"></path>
+
+      <!-- Search & Cart -->
+      <div class="flex items-center gap-3 sm:gap-4">
+        <!-- Search Trigger / Input -->
+        <div class="relative hidden sm:block">
+          <input type="text" id="searchInput" oninput="handleSearch(event)" placeholder="Search gifts, coffee, shuka..." class="pl-9 pr-4 py-1.5 text-sm border border-gray-200 rounded-full w-52 lg:w-64 focus:outline-none focus:ring-2 focus:ring-[#d59697] bg-gray-50 focus:bg-white transition">
+          <svg class="w-4 h-4 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+
+        <!-- Cart Button -->
+        <button onclick="toggleCartDrawer(true)" class="relative p-2 text-gray-700 hover:text-[#d59697] transition" aria-label="Shopping Cart">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
           </svg>
-          <span class="cart-badge">0</span>
-        </a>
+          <span id="cartCountBadge" class="absolute top-1 right-1 w-5 h-5 bg-[#d59697] text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-gray-700 hover:text-[#d59697]">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
       </div>
+    </div>
+
+    <!-- Mobile Search input bar -->
+    <div class="sm:hidden px-4 pb-3">
+      <input type="text" id="mobileSearchInput" oninput="handleSearch(event)" placeholder="Search gifts, flowers, shuka..." class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-[#d59697] bg-gray-50">
     </div>
   </nav>
 
-  <!-- Mobile menu -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#budget" class="font-display text-2xl font-bold mb-6">FremboGifts</a>
-    <a href="#budget" class="nav-link mb-3">Budget</a>
-    <a href="#premium" class="nav-link mb-3">Premium</a>
-    <a href="#about" class="nav-link mb-3">About</a>
-    <div class="mt-8">
-      <a href="#" class="relative">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1l4 4l14 14"></path>
-        </svg>
-        <span class="cart-badge">0</span>
-      </a>
-    </div>
-    <div class="mt-8 pt-8 border-t border-white/10">
-      <div class="flex gap-4">
-        <a href="#" class="social-links">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-            <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm6.57-1c0-3.22-2.38-5.88-5.5-5.95 3.35.18 5.5 3.09 5.5 6.75 0 2.19-1.07 4.72-2.79 6.08-.55.29-1.05.5-1.57.68.59.18 1.43.28 2.33.28.76 0 1.46-.09 2.09-.25.84-.22 1.53-.53 2.08-1.05-.02.03-.04.06-.07.09-1.17-.6-2.19-1.71-2.2-2.86.09-1.65.13-3.32.13-5.05 0-4.39-3.58-7.96-7.96-7.96-4.39 0-7.96 3.57-7.96 7.96 0 2.8.77 5.42 2.14 7.39.55.38 1.15.57 1.82.73-.11.05-.23.08-.35.08-.69 0-1.26-.23-1.72-.6l-.11-.11c-3.18 1.61-4.71 3.89-5.39 4.39-.37.28-.78.42-1.22.42-.36 0-.71-.14-1.02-.42.58 1.58 2.1 3.01 3.89 4.39-.68.68-1.47 1.15-2.42 1.36-.95.21-1.96.28-3.05.28-.36 0-.71-.08-1.02-.24 1.76 1.86 3.56 4.17 5.51 6.75-.09.07-.18.1-.27.1l-2 2a4.97 4.97 0 0 1-6.83-3.37.05.05 0 0 0-.01-.02A5.5 5.5 0 0 0 2 12s4.48 10 10 10a4.78 4.78 0 0 1 .92 2.1.05.05 0 0 0 .02.01 5.21 5.21 0 0 1 .73.37.05.05 0 0 0 .01 0 5.5 5.5 0 0 0 2.14-1.65.05.05 0 0 0 .01-.02 4.79 4.79 0 0 1 .6-.75.05.05 0 0 0-.01-.03A11 11 0 0 1 12 2z"></path>
-          </svg>
-        </a>
-        <a href="#" class="social-links">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-            <rect x="2" y="2" width="20" height="20" fill="none" stroke="white" stroke-width="1"></rect>
-            <path d="M16 16.92a4 4 0 1 1-1.46-5.42A2.33 2.33 0 0 1 18.16 11a2.33 2.33 0 0 1 1.43 3.06.49.49 0 0 1-.8 1.31A2.31 2.31 0 0 1 16 16.92z"></path>
-            <polygon points="9 3 9 15 15 15 15 3"></polygon>
-          </svg>
-        </a>
-        <a href="#" class="social-links">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-            <path d="M12 6.252a5.767 5.767 0 0 1-2.195.553.092.092 0 0 0-.045.033 5.918 5.918 0 0 1-3.837.816.065.065 0 0 0-.035.028 5.968 5.968 0 0 1-3.819-.967.06.06 0 0 0-.03-.027 5.978 5.978 0 0 1-3.848.12.055.055 0 0 0-.028.03.08.08 0 0 0 .029.032 5.988 5.988 0 0 1-1.815 3.971.067.067 0 0 0 .033.034 5.989 5.989 0 0 1 .878 2.865.061.061 0 0 0 .032.032 6.01 6.01 0 0 1 .806.685 5.989 5.989 0 0 0 4.558 1.122.066.066 0 0 0 .031.027 5.99 5.99 0 0 0 4.595-.63.059.059 0 0 0-.03-.028 5.991 5.991 0 0 0-4.595-.628.059.059 0 0 0-.03-.03A5.99 5.99 0 0 1 12 6.252z"></path>
-          </svg>
-        </a>
+  <!-- Mobile Slide Menu -->
+  <div id="mobileMenu" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm hidden">
+    <div class="fixed right-0 top-0 bottom-0 w-72 bg-white p-6 shadow-xl flex flex-col justify-between">
+      <div>
+        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+          <span class="font-display text-xl font-bold text-[#d59697]">FremboGifts</span>
+          <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+        <div class="flex flex-col gap-4 mt-6">
+          <button onclick="setTierFilter('all'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50">All Gifts</button>
+          <button onclick="setTierFilter('budget'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50 text-amber-700">Budget Tier (30K TZS)</button>
+          <button onclick="setTierFilter('premium'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50 text-purple-700">Premium Tier (180K TZS)</button>
+          <a href="#about" onclick="toggleMobileMenu()" class="font-medium py-2 border-b border-gray-50">About Tanzania</a>
+          <a href="/admin" class="font-medium py-2 text-[#d59697] flex items-center justify-between">
+            <span>Admin Management</span>
+            <span class="text-xs">&rarr;</span>
+          </a>
+        </div>
+      </div>
+      <div class="text-xs text-gray-500 pt-4 border-t border-gray-100">
+        &copy; 2026 FremboGifts Ltd.
       </div>
     </div>
   </div>
 
   <!-- Hero Section -->
-  <section class="hero">
-    <span class="hero-badge">Same-day delivery in Dar es Salaam & Arusha</span>
-    <h1 class="hero-title font-display">Taste of Tanzania</h1>
-    <p class="hero-description">Authentic local brands, Kakakuwe Coffee, Konyagi Gin & Maasai Shuka<br>Budget for average Tanzanian (30K TZS) | Premium for tourists/special occasions (180K TZS)</p>
+  <section class="bg-gradient-to-b from-[#fffbf0] via-[#faf8f5] to-[#faf8f5] py-12 sm:py-16 px-4">
+    <div class="max-w-7xl mx-auto text-center">
+      <span class="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-[#d59697] text-white uppercase tracking-wider mb-4 shadow-sm">
+        Authentic Tanzania Experiences
+      </span>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight max-w-4xl mx-auto leading-tight">
+        Taste of Tanzania in Every Gift
+      </h1>
+      <p class="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4 leading-relaxed">
+        From Arusha’s cooperative <strong>Kakakuwe Coffee</strong> and national <strong>Konyagi Gin</strong> to 100% cotton <strong>Maasai Shuka</strong>. Curated with pride for locals and travelers alike.
+      </p>
+
+      <!-- Quick Dual-Market Tiers Selector -->
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <button onclick="setTierFilter('all')" id="heroFilterAll" class="hero-filter-btn px-5 py-2.5 rounded-full text-sm font-semibold transition bg-[#d59697] text-white shadow-sm">
+          All Collections
+        </button>
+        <button onclick="setTierFilter('budget')" id="heroFilterBudget" class="hero-filter-btn px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#d59697]">
+          Budget Tier (~30K TZS / $12)
+        </button>
+        <button onclick="setTierFilter('premium')" id="heroFilterPremium" class="hero-filter-btn px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#d59697]">
+          Premium Tier (~180K TZS / $72)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter & Controls Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 mb-8">
+    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      
+      <!-- Tier Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+        <span class="text-xs font-semibold uppercase text-gray-400 mr-1 hidden sm:inline">Collection:</span>
+        <button onclick="setTierFilter('all')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-[#d59697] text-white" data-tier="all">
+          All Products (<span id="countAll">0</span>)
+        </button>
+        <button onclick="setTierFilter('budget')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-gray-100 text-gray-700 hover:bg-gray-200" data-tier="budget">
+          Budget (<span id="countBudget">0</span>)
+        </button>
+        <button onclick="setTierFilter('premium')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-gray-100 text-gray-700 hover:bg-gray-200" data-tier="premium">
+          Premium (<span id="countPremium">0</span>)
+        </button>
+      </div>
+
+      <!-- Sort & Active Status Info -->
+      <div class="flex items-center gap-3">
+        <label for="sortSelect" class="text-xs font-semibold text-gray-500 uppercase">Sort by:</label>
+        <select id="sortSelect" onchange="handleSortChange()" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#d59697] bg-white">
+          <option value="featured">Featured / Default</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name-asc">Name: A to Z</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Dynamic Products Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
     
-    <div class="grid grid-cols-2 gap-4 mt-6">
-      <select class="border rounded p-2" style="border-color: #e2e2e2;">
-        <option>Select tier</option>
-        <option>Budget (TSh 30K)</option>
-        <option>Premium (TSh 180K)</option>
-      </select>
-      <select class="border rounded p-2" style="border-color: #e2e2e2;">
-        <option>Select occasion</option>
-        <option>Birthday</option>
-        <option>Anniversary</option>
-        <option>Honeymoon/Safari</option>
-      </select>
-    </div>
-  </section>
-
-  <!-- Categories -->
-  <div class="categories">
-    <a href="#budget" class="category-tag active budget-tier">Budget (TSh 30K)</a>
-    <a href="#premium" class="category-tag premium-tier">Premium (TSh 180K)</a>
-    <a href="#budget-products" class="category-tag">Budget Products</a>
-    <a href="#premium-products" class="category-tag">Premium Products</a>
-  </div>
-
-  <!-- Budget Section -->
-  <section id="budget" class="py-12 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-display text-3xl mb-6">Budget Tier - Average Tanzanian & Budget Tourists</h2>
-      <p class="text-muted/80 mb-8">Authentic Tanzania under $15 - perfect for everyday gifting and compact souvenir hunting</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Product 1 -->
-        <div class="product-card">
-          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/roses-bouquet.jpg" alt="Maji Moto Hamper" class="product-image">
-          <div class="product-info">
-            <h3 class="product-title">"Maji Moto" Hamper</h3>
-            <p class="product-price">30,000 TZS ($12)</p>
-            <p class="product-options text-xs text-muted/80">Konyagi (50ml mini) + Kashata + BiskVit + Tanzania keychain</p>
-          </div>
-        </div>
-        <!-- Product 2 -->
-        <div class="product-card">
-          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/flower-box.jpg" alt="Simba Safari Mini" class="product-image">
-          <div class="product-info">
-            <h3 class="product-title">"Simba Safari" Mini</h3>
-            <p class="product-price">25,000 TZS ($10)</p>
-            <p class="product-options text-xs text-muted/80">Konyagi (50ml mini) or non-alc + Wangwange + Biscuit + Simba card</p>
-          </div>
-        </div>
-        <!-- Product 3 -->
-        <div class="product-card">
-          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/basket.jpg" alt="Gifts for Him Konyagi" class="product-image">
-          <div class="product-info">
-            <h3 class="product-title">"Gifts for Him" Konyagi</h3>
-            <p class="product-price">30,000 TZS ($12)</p>
-            <p class="product-options text-xs text-muted/80">Konyagi (50ml mini) + peanuts + Chipsi Mayai voucher keychain</p>
-          </div>
-        </div>
+    <!-- Section Title & Current Filter Badge -->
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 id="gridTitle" class="font-display text-2xl sm:text-3xl font-bold text-gray-900">All Gifts</h2>
+        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Showing all authentic Tanzania gift arrangements and hampers</p>
+      </div>
+      <div id="filterResultCount" class="text-xs font-medium text-gray-500">
+        Loading...
       </div>
     </div>
-  </section>
 
-  <!-- Premium Section -->
-  <section id="premium" class="py-12 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-display text-3xl mb-6">Premium Tier - Tourists & Special Occasions</h2>
-      <p class="text-muted/80 mb-8">Authentic Tanzania souvenirs & luxury gifting - $60-80 includes full Maasai Shuka</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Product 4 -->
-        <div class="product-card">
-          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/hampers.jpg" alt="Shuka & Coffee Hamper" class="product-image">
-          <div class="product-info">
-            <h3 class="product-title">"Shuka & Coffee" Hamper</h3>
-            <p class="product-price">180,000 TZS ($72)</p>
-            <p class="product-options text-xs text-muted/80">Kakakuwe Coffee (250g) + Konyagi Gin (375ml) + Full Maasai Shuka + Mbeya Tea (50g) + canvas tote</p>
-          </div>
-        </div>
-        <!-- Product 5 -->
-        <div class="product-card">
-          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/roses-bouquet.jpg" alt="Kilimanjaro Sunset" class="product-image">
-          <div class="product-info">
-            <h3 class="product-title">"Kilimanjaro Sunset"</h3>
-            <p class="product-price">180,000 TZS ($72)</p>
-            <p class="product-options text-xs text-muted/80">Kakakuwe Coffee (250g) + Konyagi Gin (375ml) + Full Maasai Shuka + Mbeya Tea (50g) + honey (250g) + tote</p>
-          </div>
-        </div>
-        <!-- Product 6 -->
-        <div class="product-card">
-          <img src="https://www.purpink.co.ke/wp-content/uploads/2024/01/flower-box.jpg" alt="Zanzibar Spice & Stone" class="product-image">
-          <div class="product-info">
-            <h3 class="product-title">"Zanzibar Spice & Stone"</h3>
-            <p class="product-price">200,000 TZS ($80)</p>
-            <p class="product-options text-xs text-muted/80">Leather keychain + Clove Kreteks (small pack) + Zanzibar Arabic coffee (50g) + Pemba pepper (15g) + Stone Town card set</p>
-          </div>
-        </div>
+    <!-- Products Grid Container -->
+    <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Loading Skeletons -->
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 p-4 animate-pulse">
+        <div class="bg-gray-200 h-52 rounded-xl mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div class="h-3 bg-gray-100 rounded w-1/2 mb-4"></div>
+        <div class="h-8 bg-gray-200 rounded-lg"></div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 p-4 animate-pulse">
+        <div class="bg-gray-200 h-52 rounded-xl mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div class="h-3 bg-gray-100 rounded w-1/2 mb-4"></div>
+        <div class="h-8 bg-gray-200 rounded-lg"></div>
+      </div>
+      <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 p-4 animate-pulse">
+        <div class="bg-gray-200 h-52 rounded-xl mb-4"></div>
+        <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+        <div class="h-3 bg-gray-100 rounded w-1/2 mb-4"></div>
+        <div class="h-8 bg-gray-200 rounded-lg"></div>
       </div>
     </div>
-  </section>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16 bg-white rounded-2xl border border-gray-200 p-8 my-6">
+      <div class="w-16 h-16 bg-rose-50 text-[#d59697] rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h3 class="font-display text-xl font-bold text-gray-900">No gifts found</h3>
+      <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Try adjusting your search terms or clearing tier filters.</p>
+      <button onclick="clearAllFilters()" class="mt-4 px-4 py-2 bg-[#d59697] text-white rounded-lg text-sm font-medium hover:bg-[#b87577] transition">
+        Reset Filters
+      </button>
+    </div>
+  </main>
 
   <!-- About Section -->
-  <section id="about" class="py-12">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="font-display text-3xl mb-6">Taste of Tanzania</h2>
-      <p class="text-muted/80 mb-8">We curate authentic local experiences in gift form - from Kakakuwe Coffee in Arusha to Konyagi Gin from Dar es Salaam, and full-size Maasai Shuka for cultural pride.</p>
-      <p class="text-muted/80">Dual-market design: Average Tanzanian gifting (Budget) and tourist souvenir (Premium). No subscriptions. No corporate focus. Delivery fees separate.</p>
-      <ul class="space-y-4 text-muted/80">
-        <li>✓ Full Maasai Shuka in Premium, keychain in Budget</li>
-        <li>✓ Kakakuwe Coffee (Arusha region)</li>
-        <li>✓ Konyagi Gin (Tanzania's own spirit)</li>
-        <li>✓ Mbeya Tea & local honey</li>
-        <li>✓ Zanzibar spices & stone town history</li>
-        <li>✓ Luggage-friendly sizes for travelers</li>
-      </ul>
+  <section id="about" class="bg-white border-t border-gray-200 py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-[#d59697]">Cultural Heritage</span>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-4">Authentic Tanzania in Gift Form</h2>
+          <p class="text-gray-600 leading-relaxed mb-6">
+            We believe gifting should tell a story. FremboGifts sources directly from local Tanzanian cooperatives and artisans: Kakakuwe coffee from the foothills of Mount Meru in Arusha, authentic Konyagi spirit from Dar es Salaam, handwoven Maasai Shuka blankets, and organic spice blends from Zanzibar's historic Stone Town.
+          </p>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <h4 class="font-bold text-gray-900">Budget Tier (30K)</h4>
+              <p class="text-xs text-gray-500 mt-1">Designed for everyday local birthdays, thank-yous, and compact souvenirs.</p>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <h4 class="font-bold text-gray-900">Premium Tier (180K)</h4>
+              <p class="text-xs text-gray-500 mt-1">Includes luxury full Maasai Shuka textiles, artisanal spirits & keepsake boxes.</p>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80" alt="Tanzania Gift Hamper" class="rounded-2xl shadow-xl w-full object-cover max-h-96">
+          <div class="absolute -bottom-4 -right-4 bg-gray-900 text-white p-4 rounded-xl shadow-lg hidden sm:block">
+            <p class="text-xs uppercase tracking-wider text-rose-300 font-bold">Fast Delivery</p>
+            <p class="text-sm font-semibold">Dar es Salaam & Arusha</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-        <div>
-          <h4 class="font-display text-xl mb-4" style="color: white;">FremboGifts</h4>
-          <p class="text-sm" style="color: #a8a7a5;">Authentic Tanzania in gift form - from Shuka to Coffee to Konyagi</p>
-        </div>
-        
-        <div>
-          <h4 class="font-semibold mb-4" style="color: white;">Budget</h4>
-          <a href="#" class="footer-link">"Maji Moto" Hamper - 30,000 TZS</a>
-          <a href="#" class="footer-link">"Simba Safari" Mini - 25,000 TZS</a>
-          <a href="#" class="footer-link">"Gifts for Him" Konyagi - 30,000 TZS</a>
-        </div>
-        
-        <div>
-          <h4 class="font-semibold mb-4" style="color: white;">Premium</h4>
-          <a href="#" class="footer-link">"Shuka & Coffee" Hamper - 180,000 TZS</a>
-          <a href="#" class="footer-link">"Kilimanjaro Sunset" - 180,000 TZS</a>
-          <a href="#" class="footer-link">"Zanzibar Spice & Stone" - 200,000 TZS</a>
-        </div>
-        
-        <div>
-          <h4 class="font-semibold mb-4" style="color: white;">Info</h4>
-          <a href="#" class="footer-link">How it Works</a>
-          <a href="#" class="footer-link">Delivery & Fees</a>
-          <a href="#" class="footer-link">Terms & Conditions</a>
-        </div>
+  <footer class="bg-[#2d2a25] text-[#a8a7a5] py-12 px-4">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+      <div>
+        <h4 class="font-display text-2xl font-bold text-white mb-3">FremboGifts</h4>
+        <p class="text-xs leading-relaxed">
+          Tanzania's premier online gift boutique replicating standard African gift delivery with modern local authenticity.
+        </p>
       </div>
-      
-      <div class="border-t border-white/10 pt-6 text-center">
-        <p class="text-sm" style="color: #a8a7a5;">&copy; 2026 FremboGifts Ltd. All rights reserved.</p>
-        <div class="mt-2">
-          <a href="#" class="text-xs" style="color: #a8a7a5;">Budget Tier</a>
-          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Premium Tier</a>
-          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Local Brands</a>
-          <a href="#" class="text-xs ml-4" style="color: #a8a7a5;">Dual-Market</a>
-        </div>
+      <div>
+        <h5 class="text-sm font-semibold text-white uppercase tracking-wider mb-3">Collections</h5>
+        <ul class="space-y-2 text-xs">
+          <li><a href="javascript:setTierFilter('budget')" class="hover:text-white transition">Budget Hampers (~30,000 TZS)</a></li>
+          <li><a href="javascript:setTierFilter('premium')" class="hover:text-white transition">Premium Keepsakes (~180,000 TZS)</a></li>
+          <li><a href="javascript:setTierFilter('all')" class="hover:text-white transition">Fresh Flower Bouquets</a></li>
+          <li><a href="javascript:setTierFilter('all')" class="hover:text-white transition">Arusha Coffee & Zanzibar Spices</a></li>
+        </ul>
       </div>
+      <div>
+        <h5 class="text-sm font-semibold text-white uppercase tracking-wider mb-3">Customer Support</h5>
+        <ul class="space-y-2 text-xs">
+          <li>Delivery Information (Dar & Arusha)</li>
+          <li>Payment Options (M-Pesa, Tigo Pesa, Card)</li>
+          <li>Terms of Service</li>
+          <li>Corporate Bulk Orders</li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="text-sm font-semibold text-white uppercase tracking-wider mb-3">Store Administration</h5>
+        <p class="text-xs mb-3">Manage products, add offers, launch campaigns and seed database.</p>
+        <a href="/admin" class="inline-block px-4 py-2 bg-[#d59697] text-white rounded-lg text-xs font-bold hover:bg-[#b87577] transition shadow-sm">
+          Open Admin Dashboard &rarr;
+        </a>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto pt-8 border-t border-white/10 text-center text-xs">
+      &copy; 2026 FremboGifts Ltd. All rights reserved.
     </div>
   </footer>
 
+  <!-- SLIDE-OVER SHOPPING CART DRAWER -->
+  <div id="cartDrawer" class="fixed inset-0 z-50 overflow-hidden hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="toggleCartDrawer(false)"></div>
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+      <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+        
+        <!-- Cart Drawer Header -->
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 text-[#d59697]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <h3 class="font-display text-lg font-bold text-gray-900">Your Gift Cart</h3>
+          </div>
+          <button onclick="toggleCartDrawer(false)" class="text-gray-400 hover:text-gray-600 text-2xl font-bold">&times;</button>
+        </div>
+
+        <!-- Cart Items List -->
+        <div class="p-6 overflow-y-auto flex-1 space-y-4" id="cartItemsContainer">
+          <p class="text-center text-gray-400 text-sm py-12">Your cart is empty.</p>
+        </div>
+
+        <!-- Cart Drawer Footer -->
+        <div class="p-6 bg-gray-50 border-t border-gray-100 space-y-4">
+          <div class="space-y-1.5 text-sm">
+            <div class="flex justify-between text-gray-600">
+              <span>Subtotal:</span>
+              <span id="cartSubtotal" class="font-semibold text-gray-900">0 TZS</span>
+            </div>
+            <div id="cartDiscountRow" class="flex justify-between text-rose-600 hidden">
+              <span>Promotional Discount:</span>
+              <span id="cartDiscountAmount">-0 TZS</span>
+            </div>
+            <div class="flex justify-between text-base font-bold text-gray-900 pt-2 border-t border-gray-200">
+              <span>Estimated Total:</span>
+              <div class="text-right">
+                <span id="cartTotalTZS">0 TZS</span>
+                <p id="cartTotalUSD" class="text-xs text-gray-500 font-normal">($0 USD)</p>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="openCheckoutModal()" id="checkoutBtn" class="w-full py-3 bg-[#d59697] text-white rounded-xl text-sm font-bold hover:bg-[#b87577] transition shadow-md disabled:opacity-50">
+            Proceed to Checkout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL (Simulated Tanzanian Checkout) -->
+  <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl overflow-hidden border border-gray-200">
+      <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+        <h3 class="font-display text-lg font-bold text-gray-900">Delivery & Payment Details</h3>
+        <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+      </div>
+      <form onsubmit="completeOrder(event)" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Recipient Name *</label>
+          <input type="text" id="orderRecipient" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="e.g. Neema Mwangi">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Tanzania Phone (M-Pesa / Tigo) *</label>
+          <input type="tel" id="orderPhone" required class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="+255 712 345 678">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">City *</label>
+            <select id="orderCity" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option value="Dar es Salaam">Dar es Salaam</option>
+              <option value="Arusha">Arusha</option>
+              <option value="Zanzibar">Zanzibar</option>
+              <option value="Mwanza">Mwanza</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Delivery Time</label>
+            <select class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none">
+              <option>Same-Day (Morning)</option>
+              <option>Same-Day (Afternoon)</option>
+              <option>Next Day</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Gift Card Message</label>
+          <textarea id="orderNote" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#d59697] focus:outline-none" placeholder="Write a personalized note for the gift card..."></textarea>
+        </div>
+        <div class="pt-2">
+          <p class="text-xs text-gray-500 mb-3">Payment via M-Pesa Prompt or Cash on Delivery</p>
+          <button type="submit" class="w-full py-3 bg-[#d59697] text-white rounded-xl text-sm font-bold hover:bg-[#b87577] transition shadow-md">
+            Confirm & Place Order (<span id="checkoutTotalBtn">0 TZS</span>)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div id="orderSuccessModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl p-6 text-center border border-gray-200">
+      <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h3 class="font-display text-2xl font-bold text-gray-900">Order Confirmed!</h3>
+      <p class="text-sm text-gray-600 mt-2">
+        Asante sana! We have received your order. Our team in Dar es Salaam is preparing your gift hamper with care.
+      </p>
+      <div class="bg-gray-50 p-4 rounded-xl text-left text-xs space-y-1.5 my-5 border border-gray-100">
+        <p><span class="text-gray-500">Order ID:</span> <span id="confirmedOrderId" class="font-mono font-bold text-gray-900">#FG-8291</span></p>
+        <p><span class="text-gray-500">Recipient:</span> <span id="confirmedRecipient" class="font-medium text-gray-900">-</span></p>
+        <p><span class="text-gray-500">Delivery Area:</span> <span id="confirmedCity" class="font-medium text-gray-900">-</span></p>
+      </div>
+      <button onclick="closeSuccessModal()" class="w-full py-2.5 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-800 transition">
+        Continue Shopping
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
   <script>
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    
-    if (menuBtn && mobileMenu) {
-      menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('open');
-      });
-    }
-    
-    // Category tabs
-    const categoryTags = document.querySelectorAll('.category-tag');
-    categoryTags.forEach(tag => {
-      tag.addEventListener('click', () => {
-        categoryTags.forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
-      });
+    // State
+    let rawProducts = [];
+    let activeOffers = [];
+    let activeCampaigns = [];
+    let currentTier = 'all';
+    let searchQuery = '';
+    let currentSort = 'featured';
+    let cart = [];
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      loadCartFromStorage();
+      await Promise.all([
+        fetchCampaigns(),
+        fetchOffers(),
+        fetchProducts()
+      ]);
     });
-    
-    // Budget/Premium filter
-    const budgetTier = document.querySelectorAll('.budget-tier');
-    const premiumTier = document.querySelectorAll('.premium-tier');
-    const budgetProducts = document.querySelectorAll('.budget-products');
-    const premiumProducts = document.querySelectorAll('.premium-products');
-    
-    budgetTier.forEach(tag => {
-      tag.addEventListener('click', () => {
-        budgetTier.forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
-        // Show budget products, hide premium
-        budgetProducts.forEach(p => p.style.display = 'block');
-        premiumProducts.forEach(p => p.style.display = 'none');
-      });
-    });
-    
-    premiumTier.forEach(tag => {
-      tag.addEventListener('click', () => {
-        premiumTier.forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
-        // Show premium products, hide budget
-        premiumProducts.forEach(p => p.style.display = 'block');
-        budgetProducts.forEach(p => p.style.display = 'none');
-      });
-    });
-    
-    // Initial: show budget products
-    budgetProducts.forEach(p => p.style.display = 'block');
-    premiumProducts.forEach(p => p.style.display = 'none');
-    
-    // Cart badge update
-    const cartLinks = document.querySelectorAll('.navbar a[href*="cart"]');
-    let cartCount = 0;
-    cartLinks.forEach(link => {
-      const badge = link.querySelector('.cart-badge');
-      if (badge) {
-        badge.textContent = cartCount;
+
+    // Fetch Campaigns
+    async function fetchCampaigns() {
+      try {
+        const res = await fetch('/api/campaigns');
+        const data = await res.json();
+        if (data.success && data.campaigns && data.campaigns.length > 0) {
+          activeCampaigns = data.campaigns;
+          const topCampaign = activeCampaigns[0];
+          document.getElementById('campaignBannerText').textContent = `✨ ${topCampaign.title}: ${topCampaign.description || 'Limited edition seasonal arrangements'}`;
+        }
+      } catch (e) {
+        console.warn('Campaign fetch notice:', e);
       }
-    });
+    }
+
+    // Fetch Offers
+    async function fetchOffers() {
+      try {
+        const res = await fetch('/api/offers');
+        const data = await res.json();
+        if (data.success && data.offers && data.offers.length > 0) {
+          activeOffers = data.offers;
+          const ribbon = document.getElementById('offersRibbon');
+          const list = document.getElementById('offersList');
+          list.innerHTML = activeOffers.map(o => `
+            <span class="inline-flex items-center gap-1.5">
+              <span class="font-bold bg-[#d59697] text-white text-[10px] px-1.5 py-0.5 rounded">${o.discount_percent}% OFF</span>
+              <span>${escapeHtml(o.title)} - ${escapeHtml(o.description || '')}</span>
+            </span>
+          `).join('<span class="text-[#d59697]">•</span>');
+          ribbon.classList.remove('hidden');
+        }
+      } catch (e) {
+        console.warn('Offers fetch notice:', e);
+      }
+    }
+
+    // Fetch Products
+    async function fetchProducts() {
+      try {
+        const res = await fetch('/api/products');
+        const data = await res.json();
+        if (data.success) {
+          rawProducts = data.products || [];
+          updateCounts();
+          renderGrid();
+        }
+      } catch (e) {
+        console.error('Error fetching products:', e);
+        document.getElementById('productsGrid').innerHTML = `
+          <div class="col-span-full text-center py-12 text-rose-500 text-sm">
+            Failed to load products. Please refresh or run database setup in <a href="/admin" class="underline font-bold">Admin</a>.
+          </div>
+        `;
+      }
+    }
+
+    // Update Tier Counts
+    function updateCounts() {
+      const allCount = rawProducts.length;
+      const budgetCount = rawProducts.filter(p => p.tier === 'budget').length;
+      const premiumCount = rawProducts.filter(p => p.tier === 'premium').length;
+
+      document.getElementById('countAll').textContent = allCount;
+      document.getElementById('countBudget').textContent = budgetCount;
+      document.getElementById('countPremium').textContent = premiumCount;
+    }
+
+    // Filter by Tier
+    function setTierFilter(tier) {
+      currentTier = tier;
+
+      // Update Nav Pills
+      document.querySelectorAll('.tier-pill').forEach(btn => {
+        if (btn.getAttribute('data-tier') === tier) {
+          btn.classList.add('bg-[#d59697]', 'text-white');
+          btn.classList.remove('bg-gray-100', 'text-gray-700');
+        } else {
+          btn.classList.remove('bg-[#d59697]', 'text-white');
+          btn.classList.add('bg-gray-100', 'text-gray-700');
+        }
+      });
+
+      // Update Header Text
+      const gridTitle = document.getElementById('gridTitle');
+      const gridSubtitle = document.getElementById('gridSubtitle');
+      if (tier === 'budget') {
+        gridTitle.textContent = 'Budget Collection (~30,000 TZS)';
+        gridSubtitle.textContent = 'Affordable everyday gifting and pocket-sized Tanzanian souvenirs under $15';
+      } else if (tier === 'premium') {
+        gridTitle.textContent = 'Premium Collection (~180,000 TZS)';
+        gridSubtitle.textContent = 'Curated luxury hampers featuring full Maasai Shuka textiles & premium spirits';
+      } else {
+        gridTitle.textContent = 'All Gifts';
+        gridSubtitle.textContent = 'Showing all authentic Tanzania gift arrangements and hampers';
+      }
+
+      renderGrid();
+    }
+
+    // Handle Search
+    function handleSearch(e) {
+      searchQuery = e.target.value.toLowerCase().trim();
+      // Keep both search inputs in sync
+      if (e.target.id === 'searchInput') {
+        const m = document.getElementById('mobileSearchInput');
+        if (m) m.value = e.target.value;
+      } else {
+        const s = document.getElementById('searchInput');
+        if (s) s.value = e.target.value;
+      }
+      renderGrid();
+    }
+
+    // Handle Sort
+    function handleSortChange() {
+      currentSort = document.getElementById('sortSelect').value;
+      renderGrid();
+    }
+
+    // Clear All Filters
+    function clearAllFilters() {
+      currentTier = 'all';
+      searchQuery = '';
+      currentSort = 'featured';
+      document.getElementById('searchInput').value = '';
+      const m = document.getElementById('mobileSearchInput');
+      if (m) m.value = '';
+      document.getElementById('sortSelect').value = 'featured';
+      setTierFilter('all');
+    }
+
+    // Render Product Cards Grid
+    function renderGrid() {
+      const grid = document.getElementById('productsGrid');
+      const empty = document.getElementById('emptyState');
+      const countLabel = document.getElementById('filterResultCount');
+
+      // Filter products
+      let filtered = rawProducts.filter(p => {
+        const matchesTier = currentTier === 'all' || p.tier === currentTier;
+        const matchesSearch = !searchQuery || 
+          p.name.toLowerCase().includes(searchQuery) || 
+          (p.description && p.description.toLowerCase().includes(searchQuery));
+        return matchesTier && matchesSearch;
+      });
+
+      // Sort products
+      if (currentSort === 'price-asc') {
+        filtered.sort((a, b) => a.price_tzs - b.price_tzs);
+      } else if (currentSort === 'price-desc') {
+        filtered.sort((a, b) => b.price_tzs - a.price_tzs);
+      } else if (currentSort === 'name-asc') {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      countLabel.textContent = `${filtered.length} ${filtered.length === 1 ? 'gift' : 'gifts'} available`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      grid.innerHTML = filtered.map(p => `
+        <div class="product-card bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="relative bg-[#f5f0eb] h-52 sm:h-56 overflow-hidden">
+              <img src="${p.image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://via.placeholder.com/400x250?text=Gift+Hamper'">
+              <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.tier === 'budget' ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'bg-purple-100 text-purple-900 border border-purple-200'}">
+                ${p.tier === 'budget' ? 'Budget Tier' : 'Premium Tier'}
+              </span>
+            </div>
+            <div class="p-5">
+              <h3 class="font-display font-bold text-gray-900 text-lg leading-snug line-clamp-1">${escapeHtml(p.name)}</h3>
+              <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed">${escapeHtml(p.description || 'Handcrafted authentic gift collection.')}</p>
+            </div>
+          </div>
+          <div class="p-5 pt-0">
+            <div class="flex items-baseline justify-between mb-4">
+              <div>
+                <span class="text-lg font-extrabold text-[#d59697]">${Number(p.price_tzs).toLocaleString()} TZS</span>
+                <span class="text-xs text-gray-400 font-medium ml-1">($${p.price_usd || Math.round(p.price_tzs / 2500)})</span>
+              </div>
+            </div>
+            <button onclick="addToCart(${p.id})" class="w-full py-2.5 bg-[#d59697] text-white rounded-xl text-xs font-bold hover:bg-[#b87577] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span>Add to Cart</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // CART SYSTEM
+    function loadCartFromStorage() {
+      try {
+        const stored = localStorage.getItem('frembogifts_cart');
+        if (stored) cart = JSON.parse(stored);
+      } catch (e) {
+        cart = [];
+      }
+      updateCartUI();
+    }
+
+    function saveCartToStorage() {
+      try {
+        localStorage.setItem('frembogifts_cart', JSON.stringify(cart));
+      } catch (e) {}
+      updateCartUI();
+    }
+
+    function addToCart(productId) {
+      const prod = rawProducts.find(p => p.id === productId);
+      if (!prod) return;
+
+      const existing = cart.find(item => item.id === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          id: prod.id,
+          name: prod.name,
+          price_tzs: prod.price_tzs,
+          price_usd: prod.price_usd || Math.round(prod.price_tzs / 2500),
+          tier: prod.tier,
+          image_url: prod.image_url,
+          quantity: 1
+        });
+      }
+
+      saveCartToStorage();
+      toggleCartDrawer(true);
+    }
+
+    function updateCartItemQty(id, delta) {
+      const item = cart.find(x => x.id === id);
+      if (!item) return;
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter(x => x.id !== id);
+      }
+      saveCartToStorage();
+    }
+
+    function removeCartItem(id) {
+      cart = cart.filter(x => x.id !== id);
+      saveCartToStorage();
+    }
+
+    function updateCartUI() {
+      // Badge counter
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cartCountBadge').textContent = totalItems;
+
+      // Container items
+      const container = document.getElementById('cartItemsContainer');
+      const checkoutBtn = document.getElementById('checkoutBtn');
+
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16">
+            <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            </div>
+            <p class="text-gray-500 font-medium text-sm">Your cart is currently empty</p>
+            <p class="text-xs text-gray-400 mt-1">Select a bouquet, coffee, or gift hamper to add it.</p>
+          </div>
+        `;
+        if (checkoutBtn) checkoutBtn.disabled = true;
+        document.getElementById('cartSubtotal').textContent = '0 TZS';
+        document.getElementById('cartTotalTZS').textContent = '0 TZS';
+        document.getElementById('cartTotalUSD').textContent = '($0 USD)';
+        document.getElementById('cartDiscountRow').classList.add('hidden');
+        return;
+      }
+
+      if (checkoutBtn) checkoutBtn.disabled = false;
+
+      // Calculate totals
+      let subtotal = 0;
+      let subtotalUsd = 0;
+
+      container.innerHTML = cart.map(item => {
+        const itemTotal = item.price_tzs * item.quantity;
+        subtotal += itemTotal;
+        subtotalUsd += (item.price_usd || 0) * item.quantity;
+
+        return `
+          <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+            <img src="${item.image_url || 'https://via.placeholder.com/80'}" class="w-14 h-14 object-cover rounded-lg bg-gray-200 flex-shrink-0" alt="">
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-xs text-gray-900 truncate">${escapeHtml(item.name)}</h4>
+              <p class="text-xs font-semibold text-[#d59697] mt-0.5">${Number(item.price_tzs).toLocaleString()} TZS</p>
+              <div class="flex items-center gap-2 mt-2">
+                <button onclick="updateCartItemQty(${item.id}, -1)" class="w-5 h-5 bg-white border border-gray-200 rounded flex items-center justify-center text-xs font-bold hover:bg-gray-100">-</button>
+                <span class="text-xs font-bold text-gray-800">${item.quantity}</span>
+                <button onclick="updateCartItemQty(${item.id}, 1)" class="w-5 h-5 bg-white border border-gray-200 rounded flex items-center justify-center text-xs font-bold hover:bg-gray-100">+</button>
+              </div>
+            </div>
+            <button onclick="removeCartItem(${item.id})" class="text-gray-400 hover:text-rose-500 p-1" title="Remove item">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      // Check active offer discount
+      let discountAmount = 0;
+      if (activeOffers.length > 0) {
+        const topOffer = activeOffers[0];
+        discountAmount = Math.round((subtotal * topOffer.discount_percent) / 100);
+        document.getElementById('cartDiscountAmount').textContent = `-${discountAmount.toLocaleString()} TZS (${topOffer.discount_percent}%)`;
+        document.getElementById('cartDiscountRow').classList.remove('hidden');
+      } else {
+        document.getElementById('cartDiscountRow').classList.add('hidden');
+      }
+
+      const finalTotalTZS = Math.max(0, subtotal - discountAmount);
+      const finalTotalUSD = Math.round(finalTotalTZS / 2500);
+
+      document.getElementById('cartSubtotal').textContent = `${subtotal.toLocaleString()} TZS`;
+      document.getElementById('cartTotalTZS').textContent = `${finalTotalTZS.toLocaleString()} TZS`;
+      document.getElementById('cartTotalUSD').textContent = `($${finalTotalUSD} USD)`;
+      document.getElementById('checkoutTotalBtn').textContent = `${finalTotalTZS.toLocaleString()} TZS`;
+    }
+
+    function toggleCartDrawer(open) {
+      const drawer = document.getElementById('cartDrawer');
+      if (open) {
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    // CHECKOUT FLOW
+    function openCheckoutModal() {
+      if (cart.length === 0) return;
+      toggleCartDrawer(false);
+      document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function completeOrder(e) {
+      e.preventDefault();
+      const name = document.getElementById('orderRecipient').value;
+      const city = document.getElementById('orderCity').value;
+      const orderId = 'FG-' + Math.floor(1000 + Math.random() * 9000);
+
+      document.getElementById('confirmedOrderId').textContent = `#${orderId}`;
+      document.getElementById('confirmedRecipient').textContent = name;
+      document.getElementById('confirmedCity').textContent = city;
+
+      // Clear cart
+      cart = [];
+      saveCartToStorage();
+
+      closeCheckoutModal();
+      document.getElementById('orderSuccessModal').classList.remove('hidden');
+    }
+
+    function closeSuccessModal() {
+      document.getElementById('orderSuccessModal').classList.add('hidden');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
   </script>
 </body>
 </html>

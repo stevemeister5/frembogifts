@@ -4,11 +4,15 @@
       "src": "server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["index.html"]
+        "includeFiles": ["index.html", "admin.html"]
       }
     },
     {
       "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "admin.html",
       "use": "@vercel/static"
     }
   ],
@@ -16,6 +20,14 @@
     {
       "src": "/api(.*)",
       "dest": "server.js"
+    },
+    {
+      "src": "/admin",
+      "dest": "admin.html"
+    },
+    {
+      "src": "/admin.html",
+      "dest": "admin.html"
     },
     {
       "src": "/(.*)",
