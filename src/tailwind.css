@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tanzanite: #0e1726;
+  --gold: #c5a059;
+  --gold-dark: #a88237;
+  --gold-light: #fbf6ec;
+  --gold-border: #ebd8b8;
+  --bg: #faf8f5;
+  --border: #e8e5df;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg);
+  color: var(--tanzanite);
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+.admin-page {
+  background-color: #f7f6f2;
+}
+
+.font-display {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.gold-shimmer {
+  background: linear-gradient(135deg, #c5a059 0%, #e8d3a2 50%, #c5a059 100%);
+}
+
+.tanzanite-bg {
+  background: linear-gradient(135deg, #0e1726 0%, #16213e 100%);
+}
+
+#heroSection {
+  padding-block: 2.75rem;
+}
+
+.collection-filter,
+.occasion-filter {
+  border: 1px solid #d6d3ce;
+  border-radius: 9999px;
+  padding: 0.6rem 1rem;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.collection-filter:hover,
+.occasion-filter:hover {
+  border-color: var(--gold);
+}
+
+.collection-filter[aria-pressed='true'],
+.occasion-filter[aria-pressed='true'] {
+  border-color: var(--tanzanite);
+  background-color: var(--tanzanite);
+  color: white;
+}
+
+.occasion-filter {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.75rem;
+}
+
+#storefrontMain {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+#productsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgb(14 23 38 / 16%);
+}
+
+.product-card__details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.product-card__actions {
+  margin-top: auto;
+}
+
+.product-image {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  object-fit: cover;
+  background: #f5f0eb;
+}
+
+.occasion-filters {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+}
+
+button,
+a,
+select,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+@media (min-width: 640px) {
+  #heroSection {
+    padding-block: 3.5rem;
+  }
+
+  #storefrontMain {
+    padding-inline: 1.5rem;
+  }
+
+  #productsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  #storefrontMain {
+    padding-inline: 2rem;
+  }
+
+  #productsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  #productsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 639px) {
+  #occasionFilters {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+  }
+}

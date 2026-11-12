@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const app = express();
 const port = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'frembogifts-tanzania-auth-secret-key-2026';
+const productOccasions = ['birthday', 'celebration', 'gratitude', 'love', 'souvenir'];
 
 // Middleware
 app.use(cors());
@@ -14,6 +15,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use('/assets', express.static(path.join(__dirname, 'public')));
+
+function normalizeProductOccasions(value) {
+  if (typeof value === 'string') {
+    try {
+      value = JSON.parse(value);
+    } catch {
+      return null;
+    }
+  }
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.some(occasion => !productOccasions.includes(occasion))) {
+    return null;
+  }
+  return [...new Set(value)];
+}
 
 // ===== Crypto & Token Helpers =====
 
@@ -137,7 +154,7 @@ async function initDatabaseTables() {
       neighborhood TEXT,
       landmark TEXT,
       is_surprise BOOLEAN DEFAULT false,
-      status TEXT DEFAULT 'confirmed',
+      status TEXT DEFAULT 'pending',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `;
@@ -164,10 +181,38 @@ async function initDatabaseTables() {
       price_tzs INTEGER NOT NULL,
       price_usd INTEGER NOT NULL,
       description TEXT,
-      image_url TEXT DEFAULT 'https://via.placeholder.com/400x250?text=Product+Image',
+      image_url TEXT DEFAULT '/assets/images/giftopia-placeholder.svg',
+      occasions TEXT NOT NULL DEFAULT '[]',
       is_active INTEGER DEFAULT 1,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+  `;
+
+  await sql`ALTER TABLE products ADD COLUMN IF NOT EXISTS occasions TEXT NOT NULL DEFAULT '[]'`;
+  await sql`
+    UPDATE products SET occasions = CASE
+      WHEN LOWER(name) LIKE '%birthday%' THEN '["birthday","celebration"]'
+      WHEN LOWER(name) LIKE '%valentine%' OR LOWER(name) LIKE '%anniversary%' THEN '["love"]'
+      WHEN LOWER(name) LIKE '%thinking of you%' OR LOWER(name) LIKE '%coffee%' THEN '["gratitude"]'
+      WHEN LOWER(name) LIKE '%kilimanjaro%' OR LOWER(name) LIKE '%zanzibar%' THEN '["souvenir"]'
+      WHEN LOWER(name) LIKE '%whisky%' THEN '["birthday","celebration"]'
+      ELSE occasions
+    END
+    WHERE occasions IS NULL OR occasions = '[]'
+  `;
+  await sql`
+    UPDATE products SET image_url = CASE
+      WHEN LOWER(name) LIKE '%thinking of you%' THEN '/assets/images/thinking-of-you.jpg'
+      WHEN LOWER(name) LIKE '%birthday%' THEN '/assets/images/birthday-hamper.jpg'
+      WHEN LOWER(name) LIKE '%whisky%' THEN '/assets/images/giftopia-placeholder.svg'
+      WHEN LOWER(name) LIKE '%valentine%' THEN '/assets/images/valentines.jpg'
+      WHEN LOWER(name) LIKE '%anniversary%' THEN '/assets/images/anniversary.jpg'
+      WHEN LOWER(name) LIKE '%kilimanjaro%' THEN '/assets/images/giftopia-placeholder.svg'
+      WHEN LOWER(name) LIKE '%coffee%' THEN '/assets/images/giftopia-placeholder.svg'
+      WHEN LOWER(name) LIKE '%zanzibar%' THEN '/assets/images/zanzibar-spice.jpg'
+      ELSE image_url
+    END
+    WHERE image_url IS NULL OR image_url LIKE 'https://images.unsplash.com/%'
   `;
 
   await sql`
@@ -199,14 +244,14 @@ async function initDatabaseTables() {
   // Seed default products if empty
   const productCountResult = await sql`SELECT COUNT(*) as count FROM products`;
   if (parseInt(productCountResult.rows[0].count, 10) === 0) {
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', '/assets/images/thinking-of-you.jpg', '["gratitude"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', '/assets/images/birthday-hamper.jpg', '["birthday","celebration"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', '/assets/images/giftopia-placeholder.svg', '["birthday","celebration"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', '/assets/images/valentines.jpg', '["love"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', '/assets/images/anniversary.jpg', '["love"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', '/assets/images/giftopia-placeholder.svg', '["souvenir"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', '/assets/images/giftopia-placeholder.svg', '["gratitude"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', '/assets/images/zanzibar-spice.jpg', '["souvenir"]')`;
   }
 
   // Seed default offers if empty
@@ -255,12 +300,20 @@ app.get('/', async (req, res) => {
       sql`SELECT * FROM offers WHERE is_active = 1 ORDER BY id ASC`,
       sql`SELECT * FROM campaigns WHERE is_active = 1 ORDER BY id ASC`
     ]);
+    const whatsappNumber = process.env.WHATSAPP_NUMBER || '';
+    if (whatsappNumber && !/^\d{8,15}$/.test(whatsappNumber)) {
+      throw new Error('WHATSAPP_NUMBER must use 8 to 15 digits, including the country code.');
+    }
 
     res.set('Cache-Control', 'no-store');
     res.render('index', {
-      products: productsResult.rows,
+      products: productsResult.rows.map(product => ({
+        ...product,
+        occasions: normalizeProductOccasions(product.occasions) || []
+      })),
       offers: offersResult.rows,
-      campaigns: campaignsResult.rows
+      campaigns: campaignsResult.rows,
+      whatsappNumber
     });
   } catch (error) {
     console.error('Error rendering storefront:', error);
@@ -466,7 +519,7 @@ app.post('/api/orders', async (req, res) => {
         items, total_tzs, total_usd, discount_tzs, payment_method, status
       ) VALUES (
         ${orderNumber}, ${userId}, ${recipient_name}, ${phone}, ${city || 'Dar es Salaam'}, ${neighborhood || ''}, ${landmark || ''}, ${surpriseFlag}, ${gift_message || ''},
-        ${itemsStr}, ${parsedTotalTzs}, ${parsedTotalUsd}, ${parsedDiscount}, ${payment_method || 'mpesa'}, 'confirmed'
+        ${itemsStr}, ${parsedTotalTzs}, ${parsedTotalUsd}, ${parsedDiscount}, ${payment_method || 'mpesa'}, 'pending'
       ) RETURNING *
     `;
 
@@ -570,13 +623,17 @@ app.get('/api/products/:id', async (req, res) => {
 app.post('/api/products', requireAdmin, async (req, res) => {
   try {
     const { name, tier, price_tzs, price_usd, description, image_url } = req.body;
+    const occasions = normalizeProductOccasions(req.body.occasions);
     if (!name || !tier || price_tzs === undefined) {
       return res.status(400).json({ success: false, message: 'Missing required fields: name, tier, price_tzs' });
     }
+    if (!occasions) {
+      return res.status(400).json({ success: false, message: 'Product occasions must be a list of supported occasion tags' });
+    }
 
     const { rows } = await sql`
-      INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, is_active, created_at)
-      VALUES (${name}, ${tier}, ${price_tzs}, ${price_usd || null}, ${description || ''}, ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}, 1, CURRENT_TIMESTAMP)
+      INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions, is_active, created_at)
+      VALUES (${name}, ${tier}, ${price_tzs}, ${price_usd || null}, ${description || ''}, ${image_url || '/assets/images/giftopia-placeholder.svg'}, ${JSON.stringify(occasions)}, 1, CURRENT_TIMESTAMP)
       RETURNING *
     `;
     res.json({ success: true, product: rows[0] });
@@ -590,6 +647,10 @@ app.post('/api/products', requireAdmin, async (req, res) => {
 app.put('/api/products/:id', requireAdmin, async (req, res) => {
   try {
     const { name, tier, price_tzs, price_usd, description, image_url, is_active } = req.body;
+    const occasions = normalizeProductOccasions(req.body.occasions);
+    if (!occasions) {
+      return res.status(400).json({ success: false, message: 'Product occasions must be a list of supported occasion tags' });
+    }
     const active = is_active === undefined ? 1 : (is_active === true || is_active === 1 || is_active === '1' ? 1 : 0);
     await sql`
       UPDATE products SET
@@ -598,7 +659,8 @@ app.put('/api/products/:id', requireAdmin, async (req, res) => {
         price_tzs = ${price_tzs},
         price_usd = ${price_usd || null},
         description = ${description || ''},
-        image_url = ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'},
+        image_url = ${image_url || '/assets/images/giftopia-placeholder.svg'},
+        occasions = ${JSON.stringify(occasions)},
         is_active = ${active}
       WHERE id = ${req.params.id}
     `;

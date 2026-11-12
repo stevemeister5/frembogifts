@@ -2,13 +2,20 @@
 
 ## Complete Project Summary
 
-Giftopia is a dual-market gift and delivery service targeting both **average Tanzanian citizens** and **tourists** visiting Tanzania. The project includes an Express API, an EJS storefront backed by Vercel Postgres, an admin interface, market research, regulatory compliance documentation, and 8 curated gift products.
+Giftopia is a consumer gifting service focused on **people in Tanzania** and **diaspora senders arranging gifts for loved ones in Tanzania**. Corporate gifting and tourist-focused bundles are deferred. The project includes an Express API, an EJS storefront backed by Vercel Postgres, an admin interface, market research, regulatory compliance documentation, and a seeded catalog.
 
-**Last Updated**: November 2026
 **Deployment Target**: Vercel (Express serverless function with EJS storefront)
 **Business Model**: One-time purchases only (no subscriptions, no corporate focus)  
 **Alcohol Policy**: Konyagi Gin included from launch (Tanzania's local spirit)
 
+### Current storefront behavior
+- Product discovery supports search, price tiers, and occasion tags; the admin product form manages those tags.
+- Product and cart prices are shown in TZS. USD figures are estimates, not live exchange-rate conversions.
+- Checkout submits an order request and preferred payment method; this page does not process payments.
+- WhatsApp links are shown only when `WHATSAPP_NUMBER` is configured. The site does not promise delivery timing or handover-photo confirmation.
+- Tailwind CSS and catalog image assets are served locally. Run `/api/setup` after deployment to apply the occasion/image migration.
+
+> The remaining market, product, and pricing sections retain earlier research proposals. They are not promises that those products, payment options, or delivery services are currently available.
 ---
 
 ## 1. PROJECT OVERVIEW
@@ -16,13 +23,13 @@ Giftopia is a dual-market gift and delivery service targeting both **average Tan
 ### 1.1 Business Concept
 Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Local brands**: Kakakuwe Coffee (Arusha), Konyagi Gin (national), Maasai Shuka (cultural)
-- **Two price tiers**: Budget (TSh 30,000 / $12) for everyday/gift-giving; Premium (TSh 180,000 / $72) for special occasions/tourists
+- **Two price tiers**: Budget (TSh 30,000 / about $12) for everyday gifting; Premium (TSh 180,000 / about $72) for special occasions
 - **Full Maasai Shuka** in Premium tier (full-size, 100% cotton); keychain version in Budget tier
 - **Alcohol inclusion**: Konyagi Gin from launch day (different sizes per tier)
-- **Dual targeting**: Average Tanzanians + tourists with luggage-friendly items
+- **Current audience**: Tanzanian consumers and diaspora senders; corporate and tourist-specific offers are deferred
 
 ### 1.2 Website Specifications
-- **Framework**: Express serverless API with an EJS-rendered storefront and Tailwind CSS CDN
+- **Framework**: Express serverless API with an EJS-rendered storefront and locally compiled Tailwind CSS
 - **Fonts**: Playfair Display and Plus Jakarta Sans from Google Fonts
 - **Responsive**: Mobile-first design, works phone to desktop
 - **Deployment**: Vercel builds the Node.js function and serves the admin interface
@@ -33,6 +40,8 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 ├── server.js
 ├── views/index.ejs
 ├── views/admin.ejs
+├── src/tailwind.css
+├── public/
 ├── vercel.json
 ├── package.json
 ├── test/storefront.test.js
@@ -54,7 +63,7 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Hero Section**: "Taste of Tanzania" branding, dual-tier selector (Budget/Premium)
 - **Category Filtering**: Budget vs Premium tier filtering with JavaScript
 - **Product Grid**: 8 curated products (3 budget + 4 premium + seasonal)
-- **Dual-Market Positioning**: Clear labeling for Tanzanian citizens vs tourists
+- **Audience Positioning**: Local buyers and diaspora senders are the active consumer focus
 - **Delivery Transparency**: Separate fees displayed at checkout (not bundled)
 
 ### 2.2 Key Pages/Sections

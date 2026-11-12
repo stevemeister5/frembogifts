@@ -16,6 +16,17 @@ test('renders the admin dashboard through Express and redirects the legacy URL',
   assert.equal(response.status, 200);
   assert.match(html, /<title>Giftopia - Admin Dashboard<\/title>/);
   assert.match(html, /id="adminDashboardApp"/);
+  assert.match(html, /href="\/assets\/styles\.css"/);
+  assert.match(html, /name="productOccasions"/);
+  assert.match(html, /type="text" inputmode="url" id="productImage"/);
+
+  const imageResponse = await fetch(`${baseUrl}/assets/images/giftopia-placeholder.svg`);
+  assert.equal(imageResponse.status, 200);
+  assert.match(imageResponse.headers.get('content-type'), /image\/svg\+xml/);
+
+  const stylesheetResponse = await fetch(`${baseUrl}/assets/styles.css`);
+  assert.equal(stylesheetResponse.status, 200);
+  assert.match(await stylesheetResponse.text(), /\.collection-filter/);
 
   const legacyResponse = await fetch(`${baseUrl}/admin.html`, {
     headers: { connection: 'close' },

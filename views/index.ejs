@@ -4,68 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Giftopia - Authentic Tanzania Gifts & Flower Delivery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/assets/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --tanzanite: #0E1726;
-      --gold: #C5A059;
-      --gold-dark: #A88237;
-      --gold-light: #FBF6EC;
-      --gold-border: #EBD8B8;
-      --bg: #FAF8F5;
-      --border: #E8E5DF;
-    }
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--bg);
-      color: #0E1726;
-      margin: 0;
-      overflow-x: hidden;
-    }
-    .font-display { font-family: 'Playfair Display', Georgia, serif; }
-    .product-card {
-      transition: transform 0.28s cubic-bezier(0.16,1,0.3,1), box-shadow 0.28s cubic-bezier(0.16,1,0.3,1);
-    }
-    .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 24px 48px -8px rgba(14,23,38,0.14);
-    }
-    #storefrontMain {
-      box-sizing: border-box;
-      width: 100%;
-      max-width: 80rem;
-      margin-inline: auto;
-      padding-inline: 1rem;
-    }
-    @media (min-width: 640px) {
-      #storefrontMain { padding-inline: 1.5rem; }
-    }
-    @media (min-width: 1024px) {
-      #storefrontMain { padding-inline: 2rem; }
-    }
-    #productsGrid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.5rem;
-    }
-    @media (min-width: 640px) {
-      #productsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (min-width: 1024px) {
-      #productsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (min-width: 1280px) {
-      #productsGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    }
-    .gold-shimmer { background: linear-gradient(135deg, #C5A059 0%, #E8D3A2 50%, #C5A059 100%); }
-    .tanzanite-bg { background: linear-gradient(135deg, #0E1726 0%, #16213E 100%); }
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: #FAF8F5; }
-    ::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 999px; }
-  </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[#FAF8F5]">
 
@@ -76,7 +18,7 @@
   <div id="campaignBanner" class="tanzanite-bg text-white text-xs py-2 px-4 text-center font-semibold">
     <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
       <span class="inline-block w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span>
-      <span id="campaignBannerText"><% if (campaigns.length) { %><%= campaigns[0].title %>: <%= campaigns[0].description || 'Special seasonal gift delivery' %><% } else { %>Same-day delivery in Dar es Salaam & Arusha | Authentic Tanzania Gifts<% } %></span>
+      <span id="campaignBannerText"><% if (campaigns.length) { %><%= campaigns[0].title %>: <%= campaigns[0].description || 'Special seasonal gift delivery' %><% } else { %>Thoughtful Tanzanian gifts for meaningful moments<% } %></span>
     </div>
   </div>
 
@@ -102,15 +44,14 @@
         <span class="w-9 h-9 rounded-xl gold-shimmer flex items-center justify-center text-[#0E1726] font-extrabold text-sm shadow-md group-hover:scale-105 transition-transform">FG</span>
         <div>
           <span class="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0E1726] leading-none">Giftopia</span>
-          <span class="block text-[9px] uppercase tracking-widest text-[#C5A059] font-bold mt-0.5">Dar es Salaam • Gifting Studio</span>
+          <span class="hidden sm:block text-[9px] uppercase tracking-widest text-[#C5A059] font-bold mt-0.5">Dar es Salaam • Gifting Studio</span>
         </div>
       </a>
 
       <!-- Desktop Nav Links -->
       <div class="hidden md:flex items-center gap-7">
-        <button onclick="setTierFilter('all')" class="nav-tier-btn text-sm font-semibold text-gray-900 hover:text-[#C5A059] transition" data-tier="all">All Gifts</button>
-        <button onclick="setTierFilter('budget')" class="nav-tier-btn text-sm font-medium text-gray-600 hover:text-[#C5A059] transition" data-tier="budget">Budget Tier (30K TZS)</button>
-        <button onclick="setTierFilter('premium')" class="nav-tier-btn text-sm font-medium text-gray-600 hover:text-[#C5A059] transition" data-tier="premium">Premium Tier (180K TZS)</button>
+        <a href="#storefrontMain" class="text-sm font-semibold text-gray-900 hover:text-[#C5A059] transition">Shop Gifts</a>
+        <a href="#occasionFilters" class="text-sm font-medium text-gray-600 hover:text-[#C5A059] transition">Shop by Occasion</a>
         <a href="#about" class="text-sm font-medium text-gray-600 hover:text-[#C5A059] transition">About Tanzania</a>
         <a href="/admin" id="navAdminLink" class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition font-medium border border-gray-200 hidden">Admin</a>
       </div>
@@ -127,7 +68,7 @@
         <!-- AUTH BUTTON: SIGN IN (Logged Out) or USER PROFILE (Logged In) -->
         <div id="authNavContainer">
           <!-- Populated dynamically via JS -->
-          <button onclick="openAuthModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
+          <button onclick="openAuthModal('login')" class="whitespace-nowrap text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
             Sign In
           </button>
         </div>
@@ -162,9 +103,8 @@
           <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
         </div>
         <div class="flex flex-col gap-3 mt-6">
-          <button onclick="setTierFilter('all'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50">All Gifts</button>
-          <button onclick="setTierFilter('budget'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50 text-amber-700">Budget Tier (30K TZS)</button>
-          <button onclick="setTierFilter('premium'); toggleMobileMenu()" class="text-left font-medium py-2 border-b border-gray-50 text-purple-700">Premium Tier (180K TZS)</button>
+          <a href="#storefrontMain" onclick="toggleMobileMenu()" class="font-medium py-2 border-b border-gray-50">Shop Gifts</a>
+          <a href="#occasionFilters" onclick="toggleMobileMenu()" class="font-medium py-2 border-b border-gray-50">Shop by Occasion</a>
           <a href="#about" onclick="toggleMobileMenu()" class="font-medium py-2 border-b border-gray-50">About Tanzania</a>
           <button onclick="openAccountDrawer(); toggleMobileMenu()" id="mobileAccountLink" class="text-left font-medium py-2 border-b border-gray-50 hidden text-emerald-700">My Account & Payment Details</button>
           <a href="/admin" class="font-medium py-2 text-[#C5A059] flex items-center justify-between">
@@ -180,39 +120,59 @@
   </div>
 
   <!-- Hero Section -->
-  <section class="relative bg-gradient-to-b from-[#F0EBE0] via-[#FAF8F5] to-[#FAF8F5] py-14 sm:py-20 px-4 border-b border-[#E8E5DF] overflow-hidden">
+  <section id="heroSection" class="relative bg-gradient-to-b from-[#F0EBE0] via-[#FAF8F5] to-[#FAF8F5] px-4 border-b border-[#E8E5DF] overflow-hidden">
     <div class="max-w-7xl mx-auto text-center">
       <span class="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-[#C5A059] text-white uppercase tracking-wider mb-4 shadow-sm">
-        Authentic Tanzania Experiences
+        Curated in Tanzania, sent with care
       </span>
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight max-w-4xl mx-auto leading-tight">
         Taste of Tanzania in Every Gift
       </h1>
       <p class="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4 leading-relaxed">
-        From Arusha’s cooperative <strong>Kakakuwe Coffee</strong> and national <strong>Konyagi Gin</strong> to 100% cotton <strong>Maasai Shuka</strong>. Curated with pride for locals and travelers alike.
+        Thoughtfully curated Tanzanian gifts for celebrations at home and loved ones in Tanzania, wherever you are ordering from.
       </p>
 
-      <!-- Quick Tiers Selector -->
-      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <button onclick="setTierFilter('all')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-[#C5A059] text-white shadow-sm">
+      <div class="mt-6 flex flex-wrap items-center justify-center gap-3" role="group" aria-label="Filter gifts by price tier">
+        <button type="button" onclick="setTierFilter('all')" class="collection-filter" data-tier="all" aria-pressed="true">
           All Collections
         </button>
-        <button onclick="setTierFilter('budget')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#C5A059]">
+        <button type="button" onclick="setTierFilter('budget')" class="collection-filter" data-tier="budget" aria-pressed="false">
           Budget Tier (~30K TZS / $12)
         </button>
-        <button onclick="setTierFilter('premium')" class="px-5 py-2.5 rounded-full text-sm font-semibold transition bg-white text-gray-700 border border-gray-200 hover:border-[#C5A059]">
+        <button type="button" onclick="setTierFilter('premium')" class="collection-filter" data-tier="premium" aria-pressed="false">
           Premium Tier (~180K TZS / $72)
         </button>
       </div>
     </div>
   </section>
 
+  <section class="bg-white border-b border-[#E8E5DF]" aria-label="Shopping information">
+    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 py-4 text-center text-xs text-gray-600 sm:grid-cols-4 sm:px-6 lg:px-8">
+      <p class="font-semibold">Tanzanian gifts, thoughtfully curated</p>
+      <p>Prices shown in TZS; USD is an estimate</p>
+      <p>Add a neighborhood; landmarks help with directions</p>
+      <p>Optional surprise delivery</p>
+    </div>
+  </section>
+
   <!-- Main Dynamic Products Grid -->
   <main id="storefrontMain" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
+    <div id="occasionFilters" class="mb-7 pt-8" aria-labelledby="occasionHeading">
+      <h2 id="occasionHeading" class="text-sm font-bold uppercase tracking-wide text-gray-700">Find a gift for the occasion</h2>
+      <div class="occasion-filters mt-3 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Filter gifts by occasion">
+        <button type="button" class="occasion-filter" data-occasion="all" aria-pressed="true" onclick="setOccasionFilter('all')">All gifts</button>
+        <button type="button" class="occasion-filter" data-occasion="birthday" aria-pressed="false" onclick="setOccasionFilter('birthday')">Siku ya Kuzaliwa · Birthday</button>
+        <button type="button" class="occasion-filter" data-occasion="love" aria-pressed="false" onclick="setOccasionFilter('love')">Upendo · Love</button>
+        <button type="button" class="occasion-filter" data-occasion="celebration" aria-pressed="false" onclick="setOccasionFilter('celebration')">Sherehe · Celebrations</button>
+        <button type="button" class="occasion-filter" data-occasion="gratitude" aria-pressed="false" onclick="setOccasionFilter('gratitude')">Shukrani · Thank you</button>
+        <button type="button" class="occasion-filter" data-occasion="souvenir" aria-pressed="false" onclick="setOccasionFilter('souvenir')">Kumbukumbu · Keepsakes</button>
+      </div>
+    </div>
+
     <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h2 id="gridTitle" class="font-display text-2xl font-bold text-gray-900">All Gifts</h2>
-        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Showing all authentic Tanzania gift arrangements and hampers</p>
+        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Thoughtfully curated Tanzanian gifts for meaningful moments.</p>
         <p id="filterResultCount" class="text-xs text-gray-500 mt-2"><%= products.length %> <%= products.length === 1 ? 'gift' : 'gifts' %> available</p>
       </div>
       <div class="flex items-center gap-3 shrink-0">
@@ -229,35 +189,35 @@
     <!-- Products Grid Container -->
     <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <% products.forEach(product => { %>
-        <div class="product-card bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm min-w-0">
-          <div>
-            <div class="relative bg-[#f5f0eb] h-52 sm:h-56 overflow-hidden">
-              <img src="<%= product.image_url || 'https://via.placeholder.com/400x250?text=Product+Image' %>" alt="<%= product.name %>" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x250?text=Gift+Hamper'">
-              <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider <%= product.tier === 'budget' ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'bg-purple-100 text-purple-900 border border-purple-200' %>">
-                <%= product.tier === 'budget' ? 'Budget Tier' : 'Premium Tier' %>
-              </span>
-            </div>
-            <div class="p-5">
-              <h3 class="font-display font-bold text-gray-900 text-lg leading-snug line-clamp-1"><%= product.name %></h3>
-              <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed"><%= product.description || 'Handcrafted authentic gift collection.' %></p>
-            </div>
+        <article class="product-card bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm min-w-0">
+          <div class="relative overflow-hidden">
+            <img src="<%= product.image_url || '/assets/images/giftopia-placeholder.svg' %>" alt="<%= product.name %>" class="product-image transition-transform duration-500 hover:scale-105" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/assets/images/giftopia-placeholder.svg'">
+            <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider <%= product.tier === 'budget' ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'bg-purple-100 text-purple-900 border border-purple-200' %>">
+              <%= product.tier === 'budget' ? 'Budget Tier' : 'Premium Tier' %>
+            </span>
           </div>
-          <div class="p-5 pt-0">
+          <div class="product-card__details p-5">
+            <h3 class="font-display font-bold text-gray-900 text-lg leading-snug line-clamp-2"><%= product.name %></h3>
+            <p class="text-xs text-gray-500 mt-2 line-clamp-3 leading-relaxed"><%= product.description || 'Handcrafted authentic gift collection.' %></p>
             <div class="flex items-baseline justify-between mb-4">
               <div>
                 <span class="text-lg font-extrabold text-[#C5A059]"><%= Number(product.price_tzs).toLocaleString() %> TZS</span>
-                <span class="text-xs text-gray-400 font-medium ml-1">($<%= product.price_usd || Math.round(product.price_tzs / 2500) %>)</span>
+                <span class="text-xs text-gray-400 font-medium ml-1">≈ $<%= product.price_usd || Math.round(product.price_tzs / 2500) %> USD</span>
               </div>
             </div>
-            <button onclick="addToCart(<%= Number(product.id) %>)" class="py-2.5 w-full bg-[#0E1726] text-[#C5A059] rounded-xl text-xs font-bold hover:bg-[#16213E] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
+            <div class="product-card__actions space-y-2">
+              <button type="button" onclick="addToCart(<%= Number(product.id) %>)" aria-label="Add <%= product.name %> to cart" class="w-full py-3 bg-[#0E1726] text-white rounded-xl text-sm font-bold hover:bg-[#16213E] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
               <span>Add to Cart</span>
-            </button>
-            <button onclick="openWA('order')" class="py-2.5 w-full mt-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
-              <span>Agiza kwa WhatsApp</span>
-            </button>
+              </button>
+              <% if (whatsappNumber) { %>
+                <a href="https://wa.me/<%= whatsappNumber %>?text=<%= encodeURIComponent('Habari Giftopia! Ningependa kuuliza kuhusu ' + product.name + ' (' + Number(product.price_tzs).toLocaleString() + ' TZS).') %>" target="_blank" rel="noopener noreferrer" class="block w-full py-2 text-center text-sm font-semibold text-emerald-800 hover:text-emerald-900">
+                  Ask about this gift on WhatsApp
+                </a>
+              <% } %>
+            </div>
           </div>
-        </div>
+        </article>
       <% }); %>
     </div>
 
@@ -296,10 +256,10 @@
           </div>
         </div>
         <div class="relative">
-          <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=800&q=80" alt="Tanzania Gift Hamper" class="rounded-2xl shadow-xl w-full object-cover max-h-96">
+          <img src="/assets/images/birthday-hamper.jpg" alt="A carefully wrapped gift" class="rounded-2xl shadow-xl w-full object-cover max-h-96" loading="lazy" decoding="async">
           <div class="absolute -bottom-4 -right-4 bg-gray-900 text-white p-4 rounded-xl shadow-lg hidden sm:block">
-            <p class="text-xs uppercase tracking-wider text-rose-300 font-bold">Fast Delivery</p>
-            <p class="text-sm font-semibold">Dar es Salaam & Arusha</p>
+            <p class="text-xs uppercase tracking-wider text-[#C5A059] font-bold">Thoughtfully curated</p>
+            <p class="text-sm font-semibold">Tanzanian gifts, made meaningful</p>
           </div>
         </div>
       </div>
@@ -312,7 +272,7 @@
       <div>
         <h4 class="font-display text-2xl font-bold text-white mb-3">Giftopia</h4>
         <p class="text-xs leading-relaxed">
-          Tanzania's premier curated gift boutique. Same-day hamper delivery in Dar es Salaam, Arusha &amp; Zanzibar. <em class="font-display italic text-[#C5A059] block mt-2 not-italic">"Zawadi Zenye Thamani, Kumbukumbu za Milele"</em>
+          Thoughtfully curated Tanzanian gifts for meaningful moments at home and for loved ones back home. <em class="font-display italic text-[#C5A059] block mt-2 not-italic">"Zawadi Zenye Thamani, Kumbukumbu za Milele"</em>
         </p>
       </div>
       <div>
@@ -328,9 +288,9 @@
         <h5 class="text-sm font-semibold text-white uppercase tracking-wider mb-3">Account & Payments</h5>
         <ul class="space-y-2 text-xs">
           <li><a href="javascript:openAuthModal('login')" class="hover:text-white transition">Sign In / Register</a></li>
-          <li><a href="javascript:openAccountDrawer()" class="hover:text-white transition">Saved M-Pesa & Card Details</a></li>
+          <li><a href="javascript:openAccountDrawer()" class="hover:text-white transition">Saved Payment Preferences</a></li>
           <li>Delivery Information (Dar & Arusha)</li>
-          <li>Payment Options (M-Pesa, Tigo Pesa, Card)</li>
+          <li>Payment is confirmed after an order request</li>
         </ul>
       </div>
       <div>
@@ -345,6 +305,12 @@
       &copy; 2026 Giftopia Studio Ltd &mdash; Dar es Salaam, Tanzania. All rights reserved.
     </div>
   </footer>
+
+  <% if (whatsappNumber) { %>
+    <a href="https://wa.me/<%= whatsappNumber %>?text=<%= encodeURIComponent('Habari Giftopia! Ningependa msaada kuchagua zawadi.') %>" target="_blank" rel="noopener noreferrer" class="fixed bottom-4 right-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-700 text-sm font-bold text-white shadow-lg md:hidden" aria-label="Ask Giftopia for gift advice on WhatsApp">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h8m-8 4h5m8-2a9 9 0 01-13.2 7.96L3 21l1.04-4.8A9 9 0 1121 12Z"/></svg>
+    </a>
+  <% } %>
 
   <!-- AUTH MODAL: SIGN IN & REGISTER -->
   <div id="authModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
@@ -580,7 +546,7 @@
               <span>Estimated Total:</span>
               <div class="text-right">
                 <span id="cartTotalTZS">0 TZS</span>
-                <p id="cartTotalUSD" class="text-xs text-gray-500 font-normal">($0 USD)</p>
+                <p id="cartTotalUSD" class="text-xs text-gray-500 font-normal">(about $0 USD)</p>
               </div>
             </div>
           </div>
@@ -649,7 +615,7 @@
 
         <!-- PAYMENT METHOD SELECTION -->
         <div class="p-3 bg-gray-50 rounded-xl border border-gray-200">
-          <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Payment Method</label>
+          <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Preferred payment method</label>
           <div class="grid grid-cols-2 gap-2 text-xs mb-2">
             <label class="flex items-center gap-1.5 p-2 bg-white rounded-lg border border-gray-200 cursor-pointer">
               <input type="radio" name="orderPaymentMethod" value="mpesa" checked onchange="toggleOrderPaymentFields('mpesa')">
@@ -662,8 +628,9 @@
           </div>
 
           <div id="orderSavedPaymentBadge" class="text-[11px] text-emerald-700 font-semibold mb-2 hidden">
-            ✓ Using your saved payment details
+            ✓ Saved payment preference selected
           </div>
+          <p class="text-[11px] leading-relaxed text-gray-500">Choose how you would prefer to pay. This page records your order request but does not process a payment.</p>
         </div>
 
         <div>
@@ -673,7 +640,7 @@
 
         <div class="pt-2">
           <button type="submit" class="w-full py-3 bg-[#C5A059] text-white rounded-xl text-sm font-bold hover:bg-[#0E1726] transition shadow-md">
-            Confirm & Place Order (<span id="checkoutTotalBtn">0 TZS</span>)
+            Send order request (<span id="checkoutTotalBtn">0 TZS</span>)
           </button>
         </div>
       </form>
@@ -686,9 +653,9 @@
       <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
       </div>
-      <h3 class="font-display text-2xl font-bold text-gray-900">Order Placed!</h3>
+      <h3 class="font-display text-2xl font-bold text-gray-900">Order request received</h3>
       <p class="text-xs text-gray-600 mt-2">
-        Asante sana! We have received your order. Our florists and gift curators in Dar es Salaam are preparing your hamper.
+        Asante sana! Giftopia has received your request. We will confirm payment and delivery details with you. No payment is processed on this page.
       </p>
       <div class="bg-gray-50 p-4 rounded-xl text-left text-xs space-y-1.5 my-5 border border-gray-100">
         <p><span class="text-gray-500">Order ID:</span> <span id="confirmedOrderId" class="font-mono font-bold text-gray-900">#FG-8291</span></p>
@@ -701,7 +668,7 @@
     </div>
   </div>
 
-  <script id="storefrontData" type="application/json"><%- JSON.stringify({ products, offers, campaigns }).replace(/</g, '\\u003c') %></script>
+  <script id="storefrontData" type="application/json"><%- JSON.stringify({ products, offers, campaigns, whatsappNumber }).replace(/</g, '\\u003c') %></script>
 
   <!-- Application Logic -->
   <script>
@@ -710,7 +677,9 @@
     const storefrontData = JSON.parse(document.getElementById('storefrontData').textContent);
     let rawProducts = storefrontData.products;
     let activeOffers = storefrontData.offers;
+    const whatsappNumber = storefrontData.whatsappNumber;
     let currentTier = 'all';
+    let currentOccasion = 'all';
     let searchQuery = '';
     let currentSort = 'featured';
     let cart = [];
@@ -800,7 +769,7 @@
         }
       } else {
         container.innerHTML = `
-          <button onclick="openAuthModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
+          <button onclick="openAuthModal('login')" class="whitespace-nowrap text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 transition">
             Sign In
           </button>
         `;
@@ -1155,7 +1124,7 @@
         if (checkoutBtn) checkoutBtn.disabled = true;
         document.getElementById('cartSubtotal').textContent = '0 TZS';
         document.getElementById('cartTotalTZS').textContent = '0 TZS';
-        document.getElementById('cartTotalUSD').textContent = '($0 USD)';
+        document.getElementById('cartTotalUSD').textContent = '(about $0 USD)';
         document.getElementById('cartDiscountRow').classList.add('hidden');
         return;
       }
@@ -1169,7 +1138,7 @@
 
         return `
           <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
-            <img src="${item.image_url || 'https://via.placeholder.com/80'}" class="w-14 h-14 object-cover rounded-lg bg-gray-200 flex-shrink-0" alt="">
+            <img src="${escapeHtml(item.image_url || '/assets/images/giftopia-placeholder.svg')}" class="w-14 h-14 object-cover rounded-lg bg-gray-200 flex-shrink-0" alt="${escapeHtml(item.name)}" onerror="this.onerror=null;this.src='/assets/images/giftopia-placeholder.svg'">
             <div class="flex-1 min-w-0">
               <h4 class="font-bold text-xs text-gray-900 truncate">${escapeHtml(item.name)}</h4>
               <p class="text-xs font-semibold text-[#C5A059] mt-0.5">${Number(item.price_tzs).toLocaleString()} TZS</p>
@@ -1201,7 +1170,7 @@
 
       document.getElementById('cartSubtotal').textContent = `${subtotal.toLocaleString()} TZS`;
       document.getElementById('cartTotalTZS').textContent = `${finalTotalTZS.toLocaleString()} TZS`;
-      document.getElementById('cartTotalUSD').textContent = `($${finalTotalUSD} USD)`;
+      document.getElementById('cartTotalUSD').textContent = `(about $${finalTotalUSD} USD)`;
       document.getElementById('checkoutTotalBtn').textContent = `${finalTotalTZS.toLocaleString()} TZS`;
     }
 
@@ -1236,10 +1205,10 @@
         // Pre-fill payment method
         if (currentUser.payment_method === 'card') {
           document.querySelector('input[name="orderPaymentMethod"][value="card"]').checked = true;
-          badge.textContent = `✓ Using saved Card ending in •••• ${currentUser.card_last4 || '4242'}`;
+          badge.textContent = `✓ Saved card preference ending in •••• ${currentUser.card_last4 || '—'}`;
         } else {
           document.querySelector('input[name="orderPaymentMethod"][value="mpesa"]').checked = true;
-          badge.textContent = `✓ Using saved M-Pesa (${currentUser.mpesa_number || currentUser.phone || 'Ready'})`;
+          badge.textContent = `✓ Saved M-Pesa preference (${currentUser.mpesa_number || currentUser.phone || 'number on file'})`;
         }
         badge.classList.remove('hidden');
       } else {
@@ -1317,21 +1286,39 @@
       document.getElementById('orderSuccessModal').classList.add('hidden');
     }
 
+    const occasionLabels = {
+      birthday: 'Birthday gifts',
+      celebration: 'Celebration gifts',
+      gratitude: 'Thank-you gifts',
+      love: 'Love and anniversary gifts',
+      souvenir: 'Tanzanian keepsakes'
+    };
+
+    function updateGridHeading() {
+      const tierLabel = currentTier === 'budget' ? 'Budget' : currentTier === 'premium' ? 'Premium' : '';
+      const occasionLabel = occasionLabels[currentOccasion] || '';
+      const heading = [tierLabel, occasionLabel].filter(Boolean).join(' · ');
+      document.getElementById('gridTitle').textContent = heading || 'All Gifts';
+      document.getElementById('gridSubtitle').textContent = heading
+        ? `Thoughtfully selected ${heading.toLowerCase()} from Tanzania.`
+        : 'Thoughtfully curated Tanzanian gifts for meaningful moments.';
+    }
+
     function setTierFilter(tier) {
       currentTier = tier;
-      const gridTitle = document.getElementById('gridTitle');
-      const gridSubtitle = document.getElementById('gridSubtitle');
-      if (tier === 'budget') {
-        gridTitle.textContent = 'Budget Collection (~30,000 TZS)';
-        gridSubtitle.textContent = 'Affordable everyday gifting and pocket-sized Tanzanian souvenirs under $15';
-      } else if (tier === 'premium') {
-        gridTitle.textContent = 'Premium Collection (~180,000 TZS)';
-        gridSubtitle.textContent = 'Curated luxury hampers featuring full Maasai Shuka textiles & premium spirits';
-      } else {
-        gridTitle.textContent = 'All Gifts';
-        gridSubtitle.textContent = 'Showing all authentic Tanzania gift arrangements and hampers';
-      }
+      document.querySelectorAll('.collection-filter').forEach(button => {
+        button.setAttribute('aria-pressed', String(button.dataset.tier === tier));
+      });
+      updateGridHeading();
+      renderGrid();
+    }
 
+    function setOccasionFilter(occasion) {
+      currentOccasion = occasion;
+      document.querySelectorAll('.occasion-filter').forEach(button => {
+        button.setAttribute('aria-pressed', String(button.dataset.occasion === occasion));
+      });
+      updateGridHeading();
       renderGrid();
     }
 
@@ -1353,13 +1340,13 @@
     }
 
     function clearAllFilters() {
-      currentTier = 'all';
       searchQuery = '';
       currentSort = 'featured';
       document.getElementById('searchInput').value = '';
       const m = document.getElementById('mobileSearchInput');
       if (m) m.value = '';
       document.getElementById('sortSelect').value = 'featured';
+      setOccasionFilter('all');
       setTierFilter('all');
     }
 
@@ -1370,10 +1357,11 @@
 
       let filtered = rawProducts.filter(p => {
         const matchesTier = currentTier === 'all' || p.tier === currentTier;
+        const matchesOccasion = currentOccasion === 'all' || p.occasions.includes(currentOccasion);
         const matchesSearch = !searchQuery ||
           p.name.toLowerCase().includes(searchQuery) ||
           (p.description && p.description.toLowerCase().includes(searchQuery));
-        return matchesTier && matchesSearch;
+        return matchesTier && matchesOccasion && matchesSearch;
       });
 
       if (currentSort === 'price-asc') {
@@ -1394,47 +1382,35 @@
 
       empty.classList.add('hidden');
       grid.innerHTML = filtered.map(p => `
-        <div class="product-card bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm min-w-0">
-          <div>
-            <div class="relative bg-[#f5f0eb] h-52 sm:h-56 overflow-hidden">
-              <img src="${p.image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}" alt="${escapeHtml(p.name)}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='https://via.placeholder.com/400x250?text=Gift+Hamper'">
-              <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.tier === 'budget' ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'bg-purple-100 text-purple-900 border border-purple-200'}">
-                ${p.tier === 'budget' ? 'Budget Tier' : 'Premium Tier'}
-              </span>
-            </div>
-            <div class="p-5">
-              <h3 class="font-display font-bold text-gray-900 text-lg leading-snug line-clamp-1">${escapeHtml(p.name)}</h3>
-              <p class="text-xs text-gray-500 mt-2 line-clamp-2 leading-relaxed">${escapeHtml(p.description || 'Handcrafted authentic gift collection.')}</p>
-            </div>
+        <article class="product-card bg-white rounded-2xl overflow-hidden border border-gray-200/80 shadow-sm min-w-0">
+          <div class="relative overflow-hidden">
+            <img src="${escapeHtml(p.image_url || '/assets/images/giftopia-placeholder.svg')}" alt="${escapeHtml(p.name)}" class="product-image transition-transform duration-500 hover:scale-105" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/assets/images/giftopia-placeholder.svg'">
+            <span class="absolute top-3 left-3 text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${p.tier === 'budget' ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'bg-purple-100 text-purple-900 border border-purple-200'}">
+              ${p.tier === 'budget' ? 'Budget Tier' : 'Premium Tier'}
+            </span>
           </div>
-          <div class="p-5 pt-0">
+          <div class="product-card__details p-5">
+            <h3 class="font-display font-bold text-gray-900 text-lg leading-snug line-clamp-2">${escapeHtml(p.name)}</h3>
+            <p class="text-xs text-gray-500 mt-2 line-clamp-3 leading-relaxed">${escapeHtml(p.description || 'Handcrafted authentic gift collection.')}</p>
             <div class="flex items-baseline justify-between mb-4">
-              <div>
-                <span class="text-lg font-extrabold text-[#C5A059]">${Number(p.price_tzs).toLocaleString()} TZS</span>
-                <span class="text-xs text-gray-400 font-medium ml-1">($${p.price_usd || Math.round(p.price_tzs / 2500)})</span>
-              </div>
+              <span class="text-lg font-extrabold text-[#C5A059]">${Number(p.price_tzs).toLocaleString()} TZS</span>
+              <span class="text-xs text-gray-400 font-medium">≈ $${p.price_usd || Math.round(p.price_tzs / 2500)} USD</span>
             </div>
-            <button onclick="addToCart(${p.id})" class="py-2.5 w-full bg-[#0E1726] text-[#C5A059] rounded-xl text-xs font-bold hover:bg-[#16213E] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-              <span>Add to Cart</span>
-            </button>
-            <button onclick="openWA('order')" class="py-2.5 w-full mt-1.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/></svg>
-              <span>Agiza kwa WhatsApp</span>
-            </button>
+            <div class="product-card__actions space-y-2">
+              <button type="button" onclick="addToCart(${Number(p.id)})" aria-label="Add ${escapeHtml(p.name)} to cart" class="w-full py-3 bg-[#0E1726] text-white rounded-xl text-sm font-bold hover:bg-[#16213E] active:scale-95 transition flex items-center justify-center gap-2 shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m-6-6h12"/></svg>
+                <span>Add to Cart</span>
+              </button>
+              ${whatsappNumber ? `<a href="${escapeHtml(productWhatsAppUrl(p))}" target="_blank" rel="noopener noreferrer" class="block w-full py-2 text-center text-sm font-semibold text-emerald-800 hover:text-emerald-900">Ask about this gift on WhatsApp</a>` : ''}
+            </div>
           </div>
-        </div>
+        </article>
       `).join('');
     }
 
-    function openWA(topic) {
-      let msg = 'Habari Giftopia! 🎁 Nina swali kuhusu zawadi na hampers zenu.';
-      if (topic === 'order') msg = 'Habari Giftopia! Ningependa kuweka oda ya zawadi moja kwa moja.';
-      if (topic === 'custom') msg = 'Habari Giftopia! Ningependa kuandaa Custom Hamper ya kipekee.';
-      if (topic === 'card') msg = 'Habari Giftopia! Nisaidie kuandika ujumbe mzuri wa kadi ya zawadi.';
-      if (topic === 'track') msg = 'Habari Giftopia! Naomba kufuatilia maendeleo ya oda yangu.';
-      window.open('https://wa.me/255700000000?text=' + encodeURIComponent(msg), '_blank');
-      document.getElementById('waMenu').classList.add('hidden');
+    function productWhatsAppUrl(product) {
+      const message = `Habari Giftopia! Ningependa kuuliza kuhusu ${product.name} (${Number(product.price_tzs).toLocaleString()} TZS).`;
+      return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     }
 
     function escapeHtml(str) {

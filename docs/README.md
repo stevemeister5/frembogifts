@@ -5,20 +5,22 @@ Giftopia is an Express application deployed on Vercel. Its storefront is rendere
 ## Features
 
 - Server-rendered products, offers, and campaigns from Vercel Postgres
-- Client-side search, tier filtering, and sorting
+- Client-side search, tier and occasion filtering, and sorting
 - Shopping cart, customer accounts, and checkout flows
 - Admin interface for managing products, offers, and campaigns
-- Responsive storefront with mobile navigation
+- Responsive storefront with mobile navigation and optional WhatsApp contact
+- Locally compiled Tailwind stylesheet and locally served product images
 
 ## Deployment on Vercel
 
 1. Connect the repository to Vercel and provision Vercel Postgres.
 2. Deploy using the included `vercel.json` configuration.
-3. For a new database, call `/api/setup` once to create tables and seed initial data.
+3. Configure `JWT_SECRET` with a strong random value. Set `WHATSAPP_NUMBER` to the Giftopia contact number in international digits-only format (for example `2557...`); WhatsApp links remain hidden when it is unset.
+4. Call `/api/setup` once to create or migrate tables and seed initial data. This also adds occasion tags and moves known catalog images to local assets.
 
-Configure Postgres environment variables through the Vercel integration and set a strong `JWT_SECRET` for production authentication.
+Vercel receives the prebuilt `public/styles.css` and image assets through `vercel.json`. When changing Tailwind classes, run `npm run build:css` and include the generated stylesheet in the commit. The build is also run by `npm start` for local development.
 
-From the repository root, run `npm install`, configure the Postgres environment variables, then run `npm start`. Run `npm test` for the template tests.
+From the repository root, run `npm install`, configure the Postgres environment variables, then run `npm start`. Run `npm test` for the focused template and static-asset tests.
 
 ## Project Structure
 
@@ -27,6 +29,8 @@ Repository root/
 ├── server.js          - Express API and server-rendered storefront route
 ├── views/index.ejs    - Dynamic storefront template
 ├── views/admin.ejs    - Server-rendered admin interface
+├── src/tailwind.css   - Tailwind source and shared component styles
+├── public/            - Compiled CSS and locally served images
 ├── vercel.json        - Vercel routing and function configuration
 ├── package.json       - App scripts and runtime dependencies
 ├── package-lock.json  - Locked npm dependencies

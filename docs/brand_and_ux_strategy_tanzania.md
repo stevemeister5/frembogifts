@@ -2,16 +2,17 @@
 
 ## 1. Market Context & Target Audience
 
-In Tanzania (primarily Dar es Salaam, Arusha, Zanzibar, Mwanza, Dodoma), gifting is deeply rooted in relationship building, respect, and communal celebration (*Undugu*, *Ukarimu*, and *Kusherehekea*). The platform serves three distinct buying personas:
+In Tanzania (primarily Dar es Salaam, Arusha, Zanzibar, Mwanza, Dodoma), gifting is deeply rooted in relationship building, respect, and communal celebration (*Undugu*, *Ukarimu*, and *Kusherehekea*). Giftopia's current consumer focus is local buyers and diaspora senders arranging gifts for recipients in Tanzania. Corporate gifting is deferred.
 
 ```mermaid
 flowchart TD
     subgraph Market["Giftopia Ecosystem"]
         A["1. Urban Professionals & Celebrators<br/>(Dar es Salaam / Arusha)<br/>• Birthdays, Harusi, Send-off, Valentine's<br/>• Mobile-first, WhatsApp heavy<br/>• Pays via M-Pesa / Tigo Pesa"]
-        B["2. Global Diaspora Senders<br/>(UK, USA, Canada, UAE, EU)<br/>• Gifting mothers, partners, family back home<br/>• Needs USD, Visa/Mastercard, WhatsApp photo proof"]
-        C["3. Corporate & Institutions (B2B)<br/>(Banks, Telecoms, NGOs, Embassies)<br/>• End-of-year hampers, speaker tokens, client gifts<br/>• Branded packaging, invoices, volume pricing"]
+        B["2. Global Diaspora Senders<br/>(UK, USA, Canada, UAE, EU)<br/>• Gifting mothers, partners, family back home<br/>• Needs clear pricing and local delivery coordination"]
     end
 ```
+
+Current product pages show approximate USD equivalents but do not offer currency switching, card processing, delivery-time guarantees, or handover-photo promises. Checkout records an order request and preferred payment method for follow-up.
 
 ### Key Tanzanian Market Realities
 1. **Address Systems are Landmark-Based**: Standard street addresses are rarely used in Dar es Salaam. People deliver using landmarks (*"Kinondoni Manyanya karibu na Best Bite"*, *"Mikocheni B nyuma ya Shoppers Supermarket"*). The checkout must accommodate landmark inputs rather than rigid zip codes.
@@ -39,7 +40,7 @@ The current dusty blush pink (`#d59697`) feels too much like a generic foreign c
 
 ```carousel
 ### Option 1: Tanzanite & Royal Champagne (Recommended)
-**Why it works**: Combines the national prestige of the Tanzanite gemstone with luxury champagne gold. Conveys trustworthiness, high-end gift hampers, and appeals equally to corporate clients, male/female buyers, and diaspora senders.
+**Why it works**: Combines the national prestige of the Tanzanite gemstone with luxury champagne gold. Conveys trustworthiness and appeals to local buyers and diaspora senders.
 
 - **Primary Brand (Deep Tanzanite Night)**: `#0E1726` (Deep slate navy)
 - **Luxury Accent (Champagne Gold)**: `#C5A059` / `#D4AF37` (Ribbon gold, badges, CTAs)
@@ -69,7 +70,7 @@ The current dusty blush pink (`#d59697`) feels too much like a generic foreign c
 ```
 
 > [!TIP]
-> **Recommendation**: **Option 1 (Tanzanite & Royal Champagne)** is the strongest for Giftopia. It immediately elevates the brand above budget flower stalls, looks commanding for corporate orders, and makes ribbon packaging feel bespoke.
+> **Recommendation**: **Option 1 (Tanzanite & Royal Champagne)** is the strongest for Giftopia. It makes the brand feel warm and dependable while keeping gift packaging bespoke.
 
 ---
 
@@ -88,10 +89,9 @@ The current dusty blush pink (`#d59697`) feels too much like a generic foreign c
 ### A. Mobile-First Navigation & WhatsApp Ordering
 1. **Floating WhatsApp Assist Button**:
    - Fixed at bottom-right on mobile screens.
-   - Includes one-click options: *"Agiza kwa WhatsApp"* (Order via WhatsApp), *"Badilisha Zawadi"* (Customize hamper), *"Ujumbe wa Kadi"* (Help writing a card).
-2. **"Agiza kwa WhatsApp" on Product Cards**:
-   - Direct button beside "Add to Cart": generates pre-filled WhatsApp message:  
-     `"Habari Giftopia! Ningependa kuagiza [Safari Sunset Gift Basket] kwa ajili ya delivery Dar es Salaam..."`
+   - Provides a direct contact link only when a valid `WHATSAPP_NUMBER` is configured.
+2. **Product-specific WhatsApp inquiry**:
+   - Each product link includes its name and TZS price in a prefilled message; it is an inquiry, not a confirmed order.
 
 ### B. Delivery Address: Landmark-Based Fields
 Standard e-commerce forms demand "Street Address line 2" and "Postal Code". In Tanzania, that causes drop-offs.
@@ -102,24 +102,15 @@ Standard e-commerce forms demand "Street Address line 2" and "Postal Code". In T
   - Checkbox: *[x] Ni zawadi ya kushtukiza (Mpigie simu akiwa getini tu / Do not spoil the surprise!)*
 
 ### C. Gifting Occasions Bar (Swahili & English)
-Replace generic "Category 1 / 2" with culturally resonant occasion pills:
-- 💍 *Harusi & Send-Off*
-- 🎂 *Siku ya Kuzaliwa (Birthdays)*
-- 💖 *Mahaba & Valentine's*
-- 🏢 *Corporate & Makampuni*
-- 💐 *Hongera & Shukrani (Congratulations & Gratitude)*
-- 👶 *Mtoto Mchanga (New Baby & Mother)*
-- 🌙 *Sikukuu (Eid & Christmas)*
+The storefront currently supports birthday, love, celebrations, gratitude, and Tanzanian keepsakes. Additional occasion categories should wait until the catalog contains matching products.
 
-### D. Multi-Currency & Diaspora Reassurance
-- Sticky header toggle: **TZS (M-Pesa / Tigo / Airtel)** vs **USD (Visa / Mastercard / Diaspora)**.
-- **Diaspora Trust Badge**: *"Tunaleta picha ya makabidhiano WhatsApp mara tu zawadi inapomfikia mpokeaji"* (Photo confirmation of handover sent directly to your phone).
+### D. Diaspora Pricing Clarity
+- TZS is the primary catalog and checkout currency; USD equivalents are approximate.
+- Do not promise payment processing, live conversion, or delivery photo proof until those services are integrated.
 
-### E. Checkout Flow: Mobile Money (Lipa Namba) Clarity
-- Tab 1: **M-Pesa / Tigo Pesa / Airtel Money**
-  - Displays business Lipa Namba / Till Number clearly with a one-click **"Copy Number"** button and quick USSD guide (`Piga *150*00#...`).
-- Tab 2: **Card / Diaspora**
-  - Visa, Mastercard, Apple Pay via Stripe / direct merchant gateway.
+### E. Checkout Payment Clarity
+- Checkout records the selected payment preference and an order request only.
+- No Lipa Namba instructions, card gateway, or payment processing is currently integrated; confirm payment details separately with the customer.
 
 ---
 
@@ -135,23 +126,17 @@ classDiagram
         +TextPrimary: #1E293B
     }
     class DesignComponents {
-        +FloatingWhatsAppButton
+        +OccasionFilters
+        +OptionalWhatsAppContact
         +SurpriseDeliveryCheckbox
         +LandmarkAddressInput
-        +LipaNambaDrawer
-        +DiasporaPhotoGuaranteeBadge
-        +HandwrittenCardStep
+        +OrderRequestCheckout
     }
     ColorPalette --> DesignComponents : Applied to
 ```
 
 ---
 
-## 7. Next Steps & Implementation Choices
+## 7. Implementation Status
 
-1. **Brand & Palette Selection**: Confirm if you want to proceed with **Option 1 (Tanzanite & Champagne Gold)** or one of the alternatives.
-2. **Implementation Plan**:
-   - Update the `views/index.ejs` CSS variables, navigation bar, hero banner, product cards, and checkout drawers with the new palette.
-   - Add the floating WhatsApp direct inquiry action.
-   - Adapt the checkout form to support Tanzanian landmark addresses and the surprise delivery toggle.
-   - Apply the matching palette to `views/admin.ejs` for a cohesive brand experience.
+The storefront and admin use the recommended Tanzanite and Champagne palette. Mobile navigation, occasion filters, landmark-based checkout fields, surprise-delivery selection, product-specific WhatsApp inquiries, and approximate USD pricing are implemented. Payment gateways, delivery guarantees, and handover-photo commitments remain out of scope until operationally supported.
