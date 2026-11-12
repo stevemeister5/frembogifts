@@ -33,6 +33,20 @@
       transform: translateY(-6px);
       box-shadow: 0 24px 48px -8px rgba(14,23,38,0.14);
     }
+    #productsGrid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      #productsGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      #productsGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1280px) {
+      #productsGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
     .gold-shimmer { background: linear-gradient(135deg, #C5A059 0%, #E8D3A2 50%, #C5A059 100%); }
     .tanzanite-bg { background: linear-gradient(135deg, #0E1726 0%, #16213E 100%); }
     ::-webkit-scrollbar { width: 5px; }
