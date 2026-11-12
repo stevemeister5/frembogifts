@@ -1,8 +1,8 @@
-# FremboGifts Project Documentation
+# Giftopia Project Documentation
 
 ## Complete Project Summary
 
-FremboGifts is a dual-market gift and delivery service targeting both **average Tanzanian citizens** and **tourists** visiting Tanzania. The project includes a complete static website built with Tailwind CSS and Google Fonts, comprehensive market research, regulatory compliance documentation, pricing analysis, and 8 curated gift products.
+Giftopia is a dual-market gift and delivery service targeting both **average Tanzanian citizens** and **tourists** visiting Tanzania. The project includes a complete static website built with Tailwind CSS and Google Fonts, comprehensive market research, regulatory compliance documentation, pricing analysis, and 8 curated gift products.
 
 **Last Updated**: November 2024  
 **Deployment Target**: Vercel (static HTML)  
@@ -14,7 +14,7 @@ FremboGifts is a dual-market gift and delivery service targeting both **average 
 ## 1. PROJECT OVERVIEW
 
 ### 1.1 Business Concept
-FremboGifts curates authentic Tanzania experiences in gift form, featuring:
+Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Local brands**: Kakakuwe Coffee (Arusha), Konyagi Gin (national), Maasai Shuka (cultural)
 - **Two price tiers**: Budget (TSh 30,000 / $12) for everyday/gift-giving; Premium (TSh 180,000 / $72) for special occasions/tourists
 - **Full Maasai Shuka** in Premium tier (full-size, 100% cotton); keychain version in Budget tier
@@ -30,7 +30,7 @@ FremboGifts curates authentic Tanzania experiences in gift form, featuring:
 
 ### 1.3 Folder Structure
 ```
-/home/quackyduck/Documents/FremboGifts/
+/home/quackyduck/Documents/Giftopia/
 ├── index.html          | 20KB | Adapted website with 8 products
 ├── vercel.json         | 234B | Vercel deployment config
 ├── README.md           | 1.8KB | Deployment instructions
@@ -525,7 +525,7 @@ Each product designed for BOTH:
 ## 11. FINAL NOTES
 
 ### **Project Philosophy**
-FremboGifts was built on the principle that authentic Tanzania experiences should be accessible to **both** average Tanzanians celebrating life's moments **and** tourists wanting to bring home meaningful souvenirs. By offering two clear price tiers (30,000 TZS and 180,000 TZS), including real local brands (Kakakuwe Coffee, Konyagi Gin, Maasai Shuka), and maintaining transparent pricing with separate delivery fees, the service fills a unique gap in the market.
+Giftopia was built on the principle that authentic Tanzania experiences should be accessible to **both** average Tanzanians celebrating life's moments **and** tourists wanting to bring home meaningful souvenirs. By offering two clear price tiers (30,000 TZS and 180,000 TZS), including real local brands (Kakakuwe Coffee, Konyagi Gin, Maasai Shuka), and maintaining transparent pricing with separate delivery fees, the service fills a unique gap in the market.
 
 ### **Why This Model Works**
 1. **Respects both markets**: Tanzanians get affordable everyday gifting; tourists get authentic souvenirs
@@ -538,4 +538,4 @@ FremboGifts was built on the principle that authentic Tanzania experiences shoul
 This documentation is based on research conducted November 2024. All prices in TZS with USD equivalents at approximate rate of 2,500 TZS = 1 USD (market volatile). All regulatory requirements must be verified with current Local Government Authority before operations begin. Liquor delivery permits are mandatory before including alcohol-inclusive products. Business registration and tax compliance are the owner's responsibility.
 
 ---
-*Document generated: November 2024 | FremboGifts Project Complete*
+*Document generated: November 2024 | Giftopia Project Complete*

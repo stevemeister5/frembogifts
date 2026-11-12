@@ -241,7 +241,7 @@ async function initDatabaseTables() {
 app.get('/api', (req, res) => {
   res.json({
     success: true,
-    message: 'FremboGifts API is running',
+    message: 'Giftopia API is running',
     authenticated: !!req.user,
     user: req.user ? { id: req.user.id, email: req.user.email, role: req.user.role } : null
   });

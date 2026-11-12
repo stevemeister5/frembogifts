@@ -1,4 +1,4 @@
-# FremboGifts - 1:1 Purpink.co.ke Clone
+# Giftopia - 1:1 Purpink.co.ke Clone
 
 A faithful recreation of [Purpink.co.ke](https://www.purpink.co.ke/) built with static HTML and Tailwind CSS for easy deployment on Vercel.
 
@@ -34,7 +34,7 @@ Alternatively, deploy directly:
 ## Project Structure
 
 ```
-FremboGifts/
+Giftopia/
 ├── index.html    - Main HTML file with full UI copy
 ├── vercel.json   - Vercel deployment configuration
 ├── public/       - Additional assets can be placed here
