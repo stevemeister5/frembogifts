@@ -18,12 +18,12 @@ Giftopia is an Express application deployed on Vercel. Its storefront is rendere
 
 Configure Postgres environment variables through the Vercel integration and set a strong `JWT_SECRET` for production authentication.
 
-For local development, run `npm install`, configure the Postgres environment variables, then run `npm start`. Run `npm test` for the template tests.
+From the repository root, run `npm install`, configure the Postgres environment variables, then run `npm start`. Run `npm test` for the template tests.
 
 ## Project Structure
 
 ```
-Giftopia/
+Repository root/
 ├── server.js          - Express API and server-rendered storefront route
 ├── views/index.ejs    - Dynamic storefront template
 ├── admin.html         - Admin interface
@@ -32,5 +32,12 @@ Giftopia/
 ├── package-lock.json  - Locked npm dependencies
 ├── start.sh           - Local start helper
 ├── test/              - Automated tests
-└── README.md          - This file
+└── docs/               - Project, market, regulatory, and product documentation
+    ├── README.md
+    ├── PROJECT_DOCUMENTATION.md
+    ├── RESEARCH_FINDINGS.md
+    ├── REGULATORY_REQUIREMENTS.md
+    ├── PRICE_ANALYSIS.md
+    ├── GENERATED_PRODUCTS.md
+    └── brand_and_ux_strategy_tanzania.md
 ```

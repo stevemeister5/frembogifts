@@ -36,8 +36,14 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 ├── vercel.json
 ├── package.json
 ├── test/storefront.test.js
-├── README.md
-└── project and market research documents
+└── docs/
+    ├── README.md
+    ├── PROJECT_DOCUMENTATION.md
+    ├── RESEARCH_FINDINGS.md
+    ├── REGULATORY_REQUIREMENTS.md
+    ├── PRICE_ANALYSIS.md
+    ├── GENERATED_PRODUCTS.md
+    └── brand_and_ux_strategy_tanzania.md
 ```
 
 ---
