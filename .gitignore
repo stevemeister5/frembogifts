@@ -13,3 +13,10 @@ npm-debug.log*
 dist/
 build/
 .vercel
+
+# IDE & AI tooling
+.agents/
+.claude/
+.cursor/
+.devin/
+
