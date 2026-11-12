@@ -2,7 +2,7 @@
 
 ## Complete Project Summary
 
-Giftopia is a consumer gifting service focused on **people in Tanzania** and **diaspora senders arranging gifts for loved ones in Tanzania**. Corporate gifting and tourist-focused bundles are deferred. The project includes an Express API, an EJS storefront backed by Vercel Postgres, an admin interface, market research, regulatory compliance documentation, and a seeded catalog.
+Giftopia serves **Tanzanian shoppers**, **visitors looking for meaningful keepsakes**, and **diaspora senders arranging gifts for loved ones in Tanzania**. Corporate gifting remains deferred. The project includes an Express API, an EJS storefront backed by Vercel Postgres, an admin interface, market research, regulatory compliance documentation, and a seeded catalog.
 
 **Deployment Target**: Vercel (Express serverless function with EJS storefront)
 **Business Model**: One-time purchases only (no subscriptions, no corporate focus)  
@@ -26,7 +26,7 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Two price tiers**: Budget (TSh 30,000 / about $12) for everyday gifting; Premium (TSh 180,000 / about $72) for special occasions
 - **Full Maasai Shuka** in Premium tier (full-size, 100% cotton); keychain version in Budget tier
 - **Alcohol inclusion**: Konyagi Gin from launch day (different sizes per tier)
-- **Current audience**: Tanzanian consumers and diaspora senders; corporate and tourist-specific offers are deferred
+- **Current audience**: Tanzanian consumers, visitors seeking locally rooted gifts, and diaspora senders; corporate gifting is deferred
 
 ### 1.2 Website Specifications
 - **Framework**: Express serverless API with an EJS-rendered storefront and locally compiled Tailwind CSS
@@ -63,7 +63,7 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Hero Section**: "Taste of Tanzania" branding, dual-tier selector (Budget/Premium)
 - **Category Filtering**: Budget vs Premium tier filtering with JavaScript
 - **Product Grid**: 8 curated products (3 budget + 4 premium + seasonal)
-- **Audience Positioning**: Local buyers and diaspora senders are the active consumer focus
+- **Audience Positioning**: Local buyers, visitors seeking keepsakes, and diaspora senders
 - **Delivery Transparency**: Separate fees displayed at checkout (not bundled)
 
 ### 2.2 Key Pages/Sections

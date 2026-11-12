@@ -32,7 +32,9 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.match(html, /Seasonal campaign: Live campaign/);
   assert.match(html, /id="filterResultCount"/);
   assert.match(html, /All Collections/);
-  assert.match(html, /Find a gift for the occasion/);
+  assert.match(html, /Give a little Tanzania\./);
+  assert.match(html, /visitors finding a meaningful keepsake/);
+  assert.match(html, /Shop by occasion or find a Tanzania keepsake/);
   assert.match(html, /href="\/assets\/styles\.css"/);
   assert.match(html, /https:\/\/wa\.me\/255712345678/);
   assert.doesNotMatch(html, /cdn\.tailwindcss\.com|255700000000/);
@@ -70,7 +72,7 @@ test('renders the empty catalog and hides the offers ribbon when no active recor
   assert.match(offersRibbon[1], /\bhidden\b/);
   assert.ok(emptyState);
   assert.doesNotMatch(emptyState[1], /\bhidden\b/);
-  assert.match(html, /Thoughtful Tanzanian gifts for meaningful moments/);
+  assert.match(html, /Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels/);
   assert.doesNotMatch(html, /WhatsApp help/);
 });
 

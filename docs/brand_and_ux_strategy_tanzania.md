@@ -2,13 +2,14 @@
 
 ## 1. Market Context & Target Audience
 
-In Tanzania (primarily Dar es Salaam, Arusha, Zanzibar, Mwanza, Dodoma), gifting is deeply rooted in relationship building, respect, and communal celebration (*Undugu*, *Ukarimu*, and *Kusherehekea*). Giftopia's current consumer focus is local buyers and diaspora senders arranging gifts for recipients in Tanzania. Corporate gifting is deferred.
+In Tanzania (primarily Dar es Salaam, Arusha, Zanzibar, Mwanza, Dodoma), gifting is deeply rooted in relationship building, respect, and communal celebration (*Undugu*, *Ukarimu*, and *Kusherehekea*). Giftopia serves local buyers celebrating at home, visitors choosing a keepsake from Tanzania, and diaspora senders arranging gifts for recipients in Tanzania. Corporate gifting is deferred.
 
 ```mermaid
 flowchart TD
     subgraph Market["Giftopia Ecosystem"]
         A["1. Urban Professionals & Celebrators<br/>(Dar es Salaam / Arusha)<br/>• Birthdays, Harusi, Send-off, Valentine's<br/>• Mobile-first, WhatsApp heavy<br/>• Pays via M-Pesa / Tigo Pesa"]
-        B["2. Global Diaspora Senders<br/>(UK, USA, Canada, UAE, EU)<br/>• Gifting mothers, partners, family back home<br/>• Needs clear pricing and local delivery coordination"]
+        B["2. Visitors & Travelers<br/>• Looking for locally rooted gifts and memorable keepsakes<br/>• Wants clear TZS pricing and practical product details"]
+        C["3. Global Diaspora Senders<br/>(UK, USA, Canada, UAE, EU)<br/>• Gifting mothers, partners, family back home<br/>• Needs clear pricing and local delivery coordination"]
     end
 ```
 
@@ -40,7 +41,7 @@ The current dusty blush pink (`#d59697`) feels too much like a generic foreign c
 
 ```carousel
 ### Option 1: Tanzanite & Royal Champagne (Recommended)
-**Why it works**: Combines the national prestige of the Tanzanite gemstone with luxury champagne gold. Conveys trustworthiness and appeals to local buyers and diaspora senders.
+**Why it works**: Combines the national prestige of the Tanzanite gemstone with luxury champagne gold. Conveys trustworthiness and appeals to local buyers, visitors, and diaspora senders.
 
 - **Primary Brand (Deep Tanzanite Night)**: `#0E1726` (Deep slate navy)
 - **Luxury Accent (Champagne Gold)**: `#C5A059` / `#D4AF37` (Ribbon gold, badges, CTAs)
@@ -139,4 +140,4 @@ classDiagram
 
 ## 7. Implementation Status
 
-The storefront and admin use the recommended Tanzanite and Champagne palette. Mobile navigation, occasion filters, landmark-based checkout fields, surprise-delivery selection, product-specific WhatsApp inquiries, and approximate USD pricing are implemented. Payment gateways, delivery guarantees, and handover-photo commitments remain out of scope until operationally supported.
+The storefront and admin use the recommended Tanzanite and Champagne palette. Copy and product discovery speak to Tanzanian shoppers, visitors seeking keepsakes, and diaspora senders. Mobile navigation, occasion filters, landmark-based checkout fields, surprise-delivery selection, product-specific WhatsApp inquiries, and approximate USD pricing are implemented. Payment gateways, delivery guarantees, and handover-photo commitments remain out of scope until operationally supported.

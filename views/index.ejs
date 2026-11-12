@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Giftopia - Authentic Tanzania Gifts & Flower Delivery</title>
+  <title>Tanzanian Gifts & Souvenirs | Giftopia</title>
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
   <div id="campaignBanner" class="tanzanite-bg text-white text-xs py-2 px-4 text-center font-semibold">
     <div class="max-w-7xl mx-auto flex items-center justify-center gap-2">
       <span class="inline-block w-2 h-2 rounded-full bg-[#C5A059] animate-pulse"></span>
-      <span id="campaignBannerText"><% if (campaigns.length) { %><%= campaigns[0].title %>: <%= campaigns[0].description || 'Special seasonal gift delivery' %><% } else { %>Thoughtful Tanzanian gifts for meaningful moments<% } %></span>
+      <span id="campaignBannerText"><% if (campaigns.length) { %><%= campaigns[0].title %>: <%= campaigns[0].description || 'Gifts for celebrations at home and keepsakes from Tanzania' %><% } else { %>Gifts for celebrations at home and keepsakes from Tanzania<% } %></span>
     </div>
   </div>
 
@@ -123,13 +123,13 @@
   <section id="heroSection" class="relative bg-gradient-to-b from-[#F0EBE0] via-[#FAF8F5] to-[#FAF8F5] px-4 border-b border-[#E8E5DF] overflow-hidden">
     <div class="max-w-7xl mx-auto text-center">
       <span class="inline-block px-3.5 py-1 rounded-full text-xs font-semibold bg-[#C5A059] text-white uppercase tracking-wider mb-4 shadow-sm">
-        Curated in Tanzania, sent with care
+        Zawadi za Tanzania · Gifts from Tanzania
       </span>
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight max-w-4xl mx-auto leading-tight">
-        Taste of Tanzania in Every Gift
+        Give a little Tanzania.
       </h1>
       <p class="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4 leading-relaxed">
-        Thoughtfully curated Tanzanian gifts for celebrations at home and loved ones in Tanzania, wherever you are ordering from.
+        For Tanzanians celebrating at home, visitors finding a meaningful keepsake, and families sending gifts to Tanzania. Explore Arusha coffee, Zanzibar spices, Maasai shuka, and flowers.
       </p>
 
       <div class="mt-6 flex flex-wrap items-center justify-center gap-3" role="group" aria-label="Filter gifts by price tier">
@@ -148,7 +148,7 @@
 
   <section class="bg-white border-b border-[#E8E5DF]" aria-label="Shopping information">
     <div class="mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 py-4 text-center text-xs text-gray-600 sm:grid-cols-4 sm:px-6 lg:px-8">
-      <p class="font-semibold">Tanzanian gifts, thoughtfully curated</p>
+      <p class="font-semibold">Arusha coffee · Zanzibar spices · Maasai shuka</p>
       <p>Prices shown in TZS; USD is an estimate</p>
       <p>Add a neighborhood; landmarks help with directions</p>
       <p>Optional surprise delivery</p>
@@ -158,7 +158,7 @@
   <!-- Main Dynamic Products Grid -->
   <main id="storefrontMain" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 flex-1 w-full">
     <div id="occasionFilters" class="mb-7 pt-8" aria-labelledby="occasionHeading">
-      <h2 id="occasionHeading" class="text-sm font-bold uppercase tracking-wide text-gray-700">Find a gift for the occasion</h2>
+      <h2 id="occasionHeading" class="text-sm font-bold uppercase tracking-wide text-gray-700">Shop by occasion or find a Tanzania keepsake</h2>
       <div class="occasion-filters mt-3 flex gap-2 overflow-x-auto pb-2" role="group" aria-label="Filter gifts by occasion">
         <button type="button" class="occasion-filter" data-occasion="all" aria-pressed="true" onclick="setOccasionFilter('all')">All gifts</button>
         <button type="button" class="occasion-filter" data-occasion="birthday" aria-pressed="false" onclick="setOccasionFilter('birthday')">Siku ya Kuzaliwa · Birthday</button>
@@ -172,7 +172,7 @@
     <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h2 id="gridTitle" class="font-display text-2xl font-bold text-gray-900">All Gifts</h2>
-        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Thoughtfully curated Tanzanian gifts for meaningful moments.</p>
+        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels.</p>
         <p id="filterResultCount" class="text-xs text-gray-500 mt-2"><%= products.length %> <%= products.length === 1 ? 'gift' : 'gifts' %> available</p>
       </div>
       <div class="flex items-center gap-3 shrink-0">
@@ -240,18 +240,18 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
           <span class="text-xs font-bold uppercase tracking-widest text-[#C5A059]">Urithi Wetu &bull; Cultural Heritage</span>
-          <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-4">Authentic Tanzania in Gift Form</h2>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900 mt-2 mb-4">Gifts that tell a Tanzania story</h2>
           <p class="text-gray-600 leading-relaxed mb-6">
-            Giftopia sources directly from local Tanzanian cooperatives and artisans: Kakakuwe coffee from Mount Meru in Arusha, authentic Konyagi spirit from Dar es Salaam, handwoven Maasai Shuka blankets, and organic spice blends from Zanzibar's historic Stone Town.
+            Bring home the flavors and craft of Tanzania: Kakakuwe coffee from an Arusha cooperative, Zanzibar spices, handwoven Maasai shuka, and flowers for life's celebrations. Shop for someone here, remember your travels, or send a little Tanzania to loved ones.
           </p>
           <div class="grid grid-cols-2 gap-4">
             <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E5DF]">
               <h4 class="font-bold text-gray-900">Budget Tier (30K)</h4>
-              <p class="text-xs text-gray-500 mt-1">Designed for everyday local birthdays, thank-yous, and compact souvenirs.</p>
+              <p class="text-xs text-gray-500 mt-1">For everyday birthdays, thank-yous, and small gestures worth sharing.</p>
             </div>
             <div class="p-4 bg-[#FAF8F5] rounded-2xl border border-[#E8E5DF]">
               <h4 class="font-bold text-gray-900">Premium Tier (180K)</h4>
-              <p class="text-xs text-gray-500 mt-1">Includes luxury full Maasai Shuka textiles, artisanal spirits & keepsake boxes.</p>
+              <p class="text-xs text-gray-500 mt-1">For big celebrations and memorable keepsakes, from Maasai shuka to curated gift sets.</p>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@
           <img src="/assets/images/birthday-hamper.jpg" alt="A carefully wrapped gift" class="rounded-2xl shadow-xl w-full object-cover max-h-96" loading="lazy" decoding="async">
           <div class="absolute -bottom-4 -right-4 bg-gray-900 text-white p-4 rounded-xl shadow-lg hidden sm:block">
             <p class="text-xs uppercase tracking-wider text-[#C5A059] font-bold">Thoughtfully curated</p>
-            <p class="text-sm font-semibold">Tanzanian gifts, made meaningful</p>
+            <p class="text-sm font-semibold">For home, travels & loved ones</p>
           </div>
         </div>
       </div>
@@ -272,7 +272,7 @@
       <div>
         <h4 class="font-display text-2xl font-bold text-white mb-3">Giftopia</h4>
         <p class="text-xs leading-relaxed">
-          Thoughtfully curated Tanzanian gifts for meaningful moments at home and for loved ones back home. <em class="font-display italic text-[#C5A059] block mt-2 not-italic">"Zawadi Zenye Thamani, Kumbukumbu za Milele"</em>
+          Gifts for Tanzanian celebrations, visitors taking home a keepsake, and loved ones sending something special to Tanzania. <em class="font-display italic text-[#C5A059] block mt-2 not-italic">"Zawadi Zenye Thamani, Kumbukumbu za Milele"</em>
         </p>
       </div>
       <div>
@@ -289,7 +289,7 @@
         <ul class="space-y-2 text-xs">
           <li><a href="javascript:openAuthModal('login')" class="hover:text-white transition">Sign In / Register</a></li>
           <li><a href="javascript:openAccountDrawer()" class="hover:text-white transition">Saved Payment Preferences</a></li>
-          <li>Delivery Information (Dar & Arusha)</li>
+          <li>Delivery options vary by destination</li>
           <li>Payment is confirmed after an order request</li>
         </ul>
       </div>
@@ -1301,7 +1301,7 @@
       document.getElementById('gridTitle').textContent = heading || 'All Gifts';
       document.getElementById('gridSubtitle').textContent = heading
         ? `Thoughtfully selected ${heading.toLowerCase()} from Tanzania.`
-        : 'Thoughtfully curated Tanzanian gifts for meaningful moments.';
+        : 'Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels.';
     }
 
     function setTierFilter(tier) {
