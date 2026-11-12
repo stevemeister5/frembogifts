@@ -32,6 +32,8 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.match(html, /All Collections/);
   assert.doesNotMatch(html, /class="tier-pill/);
   assert.match(html, /id="sortSelect"/);
+  assert.ok(html.indexOf('id="gridTitle"') < html.indexOf('id="sortSelect"'));
+  assert.ok(html.indexOf('id="sortSelect"') < html.indexOf('id="productsGrid"'));
 
   const dataBlock = html.match(/<script id="storefrontData" type="application\/json">([\s\S]*?)<\/script>/);
   assert.ok(dataBlock);
