@@ -526,6 +526,7 @@ app.get('/api/products', async (req, res) => {
         rows = result.rows;
       }
     }
+    res.set('Cache-Control', 'no-store');
     res.json({ success: true, products: rows });
   } catch (error) {
     console.error('Error fetching products:', error);
