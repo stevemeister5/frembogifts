@@ -207,25 +207,9 @@
     </div>
   </section>
 
-  <!-- Filter & Controls Section -->
+  <!-- Sorting Controls -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 mb-8">
-    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-      <!-- Tier Filter Tabs -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-        <span class="text-xs font-semibold uppercase text-gray-400 mr-1 hidden sm:inline">Collection:</span>
-        <button onclick="setTierFilter('all')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-[#C5A059] text-white" data-tier="all">
-          All (<span id="countAll"><%= products.length %></span>)
-        </button>
-        <button onclick="setTierFilter('budget')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-gray-100 text-gray-700 hover:bg-gray-200" data-tier="budget">
-          Budget (<span id="countBudget"><%= products.filter(product => product.tier === 'budget').length %></span>)
-        </button>
-        <button onclick="setTierFilter('premium')" class="tier-pill px-4 py-1.5 rounded-full text-xs font-bold transition bg-gray-100 text-gray-700 hover:bg-gray-200" data-tier="premium">
-          Premium (<span id="countPremium"><%= products.filter(product => product.tier === 'premium').length %></span>)
-        </button>
-      </div>
-
-      <!-- Sort & Active Status Info -->
+    <div class="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm flex justify-end">
       <div class="flex items-center gap-3">
         <label for="sortSelect" class="text-xs font-semibold text-gray-500 uppercase">Sort by:</label>
         <select id="sortSelect" onchange="handleSortChange()" class="text-xs border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#C5A059] bg-[#FAF8F5]">
@@ -771,7 +755,6 @@
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', async () => {
       loadCartFromStorage();
-      updateCounts();
       renderGrid();
       await checkUserAuth();
     });
@@ -1338,28 +1321,8 @@
       document.getElementById('orderSuccessModal').classList.add('hidden');
     }
 
-    function updateCounts() {
-      const allCount = rawProducts.length;
-      const budgetCount = rawProducts.filter(p => p.tier === 'budget').length;
-      const premiumCount = rawProducts.filter(p => p.tier === 'premium').length;
-
-      document.getElementById('countAll').textContent = allCount;
-      document.getElementById('countBudget').textContent = budgetCount;
-      document.getElementById('countPremium').textContent = premiumCount;
-    }
-
     function setTierFilter(tier) {
       currentTier = tier;
-      document.querySelectorAll('.tier-pill').forEach(btn => {
-        if (btn.getAttribute('data-tier') === tier) {
-          btn.classList.add('bg-[#C5A059]', 'text-white');
-          btn.classList.remove('bg-gray-100', 'text-gray-700');
-        } else {
-          btn.classList.remove('bg-[#C5A059]', 'text-white');
-          btn.classList.add('bg-gray-100', 'text-gray-700');
-        }
-      });
-
       const gridTitle = document.getElementById('gridTitle');
       const gridSubtitle = document.getElementById('gridSubtitle');
       if (tier === 'budget') {

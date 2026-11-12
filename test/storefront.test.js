@@ -29,6 +29,9 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.match(html, /Weekend offer - Live offer/);
   assert.match(html, /Seasonal campaign: Live campaign/);
   assert.match(html, /id="filterResultCount"/);
+  assert.match(html, /All Collections/);
+  assert.doesNotMatch(html, /class="tier-pill/);
+  assert.match(html, /id="sortSelect"/);
 
   const dataBlock = html.match(/<script id="storefrontData" type="application\/json">([\s\S]*?)<\/script>/);
   assert.ok(dataBlock);
