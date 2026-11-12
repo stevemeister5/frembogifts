@@ -1158,6 +1158,8 @@
             <p class="text-xs text-gray-700 font-medium">${escapeHtml(o.neighborhood ? o.neighborhood + ', ' + (o.city || 'Dar es Salaam') : (o.city || 'Dar es Salaam'))}</p>
             ${o.landmark ? `<p class="text-[11px] text-[#A88237] font-medium">📍 ${escapeHtml(o.landmark)}</p>` : ''}
             ${o.gift_message ? `<p class="text-[11px] text-gray-500 italic mt-0.5">💬 "${escapeHtml(o.gift_message)}"</p>` : ''}
+            ${o.gift_wrap ? `<p class="text-[11px] text-gray-500 mt-0.5">Gift wrapping (+${Number(o.gift_wrap_fee_tzs).toLocaleString()} TZS)</p>` : ''}
+            ${o.card_upgrade ? `<p class="text-[11px] text-gray-500 mt-0.5">Printed greeting card (+${Number(o.card_upgrade_fee_tzs).toLocaleString()} TZS)</p>` : ''}
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600">
             ${escapeHtml(o.phone)}

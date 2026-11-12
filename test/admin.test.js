@@ -28,7 +28,7 @@ test('renders the admin dashboard through Express and redirects the legacy URL',
   assert.equal(imageResponse.status, 200);
   assert.match(imageResponse.headers.get('content-type'), /image\/svg\+xml/);
 
-  for (const filename of ['arusha-coffee.jpg', 'konyagi-gin.jpg', 'maasai-shuka.jpg']) {
+  for (const filename of ['arusha-coffee.jpg', 'konyagi-gin.jpg', 'maasai-shuka.jpg', 'maasai-beadwork.jpg', 'cashew-nuts.jpg']) {
     const response = await fetch(`${baseUrl}/assets/images/${filename}`);
     assert.equal(response.status, 200, `${filename} should be served`);
     assert.match(response.headers.get('content-type'), /image\/jpeg/);

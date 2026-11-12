@@ -6,6 +6,8 @@ const productImageRules = [
   [/\b(whisky|konyagi)\b/i, '/assets/images/konyagi-gin.jpg'],
   [/valentine/i, '/assets/images/valentines.jpg'],
   [/anniversary/i, '/assets/images/anniversary.jpg'],
+  [/beadwork|beaded/i, '/assets/images/maasai-beadwork.jpg'],
+  [/cashew|nuts/i, '/assets/images/cashew-nuts.jpg'],
   [/\b(kilimanjaro|maasai|shuka)\b/i, '/assets/images/maasai-shuka.jpg'],
   [/\bcoffee\b/i, '/assets/images/arusha-coffee.jpg'],
   [/zanzibar/i, '/assets/images/zanzibar-spice.jpg']

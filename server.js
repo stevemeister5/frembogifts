@@ -5,6 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 const resolveProductImage = require('./product-images');
 const { getProductOccasions, normalizeProductOccasions } = require('./product-occasions');
+const { giftOptions, calculateOrderTotal } = require('./gift-options');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -132,6 +133,10 @@ async function initDatabaseTables() {
       phone TEXT NOT NULL,
       city TEXT NOT NULL,
       gift_message TEXT,
+      gift_wrap BOOLEAN NOT NULL DEFAULT false,
+      gift_wrap_fee_tzs INTEGER NOT NULL DEFAULT 0,
+      card_upgrade BOOLEAN NOT NULL DEFAULT false,
+      card_upgrade_fee_tzs INTEGER NOT NULL DEFAULT 0,
       items TEXT NOT NULL,
       total_tzs INTEGER NOT NULL,
       total_usd NUMERIC(10, 2) NOT NULL,
@@ -158,6 +163,11 @@ async function initDatabaseTables() {
   } catch (e) {
     // Columns might already exist
   }
+
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS gift_wrap BOOLEAN NOT NULL DEFAULT false`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS gift_wrap_fee_tzs INTEGER NOT NULL DEFAULT 0`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS card_upgrade BOOLEAN NOT NULL DEFAULT false`;
+  await sql`ALTER TABLE orders ADD COLUMN IF NOT EXISTS card_upgrade_fee_tzs INTEGER NOT NULL DEFAULT 0`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS products (
@@ -227,17 +237,26 @@ async function initDatabaseTables() {
     );
   `;
 
-  // Seed default products if empty
-  const productCountResult = await sql`SELECT COUNT(*) as count FROM products`;
-  if (parseInt(productCountResult.rows[0].count, 10) === 0) {
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', '/assets/images/thinking-of-you.jpg', '["gratitude"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', '/assets/images/birthday-hamper.jpg', '["birthday","celebration"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', '/assets/images/konyagi-gin.jpg', '["birthday","celebration"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', '/assets/images/valentines.jpg', '["love"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', '/assets/images/anniversary.jpg', '["love"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', '/assets/images/maasai-shuka.jpg', '["souvenir"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', '/assets/images/arusha-coffee.jpg', '["gratitude"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', '/assets/images/zanzibar-spice.jpg', '["souvenir"]')`;
+  const defaultProducts = [
+    { name: 'Thinking of You Bouquet', tier: 'budget', price_tzs: 30000, price_usd: 12, description: '10-12 stems of mixed seasonal flowers, simply wrapped for a thoughtful thank-you or just-because gift.', image_url: '/assets/images/thinking-of-you.jpg', occasions: ['gratitude'] },
+    { name: 'Birthday Celebration Hamper', tier: 'budget', price_tzs: 65000, price_usd: 26, description: 'A cheerful birthday set with seasonal flowers and chocolates.', image_url: '/assets/images/birthday-hamper.jpg', occasions: ['birthday', 'celebration'] },
+    { name: 'Whisky & Chill Gift for Him', tier: 'premium', price_tzs: 65000, price_usd: 26, description: 'A Konyagi gift set with glasses and snacks. Alcohol orders require applicable licensing and age verification.', image_url: '/assets/images/konyagi-gin.jpg', occasions: ['birthday', 'celebration'] },
+    { name: 'Valentines Day Premium', tier: 'premium', price_tzs: 80000, price_usd: 32, description: 'A romantic seasonal arrangement with roses and chocolates.', image_url: '/assets/images/valentines.jpg', occasions: ['love'] },
+    { name: 'Anniversary Romantic Package', tier: 'premium', price_tzs: 75000, price_usd: 30, description: 'A romantic rose arrangement with chocolates for an anniversary.', image_url: '/assets/images/anniversary.jpg', occasions: ['love'] },
+    { name: 'Kilimanjaro Sunset', tier: 'premium', price_tzs: 180000, price_usd: 72, description: 'A 100% cotton Maasai shuka, a memorable textile keepsake from Tanzania.', image_url: '/assets/images/maasai-shuka.jpg', occasions: ['souvenir'] },
+    { name: 'Kakakuwe Coffee', tier: 'budget', price_tzs: 30000, price_usd: 12, description: '250g of Arusha-region coffee from the Kakakuwe cooperative.', image_url: '/assets/images/arusha-coffee.jpg', occasions: ['gratitude', 'souvenir'] },
+    { name: 'Zanzibar Spice & Stone', tier: 'premium', price_tzs: 200000, price_usd: 80, description: 'A keepsake collection pairing Zanzibar spices with a Stone Town-inspired memento.', image_url: '/assets/images/zanzibar-spice.jpg', occasions: ['souvenir'] },
+    { name: 'Zanzibar Spice Trio', tier: 'budget', price_tzs: 25000, price_usd: 10, description: 'A small set of Zanzibar-inspired spices; an easy individual gift or a flavorful addition to a hamper.', image_url: '/assets/images/zanzibar-spice.jpg', occasions: ['gratitude', 'souvenir'] },
+    { name: 'Maasai Beadwork Keepsake', tier: 'budget', price_tzs: 35000, price_usd: 14, description: 'A colorful beadwork keepsake. Artisan patterns and availability may vary; confirm the exact item before fulfillment.', image_url: '/assets/images/maasai-beadwork.jpg', occasions: ['gratitude', 'souvenir'] },
+    { name: 'Roasted Cashew Snack Pouch', tier: 'budget', price_tzs: 20000, price_usd: 8, description: 'A pouch of roasted cashews, a simple snack-sized gift to pair with coffee or spices.', image_url: '/assets/images/cashew-nuts.jpg', occasions: ['gratitude', 'souvenir'] }
+  ];
+  for (const product of defaultProducts) {
+    await sql`
+      INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions)
+      SELECT ${product.name}, ${product.tier}, ${product.price_tzs}, ${product.price_usd},
+        ${product.description}, ${product.image_url}, ${JSON.stringify(product.occasions)}
+      WHERE NOT EXISTS (SELECT 1 FROM products WHERE name = ${product.name})
+    `;
   }
 
   // Seed default offers if empty
@@ -300,7 +319,8 @@ app.get('/', async (req, res) => {
       })),
       offers: offersResult.rows,
       campaigns: campaignsResult.rows,
-      whatsappNumber
+      whatsappNumber,
+      giftOptions
     });
   } catch (error) {
     console.error('Error rendering storefront:', error);
@@ -487,7 +507,7 @@ app.post('/api/cart', requireAuth, async (req, res) => {
 // POST /api/orders - Place a new order
 app.post('/api/orders', async (req, res) => {
   try {
-    const { recipient_name, phone, city, neighborhood, landmark, is_surprise, gift_message, items, total_tzs, total_usd, discount_tzs, payment_method } = req.body;
+    const { recipient_name, phone, city, neighborhood, landmark, is_surprise, gift_message, gift_wrap, card_upgrade, items, total_tzs, discount_tzs, payment_method } = req.body;
     if (!recipient_name || !phone || !items || !total_tzs) {
       return res.status(400).json({ success: false, message: 'Missing required order details' });
     }
@@ -495,17 +515,20 @@ app.post('/api/orders', async (req, res) => {
     const orderNumber = 'FG-' + Math.floor(100000 + Math.random() * 900000);
     const userId = req.user ? req.user.id : null;
     const itemsStr = typeof items === 'string' ? items : JSON.stringify(items);
-    const parsedTotalTzs = Math.round(Number(total_tzs) || 0);
-    const parsedTotalUsd = Number(total_usd != null ? total_usd : (parsedTotalTzs / 2500)).toFixed(2);
+    const orderTotals = calculateOrderTotal(total_tzs, { gift_wrap, card_upgrade });
+    const parsedTotalTzs = orderTotals.total_tzs;
+    const parsedTotalUsd = (parsedTotalTzs / 2500).toFixed(2);
     const parsedDiscount = Math.round(Number(discount_tzs) || 0);
     const surpriseFlag = Boolean(is_surprise);
 
     const { rows } = await sql`
       INSERT INTO orders (
         order_number, user_id, recipient_name, phone, city, neighborhood, landmark, is_surprise, gift_message,
+        gift_wrap, gift_wrap_fee_tzs, card_upgrade, card_upgrade_fee_tzs,
         items, total_tzs, total_usd, discount_tzs, payment_method, status
       ) VALUES (
         ${orderNumber}, ${userId}, ${recipient_name}, ${phone}, ${city || 'Dar es Salaam'}, ${neighborhood || ''}, ${landmark || ''}, ${surpriseFlag}, ${gift_message || ''},
+        ${orderTotals.gift_wrap}, ${orderTotals.gift_wrap_fee_tzs}, ${orderTotals.card_upgrade}, ${orderTotals.card_upgrade_fee_tzs},
         ${itemsStr}, ${parsedTotalTzs}, ${parsedTotalUsd}, ${parsedDiscount}, ${payment_method || 'mpesa'}, 'pending'
       ) RETURNING *
     `;

@@ -27,6 +27,20 @@ test('resolves legacy product photos to matching local images', () => {
   );
   assert.equal(
     resolveProductImage({
+      name: 'Maasai Beadwork Keepsake',
+      image_url: null
+    }),
+    '/assets/images/maasai-beadwork.jpg'
+  );
+  assert.equal(
+    resolveProductImage({
+      name: 'Roasted Cashew Snack Pouch',
+      image_url: null
+    }),
+    '/assets/images/cashew-nuts.jpg'
+  );
+  assert.equal(
+    resolveProductImage({
       name: 'Kilimanjaro Sunset',
       image_url: '/assets/images/giftopia-placeholder.svg'
     }),

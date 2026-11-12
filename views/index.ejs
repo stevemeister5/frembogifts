@@ -191,7 +191,7 @@
     <div class="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h2 id="gridTitle" class="font-display text-2xl font-bold text-gray-900">All Gifts</h2>
-        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels.</p>
+        <p id="gridSubtitle" class="text-sm text-gray-500 mt-1">Choose a ready-made gift or add individual favorites to your cart to build a hamper of your own.</p>
         <p id="filterResultCount" class="text-xs text-gray-500 mt-2"><%= products.length %> <%= products.length === 1 ? 'gift' : 'gifts' %> available</p>
       </div>
       <div class="flex items-center gap-3 shrink-0">
@@ -326,6 +326,8 @@
         <li><a href="https://www.flickr.com/photos/91374488@N07/47347818841" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Coffee Beans Bag</a> by nick.amoscato, <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">CC BY 2.0</a>; resized/re-encoded for the storefront.</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Konyagi_TZ.jpg" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Konyagi TZ</a> by Kipala, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">CC BY-SA 4.0</a>; resized/re-encoded and shared under the same license.</li>
         <li><a href="https://commons.wikimedia.org/wiki/File:Rubega_(_a_maasai_cloth).jpg" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Rubega (a Maasai cloth)</a> by Rosemary S. Haule, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">CC0 1.0</a>; resized/re-encoded for the storefront.</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Maasai_beads_close_up_in_the_Amboseli_ecosystem,_Kenya.jpg" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Maasai beads close up in the Amboseli ecosystem, Kenya</a> by Kengitau254, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">CC BY-SA 4.0</a>; resized/re-encoded and shared under the same license.</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Pile_of_cashews.jpg" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">Pile of cashews</a> by hz_westfalen_de / Pixabay, <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer" class="underline hover:text-white">CC0</a>; resized/re-encoded for the storefront.</li>
       </ul>
     </details>
     <div class="max-w-7xl mx-auto pt-8 border-t border-white/10 text-center text-xs">
@@ -588,7 +590,7 @@
 
   <!-- CHECKOUT MODAL (Pre-filled with Saved Details if logged in) -->
   <div id="checkoutModal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-gray-200">
+    <div class="bg-white rounded-3xl max-w-md w-full max-h-[92vh] shadow-2xl overflow-hidden border border-gray-200">
       <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
         <div>
           <h3 class="font-display text-lg font-bold text-gray-900">Delivery & Payment</h3>
@@ -596,7 +598,7 @@
         </div>
         <button onclick="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
       </div>
-      <form onsubmit="completeOrder(event)" class="p-6 space-y-3.5">
+      <form onsubmit="completeOrder(event)" class="p-6 space-y-3.5 max-h-[calc(92vh-4rem)] overflow-y-auto">
         <div>
           <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Recipient Name *</label>
           <input type="text" id="orderRecipient" required class="w-full px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="e.g. Neema Mwangi">
@@ -660,9 +662,42 @@
           <p class="text-[11px] leading-relaxed text-gray-500">Choose how you would prefer to pay. This page records your order request but does not process a payment.</p>
         </div>
 
+        <div class="p-3.5 bg-[#FAF8F5] rounded-2xl border border-[#E8E5DF] space-y-3">
+          <h4 class="text-xs font-bold uppercase tracking-wide text-[#0E1726]">Make it a little more special</h4>
+          <label class="flex items-start gap-2.5 cursor-pointer">
+            <input type="checkbox" id="orderGiftWrap" onchange="updateCheckoutTotal()" class="mt-0.5 rounded w-4 h-4 border-[#E8E5DF] text-[#C5A059]">
+            <span>
+              <span class="block text-xs font-semibold text-gray-800">Gift wrapping <span class="text-[#A88237]">(+5,000 TZS)</span></span>
+              <span class="block text-[11px] text-gray-500 mt-0.5">A finishing touch for your gift.</span>
+            </span>
+          </label>
+          <label class="flex items-start gap-2.5 cursor-pointer">
+            <input type="checkbox" id="orderCardUpgrade" onchange="updateCheckoutTotal()" class="mt-0.5 rounded w-4 h-4 border-[#E8E5DF] text-[#C5A059]">
+            <span>
+              <span class="block text-xs font-semibold text-gray-800">Upgrade your note to a printed greeting card <span class="text-[#A88237]">(+3,000 TZS)</span></span>
+              <span class="block text-[11px] text-gray-500 mt-0.5">Your personal message stays free.</span>
+            </span>
+          </label>
+          <div class="border-t border-[#E8E5DF] pt-2 space-y-1.5 text-xs">
+            <div class="flex justify-between gap-3 text-gray-600">
+              <span>Gifts after offers</span><span id="orderBaseTotal">0 TZS</span>
+            </div>
+            <div class="flex justify-between gap-3 text-gray-600">
+              <span>Gift wrapping</span><span id="orderGiftWrapTotal">Not selected</span>
+            </div>
+            <div class="flex justify-between gap-3 text-gray-600">
+              <span>Printed greeting card</span><span id="orderCardUpgradeTotal">Not selected</span>
+            </div>
+            <div class="flex justify-between gap-3 border-t border-[#E8E5DF] pt-1.5 font-bold text-[#0E1726]">
+              <span>Order total</span><span id="checkoutTotalSummary">0 TZS</span>
+            </div>
+          </div>
+        </div>
+
         <div>
-          <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Gift Card Message</label>
-          <textarea id="orderNote" rows="2" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="Write a personalized note for the gift card..."></textarea>
+          <label for="orderNote" class="block text-xs font-semibold text-gray-700 uppercase mb-1">Gift message <span class="font-normal normal-case text-gray-500">(free)</span></label>
+          <textarea id="orderNote" rows="2" maxlength="500" class="w-full px-3 py-1.5 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-[#C5A059] focus:outline-none" placeholder="Write a special message for the recipient..."></textarea>
+          <p class="text-[11px] text-gray-500 mt-1">We’ll pass your message along. Choose the printed-card upgrade above if you’d like it presented on a greeting card.</p>
         </div>
 
         <div class="pt-2">
@@ -695,7 +730,7 @@
     </div>
   </div>
 
-  <script id="storefrontData" type="application/json"><%- JSON.stringify({ products, offers, campaigns, whatsappNumber }).replace(/</g, '\\u003c') %></script>
+  <script id="storefrontData" type="application/json"><%- JSON.stringify({ products, offers, campaigns, whatsappNumber, giftOptions }).replace(/</g, '\\u003c') %></script>
 
   <!-- Application Logic -->
   <script>
@@ -705,6 +740,7 @@
     let rawProducts = storefrontData.products;
     let activeOffers = storefrontData.offers;
     const whatsappNumber = storefrontData.whatsappNumber;
+    const giftOptions = storefrontData.giftOptions;
     let currentTier = 'all';
     let currentOccasion = 'all';
     let searchQuery = '';
@@ -1243,11 +1279,35 @@
         badge.classList.add('hidden');
       }
 
+      updateCheckoutTotal();
       document.getElementById('checkoutModal').classList.remove('hidden');
     }
 
     function closeCheckoutModal() {
       document.getElementById('checkoutModal').classList.add('hidden');
+    }
+
+    function getCheckoutBaseTotal() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price_tzs * item.quantity), 0);
+      const discount = activeOffers.length > 0
+        ? Math.round((subtotal * activeOffers[0].discount_percent) / 100)
+        : 0;
+      return Math.max(0, subtotal - discount);
+    }
+
+    function updateCheckoutTotal() {
+      const baseTotal = getCheckoutBaseTotal();
+      const giftWrapSelected = document.getElementById('orderGiftWrap').checked;
+      const cardUpgradeSelected = document.getElementById('orderCardUpgrade').checked;
+      const giftWrapFee = giftWrapSelected ? giftOptions.giftWrapFeeTzs : 0;
+      const cardUpgradeFee = cardUpgradeSelected ? giftOptions.cardUpgradeFeeTzs : 0;
+      const total = baseTotal + giftWrapFee + cardUpgradeFee;
+
+      document.getElementById('orderBaseTotal').textContent = `${baseTotal.toLocaleString()} TZS`;
+      document.getElementById('orderGiftWrapTotal').textContent = giftWrapSelected ? `${giftWrapFee.toLocaleString()} TZS` : 'Not selected';
+      document.getElementById('orderCardUpgradeTotal').textContent = cardUpgradeSelected ? `${cardUpgradeFee.toLocaleString()} TZS` : 'Not selected';
+      document.getElementById('checkoutTotalSummary').textContent = `${total.toLocaleString()} TZS`;
+      document.getElementById('checkoutTotalBtn').textContent = `${total.toLocaleString()} TZS`;
     }
 
     async function completeOrder(e) {
@@ -1259,6 +1319,8 @@
       const landmark = (document.getElementById('orderLandmark') || {value:''}).value.trim();
       const is_surprise = (document.getElementById('orderIsSurprise') || {checked:false}).checked;
       const gift_message = document.getElementById('orderNote').value.trim();
+      const gift_wrap = document.getElementById('orderGiftWrap').checked;
+      const card_upgrade = document.getElementById('orderCardUpgrade').checked;
       const payment_method = document.querySelector('input[name="orderPaymentMethod"]:checked').value;
 
       let subtotal = cart.reduce((sum, item) => sum + (item.price_tzs * item.quantity), 0);
@@ -1267,7 +1329,6 @@
         discount_tzs = Math.round((subtotal * activeOffers[0].discount_percent) / 100);
       }
       const total_tzs = Math.max(0, subtotal - discount_tzs);
-      const total_usd = Math.round(total_tzs / 2500);
 
       const orderPayload = {
         recipient_name,
@@ -1277,9 +1338,10 @@
         landmark,
         is_surprise,
         gift_message,
+        gift_wrap,
+        card_upgrade,
         items: cart,
         total_tzs,
-        total_usd,
         discount_tzs,
         payment_method
       };
@@ -1298,6 +1360,10 @@
           // Clear cart
           cart = [];
           saveCartToStorage();
+          document.getElementById('orderGiftWrap').checked = false;
+          document.getElementById('orderCardUpgrade').checked = false;
+          document.getElementById('orderNote').value = '';
+          updateCheckoutTotal();
 
           closeCheckoutModal();
           document.getElementById('orderSuccessModal').classList.remove('hidden');
@@ -1328,7 +1394,7 @@
       document.getElementById('gridTitle').textContent = heading || 'All Gifts';
       document.getElementById('gridSubtitle').textContent = heading
         ? `Thoughtfully selected ${heading.toLowerCase()} from Tanzania.`
-        : 'Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels.';
+        : 'Choose a ready-made gift or add individual favorites to your cart to build a hamper of your own.';
     }
 
     function setTierFilter(tier) {

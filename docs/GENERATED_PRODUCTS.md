@@ -317,3 +317,21 @@ Based on the comprehensive price analysis in PRICE_ANALYSIS.md, here are specifi
 *Product generation based on: PRICE_ANALYSIS.md comprehensive price ranges, RESEARCH_FINDINGS.md market gaps, REGULATORY_REQUIREMENTS.md alcohol compliance, and Jiyi.co.tz/Duka Direct market intelligence. All prices in TZS with USD equivalents at ~2,500 TZS = 1 USD. Verify current market rates before launch.*
 
 ---
+
+## 2026 Catalog Refresh: Individual Gifts and Build-Your-Own Hampers
+
+The storefront already supports adding multiple products to one cart, so shoppers can combine individual gifts into a hamper request or buy a single item. The refreshed starter catalog adds a Zanzibar spice trio at 25,000 TZS, a Maasai beadwork keepsake at 35,000 TZS, and a roasted cashew snack pouch at 20,000 TZS. These are entry-price recommendations; confirm artisan/supplier availability, pack size, and final cost before fulfilling orders.
+
+The existing 30,000 TZS Kakakuwe coffee and seasonal bouquet, and the 180,000 TZS Maasai shuka, give shoppers choices near both target price points. The existing curated flower and gift sets add mid-range options.
+
+### Current competitor check (12 November 2026)
+
+Giiftee's public Dar es Salaam catalog showed 51 products across flowers, cakes, hampers, and combo gift sets. Listed examples included seasonal bouquets at 52,000-55,000 TZS, a bouquet at 78,000 TZS, cakes from 60,000 TZS, and an anniversary gift box at 95,000 TZS. This supports a clear entry point below the competitor's currently visible bouquets, alongside mid-range celebration gifts. These are competitor list prices, not supplier quotes or a complete Tanzania market survey.
+
+- [Giiftee catalog](https://giiftee.com/collections/all) — product categories, listed prices, and occasions.
+- [Giiftee storefront](https://giiftee.com/) — current best-seller examples and Dar es Salaam delivery positioning.
+- See [PRICE_ANALYSIS.md](./PRICE_ANALYSIS.md) and [RESEARCH_FINDINGS.md](./RESEARCH_FINDINGS.md) for the earlier broader market analysis; those documents were researched in November 2024 and should be treated as historical context.
+
+Gift wrapping and the printed-card upgrade are optional checkout services priced at 5,000 TZS and 3,000 TZS respectively. The written gift message remains free.
+
+---

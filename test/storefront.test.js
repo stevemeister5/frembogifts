@@ -2,11 +2,12 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const test = require('node:test');
 const ejs = require('ejs');
+const { giftOptions } = require('../gift-options');
 
 const viewPath = path.join(__dirname, '..', 'views', 'index.ejs');
 
 async function renderStorefront(data) {
-  return ejs.renderFile(viewPath, data);
+  return ejs.renderFile(viewPath, { giftOptions, ...data });
 }
 
 test('renders live storefront data and safely serializes it for client-side interactions', async () => {
@@ -39,6 +40,13 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.match(html, /Photo credits/);
   assert.match(html, /visitors finding a meaningful keepsake/);
   assert.match(html, /Shop by occasion or find a Tanzania keepsake/);
+  assert.match(html, /build a hamper of your own/);
+  assert.match(html, /Gift wrapping/);
+  assert.match(html, /Upgrade your note to a printed greeting card/);
+  assert.match(html, /Gift message <span class="font-normal normal-case text-gray-500">\(free\)<\/span>/);
+  assert.match(html, /id="checkoutTotalSummary"/);
+  assert.match(html, /id="orderGiftWrap"/);
+  assert.match(html, /id="orderCardUpgrade"/);
   assert.match(html, /href="\/assets\/styles\.css"/);
   assert.match(html, /https:\/\/wa\.me\/255712345678/);
   assert.doesNotMatch(html, /cdn\.tailwindcss\.com|255700000000/);
@@ -52,6 +60,7 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.equal(JSON.parse(dataBlock[1]).products[0].name, product.name);
   assert.deepEqual(JSON.parse(dataBlock[1]).products[0].occasions, ['souvenir']);
   assert.equal(JSON.parse(dataBlock[1]).whatsappNumber, '255712345678');
+  assert.deepEqual(JSON.parse(dataBlock[1]).giftOptions, giftOptions);
   assert.ok(!dataBlock[1].includes('</script>'));
 
   const applicationScript = html.match(/<script>([\s\S]*?)<\/script>/);
@@ -76,7 +85,7 @@ test('renders the empty catalog and hides the offers ribbon when no active recor
   assert.match(offersRibbon[1], /\bhidden\b/);
   assert.ok(emptyState);
   assert.doesNotMatch(emptyState[1], /\bhidden\b/);
-  assert.match(html, /Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels/);
+  assert.match(html, /build a hamper of your own/);
   assert.doesNotMatch(html, /WhatsApp help/);
 });
 
