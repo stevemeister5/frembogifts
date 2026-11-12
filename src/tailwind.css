@@ -177,6 +177,11 @@ html {
   background: #f5f0eb;
 }
 
+.product-image--contain {
+  object-fit: contain;
+  background: #f3f0e9;
+}
+
 .occasion-filters {
   scrollbar-width: thin;
   scrollbar-color: var(--gold) transparent;

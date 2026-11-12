@@ -5,9 +5,9 @@ Giftopia is an Express application deployed on Vercel. Its storefront is rendere
 ## Features
 
 - Server-rendered products, offers, and campaigns from Vercel Postgres
-- Client-side search, tier and occasion filtering, and sorting
+- Client-side search, tier and occasion filtering based on product tags, and sorting
 - Shopping cart, customer accounts, and checkout flows
-- Admin interface for managing products, offers, and campaigns
+- Admin interface for managing products and their occasion tags, offers, and campaigns
 - Responsive storefront with mobile navigation and optional WhatsApp contact
 - Locally compiled Tailwind stylesheet and locally served product images
 
@@ -16,7 +16,7 @@ Giftopia is an Express application deployed on Vercel. Its storefront is rendere
 1. Connect the repository to Vercel and provision Vercel Postgres.
 2. Deploy using the included `vercel.json` configuration.
 3. Configure `JWT_SECRET` with a strong random value. Set `WHATSAPP_NUMBER` to the Giftopia contact number in international digits-only format (for example `2557...`); WhatsApp links remain hidden when it is unset.
-4. Call `/api/setup` once to create or migrate tables and seed initial data. This also adds occasion tags and moves known catalog images to local assets.
+4. Call `/api/setup` once to create or migrate tables and seed initial data. This stores occasion tags and maps known catalog photos to local assets. The storefront also derives tags for known legacy products with no stored tags, so occasion filters work before this migration is run.
 
 Vercel receives the prebuilt `public/styles.css` and image assets through `vercel.json`. When changing Tailwind classes, run `npm run build:css` and include the generated stylesheet in the commit. The build is also run by `npm start` for local development.
 
@@ -43,5 +43,6 @@ Repository root/
     ├── REGULATORY_REQUIREMENTS.md
     ├── PRICE_ANALYSIS.md
     ├── GENERATED_PRODUCTS.md
+    ├── IMAGE_CREDITS.md
     └── brand_and_ux_strategy_tanzania.md
 ```

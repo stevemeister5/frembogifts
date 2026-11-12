@@ -36,6 +36,7 @@ test('renders live storefront data and safely serializes it for client-side inte
   assert.match(html, /class="hero-gallery"/);
   assert.match(html, /src="\/assets\/images\/zanzibar-spice\.jpg"/);
   assert.match(html, /src="\/assets\/images\/thinking-of-you\.jpg"/);
+  assert.match(html, /Photo credits/);
   assert.match(html, /visitors finding a meaningful keepsake/);
   assert.match(html, /Shop by occasion or find a Tanzania keepsake/);
   assert.match(html, /href="\/assets\/styles\.css"/);
@@ -62,7 +63,7 @@ test('renders live storefront data and safely serializes it for client-side inte
   );
   assert.ok(productCardTemplate);
   assert.match(productCardTemplate[1], /productWhatsAppUrl\(p\)/);
-  assert.match(applicationScript[1], /p\.occasions\.includes\(currentOccasion\)/);
+  assert.match(applicationScript[1], /Array\.isArray\(p\.occasions\) && p\.occasions\.includes\(currentOccasion\)/);
   assert.match(applicationScript[1], /function setOccasionFilter\(occasion\)/);
 });
 
@@ -77,6 +78,26 @@ test('renders the empty catalog and hides the offers ribbon when no active recor
   assert.doesNotMatch(emptyState[1], /\bhidden\b/);
   assert.match(html, /Find a gift for a Tanzanian celebration, thank-you, or a keepsake from your travels/);
   assert.doesNotMatch(html, /WhatsApp help/);
+});
+
+test('keeps the Konyagi bottle fully visible in product cards', async () => {
+  const html = await renderStorefront({
+    products: [{
+      id: 1,
+      name: 'Whisky & Chill Gift for Him',
+      tier: 'premium',
+      price_tzs: 65000,
+      price_usd: 26,
+      description: '',
+      image_url: '/assets/images/konyagi-gin.jpg',
+      occasions: ['birthday', 'celebration']
+    }],
+    offers: [],
+    campaigns: [],
+    whatsappNumber: ''
+  });
+
+  assert.match(html, /class="product-image product-image--contain/);
 });
 
 test('does not expose WhatsApp contact links without a configured number', async () => {

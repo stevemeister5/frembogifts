@@ -18,6 +18,27 @@ test('resolves legacy product photos to matching local images', () => {
     }),
     '/assets/images/thinking-of-you.jpg'
   );
+  assert.equal(
+    resolveProductImage({
+      name: 'Kakakuwe Coffee',
+      image_url: 'https://via.placeholder.com/400x250?text=Product+Image'
+    }),
+    '/assets/images/arusha-coffee.jpg'
+  );
+  assert.equal(
+    resolveProductImage({
+      name: 'Kilimanjaro Sunset',
+      image_url: '/assets/images/giftopia-placeholder.svg'
+    }),
+    '/assets/images/maasai-shuka.jpg'
+  );
+  assert.equal(
+    resolveProductImage({
+      name: 'Whisky & Chill Gift for Him',
+      image_url: '/assets/images/giftopia-placeholder.svg'
+    }),
+    '/assets/images/konyagi-gin.jpg'
+  );
 });
 
 test('preserves local and custom product image URLs', () => {

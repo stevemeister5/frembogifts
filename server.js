@@ -4,11 +4,11 @@ const { sql } = require('@vercel/postgres');
 const path = require('path');
 const crypto = require('crypto');
 const resolveProductImage = require('./product-images');
+const { getProductOccasions, normalizeProductOccasions } = require('./product-occasions');
 
 const app = express();
 const port = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'frembogifts-tanzania-auth-secret-key-2026';
-const productOccasions = ['birthday', 'celebration', 'gratitude', 'love', 'souvenir'];
 
 // Middleware
 app.use(cors());
@@ -17,21 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use('/assets', express.static(path.join(__dirname, 'public')));
-
-function normalizeProductOccasions(value) {
-  if (typeof value === 'string') {
-    try {
-      value = JSON.parse(value);
-    } catch {
-      return null;
-    }
-  }
-  if (value === undefined) return [];
-  if (!Array.isArray(value) || value.some(occasion => !productOccasions.includes(occasion))) {
-    return null;
-  }
-  return [...new Set(value)];
-}
 
 // ===== Crypto & Token Helpers =====
 
@@ -196,7 +181,7 @@ async function initDatabaseTables() {
       WHEN LOWER(name) LIKE '%valentine%' OR LOWER(name) LIKE '%anniversary%' THEN '["love"]'
       WHEN LOWER(name) LIKE '%thinking of you%' OR LOWER(name) LIKE '%coffee%' THEN '["gratitude"]'
       WHEN LOWER(name) LIKE '%kilimanjaro%' OR LOWER(name) LIKE '%zanzibar%' THEN '["souvenir"]'
-      WHEN LOWER(name) LIKE '%whisky%' THEN '["birthday","celebration"]'
+      WHEN LOWER(name) LIKE '%whisky%' OR LOWER(name) LIKE '%konyagi%' THEN '["birthday","celebration"]'
       ELSE occasions
     END
     WHERE occasions IS NULL OR occasions = '[]'
@@ -205,11 +190,11 @@ async function initDatabaseTables() {
     UPDATE products SET image_url = CASE
       WHEN LOWER(name) LIKE '%thinking of you%' THEN '/assets/images/thinking-of-you.jpg'
       WHEN LOWER(name) LIKE '%birthday%' THEN '/assets/images/birthday-hamper.jpg'
-      WHEN LOWER(name) LIKE '%whisky%' THEN '/assets/images/giftopia-placeholder.svg'
+      WHEN LOWER(name) LIKE '%whisky%' OR LOWER(name) LIKE '%konyagi%' THEN '/assets/images/konyagi-gin.jpg'
       WHEN LOWER(name) LIKE '%valentine%' THEN '/assets/images/valentines.jpg'
       WHEN LOWER(name) LIKE '%anniversary%' THEN '/assets/images/anniversary.jpg'
-      WHEN LOWER(name) LIKE '%kilimanjaro%' THEN '/assets/images/giftopia-placeholder.svg'
-      WHEN LOWER(name) LIKE '%coffee%' THEN '/assets/images/giftopia-placeholder.svg'
+      WHEN LOWER(name) LIKE '%kilimanjaro%' OR LOWER(name) LIKE '%maasai%' OR LOWER(name) LIKE '%shuka%' THEN '/assets/images/maasai-shuka.jpg'
+      WHEN LOWER(name) LIKE '%coffee%' THEN '/assets/images/arusha-coffee.jpg'
       WHEN LOWER(name) LIKE '%zanzibar%' THEN '/assets/images/zanzibar-spice.jpg'
       ELSE image_url
     END
@@ -247,11 +232,11 @@ async function initDatabaseTables() {
   if (parseInt(productCountResult.rows[0].count, 10) === 0) {
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', '/assets/images/thinking-of-you.jpg', '["gratitude"]')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', '/assets/images/birthday-hamper.jpg', '["birthday","celebration"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', '/assets/images/giftopia-placeholder.svg', '["birthday","celebration"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', '/assets/images/konyagi-gin.jpg', '["birthday","celebration"]')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', '/assets/images/valentines.jpg', '["love"]')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', '/assets/images/anniversary.jpg', '["love"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', '/assets/images/giftopia-placeholder.svg', '["souvenir"]')`;
-    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', '/assets/images/giftopia-placeholder.svg', '["gratitude"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', '/assets/images/maasai-shuka.jpg', '["souvenir"]')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', '/assets/images/arusha-coffee.jpg', '["gratitude"]')`;
     await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, occasions) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', '/assets/images/zanzibar-spice.jpg', '["souvenir"]')`;
   }
 
@@ -311,7 +296,7 @@ app.get('/', async (req, res) => {
       products: productsResult.rows.map(product => ({
         ...product,
         image_url: resolveProductImage(product),
-        occasions: normalizeProductOccasions(product.occasions) || []
+        occasions: getProductOccasions(product, true)
       })),
       offers: offersResult.rows,
       campaigns: campaignsResult.rows,
@@ -604,7 +589,8 @@ app.get('/api/products', async (req, res) => {
       success: true,
       products: rows.map(product => ({
         ...product,
-        image_url: resolveProductImage(product)
+        image_url: resolveProductImage(product),
+        occasions: normalizeProductOccasions(product.occasions) || []
       }))
     });
   } catch (error) {
@@ -620,7 +606,14 @@ app.get('/api/products/:id', async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
-    res.json({ success: true, product: { ...rows[0], image_url: resolveProductImage(rows[0]) } });
+    res.json({
+      success: true,
+      product: {
+        ...rows[0],
+        image_url: resolveProductImage(rows[0]),
+        occasions: normalizeProductOccasions(rows[0].occasions) || []
+      }
+    });
   } catch (error) {
     console.error('Error fetching product:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -644,7 +637,7 @@ app.post('/api/products', requireAdmin, async (req, res) => {
       VALUES (${name}, ${tier}, ${price_tzs}, ${price_usd || null}, ${description || ''}, ${image_url || '/assets/images/giftopia-placeholder.svg'}, ${JSON.stringify(occasions)}, 1, CURRENT_TIMESTAMP)
       RETURNING *
     `;
-    res.json({ success: true, product: rows[0] });
+    res.json({ success: true, product: { ...rows[0], occasions: normalizeProductOccasions(rows[0].occasions) || [] } });
   } catch (error) {
     console.error('Error creating product:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -676,7 +669,7 @@ app.put('/api/products/:id', requireAdmin, async (req, res) => {
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
-    res.json({ success: true, product: rows[0] });
+    res.json({ success: true, product: { ...rows[0], occasions: normalizeProductOccasions(rows[0].occasions) || [] } });
   } catch (error) {
     console.error('Error updating product:', error);
     res.status(500).json({ success: false, message: error.message });
