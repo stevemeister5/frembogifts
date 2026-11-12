@@ -3,9 +3,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const { sql } = require('@vercel/postgres');
 const path = require('path');
+const crypto = require('crypto');
 
 const app = express();
 const port = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'frembogifts-tanzania-auth-secret-key-2026';
 
 // Middleware
 app.use(cors());
@@ -15,98 +17,497 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Database tables are expected to exist in the Vercel Postgres database:
-// - products (id, name, tier, price_tzs, price_usd, description, image_url, is_active, created_at)
-// - offers (id, title, description, discount_percent, min_tier, start_date, end_date, is_active, created_at)
-// - campaigns (id, title, description, start_date, end_date, is_active, created_at)
+// ===== Crypto & Token Helpers =====
 
-// API status / health check
+function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) {
+  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return { hash, salt };
+}
+
+function verifyPassword(password, hash, salt) {
+  const checkHash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+  return checkHash === hash;
+}
+
+function generateToken(user) {
+  const payload = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    exp: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days expiration
+  };
+  const payloadB64 = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const signature = crypto.createHmac('sha256', JWT_SECRET).update(payloadB64).digest('base64url');
+  return `${payloadB64}.${signature}`;
+}
+
+function verifyToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+  const [payloadB64, signature] = parts;
+  const expectedSig = crypto.createHmac('sha256', JWT_SECRET).update(payloadB64).digest('base64url');
+  if (signature !== expectedSig) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf8'));
+    if (payload.exp && payload.exp < Date.now()) return null;
+    return payload;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ===== Authentication Middleware =====
+
+function authenticateUser(req, res, next) {
+  const authHeader = req.headers.authorization || req.headers['x-auth-token'];
+  let token = null;
+  if (authHeader) {
+    token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : authHeader.trim();
+  }
+  req.user = verifyToken(token);
+  next();
+}
+
+function requireAuth(req, res, next) {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required. Please sign in.' });
+  }
+  next();
+}
+
+function requireAdmin(req, res, next) {
+  if (!req.user) {
+    return res.status(401).json({ success: false, message: 'Authentication required. Please sign in.' });
+  }
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Access denied: Admin privileges required.' });
+  }
+  next();
+}
+
+// Attach auth context to all requests
+app.use(authenticateUser);
+
+// ===== Database Setup & Migration =====
+
+async function initDatabaseTables() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      name TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'user',
+      phone TEXT,
+      city TEXT,
+      payment_method TEXT DEFAULT 'mpesa',
+      mpesa_number TEXT,
+      card_last4 TEXT,
+      card_holder TEXT,
+      card_exp TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS user_carts (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+      items TEXT DEFAULT '[]',
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS orders (
+      id SERIAL PRIMARY KEY,
+      order_number TEXT UNIQUE NOT NULL,
+      user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      recipient_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      city TEXT NOT NULL,
+      gift_message TEXT,
+      items TEXT NOT NULL,
+      total_tzs INTEGER NOT NULL,
+      total_usd INTEGER NOT NULL,
+      discount_tzs INTEGER DEFAULT 0,
+      payment_method TEXT DEFAULT 'mpesa',
+      status TEXT DEFAULT 'confirmed',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS products (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      tier TEXT NOT NULL CHECK(tier IN ('budget', 'premium')),
+      price_tzs INTEGER NOT NULL,
+      price_usd INTEGER NOT NULL,
+      description TEXT,
+      image_url TEXT DEFAULT 'https://via.placeholder.com/400x250?text=Product+Image',
+      is_active INTEGER DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS offers (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      discount_percent INTEGER NOT NULL DEFAULT 0,
+      min_tier TEXT NOT NULL DEFAULT 'both' CHECK(min_tier IN ('budget', 'premium', 'both')),
+      start_date TIMESTAMP,
+      end_date TIMESTAMP,
+      is_active INTEGER DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS campaigns (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      start_date TIMESTAMP,
+      end_date TIMESTAMP,
+      is_active INTEGER DEFAULT 1,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  // Ensure default administrator exists
+  const adminCheck = await sql`SELECT id FROM users WHERE role = 'admin' LIMIT 1`;
+  if (adminCheck.rows.length === 0) {
+    const { hash, salt } = hashPassword('Admin123!');
+    await sql`
+      INSERT INTO users (email, password_hash, salt, name, role, phone, city, payment_method, mpesa_number)
+      VALUES ('admin@frembogifts.com', ${hash}, ${salt}, 'Frembo Administrator', 'admin', '+255 700 000 000', 'Dar es Salaam', 'mpesa', '+255 700 000 000')
+      ON CONFLICT (email) DO NOTHING
+    `;
+  }
+
+  // Seed default products if empty
+  const productCountResult = await sql`SELECT COUNT(*) as count FROM products`;
+  if (parseInt(productCountResult.rows[0].count, 10) === 0) {
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80')`;
+    await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80')`;
+  }
+
+  // Seed default offers if empty
+  const offerCountResult = await sql`SELECT COUNT(*) as count FROM offers`;
+  if (parseInt(offerCountResult.rows[0].count, 10) === 0) {
+    await sql`INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date) VALUES ('Early Bird Discount', '10% off all orders placed before 14:00', 10, 'budget', CURRENT_DATE, CURRENT_DATE + INTERVAL '3 months')`;
+    await sql`INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date) VALUES ('Weekend Special', '15% off weekend orders', 15, 'both', CURRENT_DATE, CURRENT_DATE + INTERVAL '3 months')`;
+  }
+
+  // Seed default campaigns if empty
+  const campaignCountResult = await sql`SELECT COUNT(*) as count FROM campaigns`;
+  if (parseInt(campaignCountResult.rows[0].count, 10) === 0) {
+    await sql`INSERT INTO campaigns (title, description, start_date, end_date) VALUES ('Holiday Season Campaign', 'Special Christmas & New Year gifting options', CURRENT_DATE, CURRENT_DATE + INTERVAL '6 months')`;
+    await sql`INSERT INTO campaigns (title, description, start_date, end_date) VALUES ('Valentines Day Campaign', 'Limited edition Valentine arrangements', CURRENT_DATE, CURRENT_DATE + INTERVAL '2 months')`;
+  }
+}
+
+// Health check
 app.get('/api', (req, res) => {
-  res.json({ success: true, message: 'FremboGifts API is running' });
+  res.json({
+    success: true,
+    message: 'FremboGifts API is running',
+    authenticated: !!req.user,
+    user: req.user ? { id: req.user.id, email: req.user.email, role: req.user.role } : null
+  });
 });
 
-// Database setup / migration endpoint (callable to ensure tables exist in Vercel Postgres)
+// Setup endpoint
 app.get('/api/setup', async (req, res) => {
   try {
-    await sql`
-      CREATE TABLE IF NOT EXISTS products (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        tier TEXT NOT NULL CHECK(tier IN ('budget', 'premium')),
-        price_tzs INTEGER NOT NULL,
-        price_usd INTEGER NOT NULL,
-        description TEXT,
-        image_url TEXT DEFAULT 'https://via.placeholder.com/400x250?text=Product+Image',
-        is_active INTEGER DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
-
-    await sql`
-      CREATE TABLE IF NOT EXISTS offers (
-        id SERIAL PRIMARY KEY,
-        title TEXT NOT NULL,
-        description TEXT,
-        discount_percent INTEGER NOT NULL DEFAULT 0,
-        min_tier TEXT NOT NULL DEFAULT 'both' CHECK(min_tier IN ('budget', 'premium', 'both')),
-        start_date TIMESTAMP,
-        end_date TIMESTAMP,
-        is_active INTEGER DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
-
-    await sql`
-      CREATE TABLE IF NOT EXISTS campaigns (
-        id SERIAL PRIMARY KEY,
-        title TEXT NOT NULL,
-        description TEXT,
-        start_date TIMESTAMP,
-        end_date TIMESTAMP,
-        is_active INTEGER DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `;
-
-    const productCountResult = await sql`SELECT COUNT(*) as count FROM products`;
-    if (parseInt(productCountResult.rows[0].count, 10) === 0) {
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Thinking of You Bouquet', 'budget', 30000, 12, '10-12 stem mixed seasonal flowers, simple wrapping, recycled paper card', 'https://images.unsplash.com/photo-1561181286-d3fee7d55364?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Birthday Celebration Hamper', 'budget', 65000, 26, '20-stem premium bouquet, 500g premium chocolates, sparkling cider', 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Whisky & Chill Gift for Him', 'premium', 65000, 26, 'Premium gift set with Konyagi Gin, glasses, nuts & snacks', 'https://images.unsplash.com/photo-1527061011665-3652c757a4d4?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Valentines Day Premium', 'premium', 80000, 32, 'Special Valentine arrangement with premium roses & chocolates', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Anniversary Romantic Package', 'premium', 75000, 30, '33-stem long-stem red roses, premium chocolates, champagne-style cider', 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kilimanjaro Sunset', 'premium', 180000, 72, 'Full Maasai Shuka (100% cotton) - Premium tier centerpiece', 'https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Kakakuwe Coffee', 'budget', 30000, 12, 'Arusha region coffee cooperative, 250g bag with recipe card', 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=600&q=80')`;
-      await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url) VALUES ('Zanzibar Spice & Stone', 'premium', 200000, 80, 'Zanzibar spice blend & Stone Town souvenir collection', 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=600&q=80')`;
-    }
-
-    const offerCountResult = await sql`SELECT COUNT(*) as count FROM offers`;
-    if (parseInt(offerCountResult.rows[0].count, 10) === 0) {
-      await sql`INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date) VALUES ('Early Bird Discount', '10% off all orders placed before 14:00', 10, 'budget', CURRENT_DATE, CURRENT_DATE + INTERVAL '3 months')`;
-      await sql`INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date) VALUES ('Weekend Special', '15% off weekend orders', 15, 'both', CURRENT_DATE, CURRENT_DATE + INTERVAL '3 months')`;
-    }
-
-    const campaignCountResult = await sql`SELECT COUNT(*) as count FROM campaigns`;
-    if (parseInt(campaignCountResult.rows[0].count, 10) === 0) {
-      await sql`INSERT INTO campaigns (title, description, start_date, end_date) VALUES ('Holiday Season Campaign', 'Special Christmas & New Year gifting options', CURRENT_DATE, CURRENT_DATE + INTERVAL '6 months')`;
-      await sql`INSERT INTO campaigns (title, description, start_date, end_date) VALUES ('Valentines Day Campaign', 'Limited edition Valentine arrangements', CURRENT_DATE, CURRENT_DATE + INTERVAL '2 months')`;
-    }
-
-    res.json({ success: true, message: 'Database setup completed successfully' });
+    await initDatabaseTables();
+    res.json({
+      success: true,
+      message: 'Database tables, default admin account (admin@frembogifts.com), and seeds initialized successfully'
+    });
   } catch (error) {
     console.error('Error during database setup:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// ===== API Routes - Products =====
+// ===== AUTHENTICATION ROUTES =====
 
-// GET products (with optional tier filter, or all=true for admin)
+// POST /api/auth/register - Sign up new customer
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password, name, phone, city, payment_method, mpesa_number, card_last4, card_holder, card_exp } = req.body;
+    if (!email || !password || !name) {
+      return res.status(400).json({ success: false, message: 'Name, email, and password are required' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Check if email already registered
+    const existing = await sql`SELECT id FROM users WHERE email = ${cleanEmail}`;
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ success: false, message: 'An account with this email already exists' });
+    }
+
+    const { hash, salt } = hashPassword(password);
+    const { rows } = await sql`
+      INSERT INTO users (
+        email, password_hash, salt, name, role, phone, city,
+        payment_method, mpesa_number, card_last4, card_holder, card_exp
+      ) VALUES (
+        ${cleanEmail}, ${hash}, ${salt}, ${name.trim()}, 'user', ${phone || null}, ${city || 'Dar es Salaam'},
+        ${payment_method || 'mpesa'}, ${mpesa_number || null}, ${card_last4 || null}, ${card_holder || null}, ${card_exp || null}
+      ) RETURNING id, email, name, role, phone, city, payment_method, mpesa_number, card_last4, card_holder, card_exp, created_at
+    `;
+
+    const newUser = rows[0];
+    const token = generateToken(newUser);
+    res.status(201).json({ success: true, message: 'Account registered successfully', token, user: newUser });
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/auth/login - Sign in
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+
+    const cleanEmail = email.toLowerCase().trim();
+    let { rows } = await sql`SELECT * FROM users WHERE email = ${cleanEmail}`;
+
+    // Auto-bootstrap default admin if logging in as admin and table is clean
+    if (rows.length === 0 && cleanEmail === 'admin@frembogifts.com' && password === 'Admin123!') {
+      await initDatabaseTables();
+      const refetched = await sql`SELECT * FROM users WHERE email = 'admin@frembogifts.com'`;
+      rows = refetched.rows;
+    }
+
+    if (rows.length === 0) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    const user = rows[0];
+    const isValid = verifyPassword(password, user.password_hash, user.salt);
+    if (!isValid) {
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+    }
+
+    const token = generateToken(user);
+    const safeUser = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      phone: user.phone,
+      city: user.city,
+      payment_method: user.payment_method,
+      mpesa_number: user.mpesa_number,
+      card_last4: user.card_last4,
+      card_holder: user.card_holder,
+      card_exp: user.card_exp
+    };
+
+    res.json({ success: true, message: 'Login successful', token, user: safeUser });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/auth/me - Get current user profile & saved payment details
+app.get('/api/auth/me', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await sql`
+      SELECT id, email, name, role, phone, city, payment_method, mpesa_number, card_last4, card_holder, card_exp, created_at
+      FROM users WHERE id = ${req.user.id}
+    `;
+    if (rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    res.json({ success: true, user: rows[0] });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// PUT /api/auth/me - Update profile & saved payment details for later
+app.put('/api/auth/me', requireAuth, async (req, res) => {
+  try {
+    const { name, phone, city, payment_method, mpesa_number, card_last4, card_holder, card_exp, new_password } = req.body;
+    
+    // Optional password update
+    if (new_password) {
+      if (new_password.length < 6) {
+        return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+      }
+      const { hash, salt } = hashPassword(new_password);
+      await sql`UPDATE users SET password_hash = ${hash}, salt = ${salt} WHERE id = ${req.user.id}`;
+    }
+
+    await sql`
+      UPDATE users SET
+        name = COALESCE(${name}, name),
+        phone = COALESCE(${phone}, phone),
+        city = COALESCE(${city}, city),
+        payment_method = COALESCE(${payment_method}, payment_method),
+        mpesa_number = COALESCE(${mpesa_number}, mpesa_number),
+        card_last4 = COALESCE(${card_last4}, card_last4),
+        card_holder = COALESCE(${card_holder}, card_holder),
+        card_exp = COALESCE(${card_exp}, card_exp),
+        updated_at = CURRENT_TIMESTAMP
+      WHERE id = ${req.user.id}
+    `;
+
+    const { rows } = await sql`
+      SELECT id, email, name, role, phone, city, payment_method, mpesa_number, card_last4, card_holder, card_exp, created_at
+      FROM users WHERE id = ${req.user.id}
+    `;
+    res.json({ success: true, message: 'Payment details and profile updated', user: rows[0] });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===== PERSISTENT USER CART ROUTES =====
+
+// GET /api/cart - Get user's saved cart
+app.get('/api/cart', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await sql`SELECT items FROM user_carts WHERE user_id = ${req.user.id}`;
+    if (rows.length === 0) {
+      return res.json({ success: true, items: [] });
+    }
+    const items = typeof rows[0].items === 'string' ? JSON.parse(rows[0].items) : rows[0].items;
+    res.json({ success: true, items });
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// POST /api/cart - Save/sync user's cart
+app.post('/api/cart', requireAuth, async (req, res) => {
+  try {
+    const { items } = req.body;
+    const itemsJson = JSON.stringify(Array.isArray(items) ? items : []);
+    await sql`
+      INSERT INTO user_carts (user_id, items, updated_at)
+      VALUES (${req.user.id}, ${itemsJson}, CURRENT_TIMESTAMP)
+      ON CONFLICT (user_id)
+      DO UPDATE SET items = ${itemsJson}, updated_at = CURRENT_TIMESTAMP
+    `;
+    res.json({ success: true, message: 'Cart saved successfully' });
+  } catch (error) {
+    console.error('Error saving cart:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===== ORDERS ROUTES =====
+
+// POST /api/orders - Place a new order
+app.post('/api/orders', async (req, res) => {
+  try {
+    const { recipient_name, phone, city, gift_message, items, total_tzs, total_usd, discount_tzs, payment_method } = req.body;
+    if (!recipient_name || !phone || !items || !total_tzs) {
+      return res.status(400).json({ success: false, message: 'Missing required order details' });
+    }
+
+    const orderNumber = 'FG-' + Math.floor(100000 + Math.random() * 900000);
+    const userId = req.user ? req.user.id : null;
+    const itemsStr = typeof items === 'string' ? items : JSON.stringify(items);
+
+    const { rows } = await sql`
+      INSERT INTO orders (
+        order_number, user_id, recipient_name, phone, city, gift_message,
+        items, total_tzs, total_usd, discount_tzs, payment_method, status
+      ) VALUES (
+        ${orderNumber}, ${userId}, ${recipient_name}, ${phone}, ${city || 'Dar es Salaam'}, ${gift_message || ''},
+        ${itemsStr}, ${total_tzs}, ${total_usd || Math.round(total_tzs / 2500)}, ${discount_tzs || 0}, ${payment_method || 'mpesa'}, 'confirmed'
+      ) RETURNING *
+    `;
+
+    // Clear saved cart if logged in
+    if (userId) {
+      await sql`UPDATE user_carts SET items = '[]' WHERE user_id = ${userId}`;
+    }
+
+    res.status(201).json({ success: true, order: rows[0] });
+  } catch (error) {
+    console.error('Error placing order:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// GET /api/orders - Get user's orders or all orders for admin
+app.get('/api/orders', requireAuth, async (req, res) => {
+  try {
+    let rows;
+    if (req.user.role === 'admin') {
+      const result = await sql`SELECT * FROM orders ORDER BY id DESC`;
+      rows = result.rows;
+    } else {
+      const result = await sql`SELECT * FROM orders WHERE user_id = ${req.user.id} ORDER BY id DESC`;
+      rows = result.rows;
+    }
+    res.json({ success: true, orders: rows });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===== ADMIN-PROTECTED USER LIST =====
+
+// GET /api/admin/users - List users for admin
+app.get('/api/admin/users', requireAdmin, async (req, res) => {
+  try {
+    const { rows } = await sql`
+      SELECT id, email, name, role, phone, city, payment_method, mpesa_number, card_last4, created_at
+      FROM users ORDER BY id DESC
+    `;
+    res.json({ success: true, users: rows });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// ===== PRODUCTS API ROUTES =====
+
+// GET /api/products - Public active products, or ?all=true (admin protected)
 app.get('/api/products', async (req, res) => {
   try {
     const { tier, all } = req.query;
     let rows;
+
     if (all === 'true') {
+      if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Admin authentication required to view all products' });
+      }
       if (tier) {
         const result = await sql`SELECT * FROM products WHERE tier = ${tier} ORDER BY id DESC`;
         rows = result.rows;
@@ -130,7 +531,7 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
-// GET single product
+// GET single product (public)
 app.get('/api/products/:id', async (req, res) => {
   try {
     const { rows } = await sql`SELECT * FROM products WHERE id = ${req.params.id}`;
@@ -144,15 +545,19 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
-// POST - Admin: Add new product
-app.post('/api/products', async (req, res) => {
+// POST - Admin only: Add new product
+app.post('/api/products', requireAdmin, async (req, res) => {
   try {
     const { name, tier, price_tzs, price_usd, description, image_url } = req.body;
     if (!name || !tier || price_tzs === undefined) {
       return res.status(400).json({ success: false, message: 'Missing required fields: name, tier, price_tzs' });
     }
 
-    const { rows } = await sql`INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, is_active, created_at) VALUES (${name}, ${tier}, ${price_tzs}, ${price_usd || null}, ${description || ''}, ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}, 1, CURRENT_TIMESTAMP) RETURNING *`;
+    const { rows } = await sql`
+      INSERT INTO products (name, tier, price_tzs, price_usd, description, image_url, is_active, created_at)
+      VALUES (${name}, ${tier}, ${price_tzs}, ${price_usd || null}, ${description || ''}, ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}, 1, CURRENT_TIMESTAMP)
+      RETURNING *
+    `;
     res.json({ success: true, product: rows[0] });
   } catch (error) {
     console.error('Error creating product:', error);
@@ -160,12 +565,22 @@ app.post('/api/products', async (req, res) => {
   }
 });
 
-// PUT - Admin: Update product
-app.put('/api/products/:id', async (req, res) => {
+// PUT - Admin only: Update product
+app.put('/api/products/:id', requireAdmin, async (req, res) => {
   try {
     const { name, tier, price_tzs, price_usd, description, image_url, is_active } = req.body;
     const active = is_active === undefined ? 1 : (is_active === true || is_active === 1 || is_active === '1' ? 1 : 0);
-    await sql`UPDATE products SET name = ${name}, tier = ${tier}, price_tzs = ${price_tzs}, price_usd = ${price_usd || null}, description = ${description || ''}, image_url = ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'}, is_active = ${active} WHERE id = ${req.params.id}`;
+    await sql`
+      UPDATE products SET
+        name = ${name},
+        tier = ${tier},
+        price_tzs = ${price_tzs},
+        price_usd = ${price_usd || null},
+        description = ${description || ''},
+        image_url = ${image_url || 'https://via.placeholder.com/400x250?text=Product+Image'},
+        is_active = ${active}
+      WHERE id = ${req.params.id}
+    `;
     const { rows } = await sql`SELECT * FROM products WHERE id = ${req.params.id}`;
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Product not found' });
@@ -177,8 +592,8 @@ app.put('/api/products/:id', async (req, res) => {
   }
 });
 
-// DELETE - Admin: Delete product (soft delete by default, permanent if ?permanent=true)
-app.delete('/api/products/:id', async (req, res) => {
+// DELETE - Admin only: Delete product
+app.delete('/api/products/:id', requireAdmin, async (req, res) => {
   try {
     const { permanent } = req.query;
     if (permanent === 'true') {
@@ -199,14 +614,17 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
-// ===== API Routes - Offers =====
+// ===== OFFERS API ROUTES =====
 
-// GET offers (active only by default, or all=true for admin)
+// GET /api/offers - Public active offers, or ?all=true (admin protected)
 app.get('/api/offers', async (req, res) => {
   try {
     const { all } = req.query;
     let rows;
     if (all === 'true') {
+      if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Admin authentication required to view all offers' });
+      }
       const result = await sql`SELECT * FROM offers ORDER BY id DESC`;
       rows = result.rows;
     } else {
@@ -220,15 +638,19 @@ app.get('/api/offers', async (req, res) => {
   }
 });
 
-// POST - Admin: Add new offer
-app.post('/api/offers', async (req, res) => {
+// POST - Admin only: Add offer
+app.post('/api/offers', requireAdmin, async (req, res) => {
   try {
     const { title, description, discount_percent, min_tier, start_date, end_date } = req.body;
     if (!title || discount_percent === undefined) {
       return res.status(400).json({ success: false, message: 'Missing required fields: title, discount_percent' });
     }
 
-    const { rows } = await sql`INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date, is_active, created_at) VALUES (${title}, ${description || ''}, ${discount_percent}, ${min_tier || 'both'}, ${start_date || null}, ${end_date || null}, 1, CURRENT_TIMESTAMP) RETURNING *`;
+    const { rows } = await sql`
+      INSERT INTO offers (title, description, discount_percent, min_tier, start_date, end_date, is_active, created_at)
+      VALUES (${title}, ${description || ''}, ${discount_percent}, ${min_tier || 'both'}, ${start_date || null}, ${end_date || null}, 1, CURRENT_TIMESTAMP)
+      RETURNING *
+    `;
     res.json({ success: true, offer: rows[0] });
   } catch (error) {
     console.error('Error creating offer:', error);
@@ -236,12 +658,22 @@ app.post('/api/offers', async (req, res) => {
   }
 });
 
-// PUT - Admin: Update offer
-app.put('/api/offers/:id', async (req, res) => {
+// PUT - Admin only: Update offer
+app.put('/api/offers/:id', requireAdmin, async (req, res) => {
   try {
     const { title, description, discount_percent, min_tier, start_date, end_date, is_active } = req.body;
     const active = is_active === undefined ? 1 : (is_active === true || is_active === 1 || is_active === '1' ? 1 : 0);
-    await sql`UPDATE offers SET title = ${title}, description = ${description || ''}, discount_percent = ${discount_percent}, min_tier = ${min_tier || 'both'}, start_date = ${start_date || null}, end_date = ${end_date || null}, is_active = ${active} WHERE id = ${req.params.id}`;
+    await sql`
+      UPDATE offers SET
+        title = ${title},
+        description = ${description || ''},
+        discount_percent = ${discount_percent},
+        min_tier = ${min_tier || 'both'},
+        start_date = ${start_date || null},
+        end_date = ${end_date || null},
+        is_active = ${active}
+      WHERE id = ${req.params.id}
+    `;
     const { rows } = await sql`SELECT * FROM offers WHERE id = ${req.params.id}`;
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Offer not found' });
@@ -253,8 +685,8 @@ app.put('/api/offers/:id', async (req, res) => {
   }
 });
 
-// DELETE - Admin: Delete offer
-app.delete('/api/offers/:id', async (req, res) => {
+// DELETE - Admin only: Delete offer
+app.delete('/api/offers/:id', requireAdmin, async (req, res) => {
   try {
     const { permanent } = req.query;
     if (permanent === 'true') {
@@ -275,14 +707,17 @@ app.delete('/api/offers/:id', async (req, res) => {
   }
 });
 
-// ===== API Routes - Campaigns =====
+// ===== CAMPAIGNS API ROUTES =====
 
-// GET campaigns (active only by default, or all=true for admin)
+// GET /api/campaigns - Public active campaigns, or ?all=true (admin protected)
 app.get('/api/campaigns', async (req, res) => {
   try {
     const { all } = req.query;
     let rows;
     if (all === 'true') {
+      if (!req.user || req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Admin authentication required to view all campaigns' });
+      }
       const result = await sql`SELECT * FROM campaigns ORDER BY id DESC`;
       rows = result.rows;
     } else {
@@ -296,15 +731,19 @@ app.get('/api/campaigns', async (req, res) => {
   }
 });
 
-// POST - Admin: Add new campaign
-app.post('/api/campaigns', async (req, res) => {
+// POST - Admin only: Add campaign
+app.post('/api/campaigns', requireAdmin, async (req, res) => {
   try {
     const { title, description, start_date, end_date } = req.body;
     if (!title) {
       return res.status(400).json({ success: false, message: 'Missing required field: title' });
     }
 
-    const { rows } = await sql`INSERT INTO campaigns (title, description, start_date, end_date, is_active, created_at) VALUES (${title}, ${description || ''}, ${start_date || null}, ${end_date || null}, 1, CURRENT_TIMESTAMP) RETURNING *`;
+    const { rows } = await sql`
+      INSERT INTO campaigns (title, description, start_date, end_date, is_active, created_at)
+      VALUES (${title}, ${description || ''}, ${start_date || null}, ${end_date || null}, 1, CURRENT_TIMESTAMP)
+      RETURNING *
+    `;
     res.json({ success: true, campaign: rows[0] });
   } catch (error) {
     console.error('Error creating campaign:', error);
@@ -312,12 +751,20 @@ app.post('/api/campaigns', async (req, res) => {
   }
 });
 
-// PUT - Admin: Update campaign
-app.put('/api/campaigns/:id', async (req, res) => {
+// PUT - Admin only: Update campaign
+app.put('/api/campaigns/:id', requireAdmin, async (req, res) => {
   try {
     const { title, description, start_date, end_date, is_active } = req.body;
     const active = is_active === undefined ? 1 : (is_active === true || is_active === 1 || is_active === '1' ? 1 : 0);
-    await sql`UPDATE campaigns SET title = ${title}, description = ${description || ''}, start_date = ${start_date || null}, end_date = ${end_date || null}, is_active = ${active} WHERE id = ${req.params.id}`;
+    await sql`
+      UPDATE campaigns SET
+        title = ${title},
+        description = ${description || ''},
+        start_date = ${start_date || null},
+        end_date = ${end_date || null},
+        is_active = ${active}
+      WHERE id = ${req.params.id}
+    `;
     const { rows } = await sql`SELECT * FROM campaigns WHERE id = ${req.params.id}`;
     if (rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Campaign not found' });
@@ -329,8 +776,8 @@ app.put('/api/campaigns/:id', async (req, res) => {
   }
 });
 
-// DELETE - Admin: Delete campaign
-app.delete('/api/campaigns/:id', async (req, res) => {
+// DELETE - Admin only: Delete campaign
+app.delete('/api/campaigns/:id', requireAdmin, async (req, res) => {
   try {
     const { permanent } = req.query;
     if (permanent === 'true') {
