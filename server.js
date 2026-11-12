@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const { sql } = require('@vercel/postgres');
 const path = require('path');
@@ -11,9 +10,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'frembogifts-tanzania-auth-secret-k
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

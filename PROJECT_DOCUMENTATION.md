@@ -2,9 +2,9 @@
 
 ## Complete Project Summary
 
-Giftopia is a dual-market gift and delivery service targeting both **average Tanzanian citizens** and **tourists** visiting Tanzania. The project includes a complete static website built with Tailwind CSS and Google Fonts, comprehensive market research, regulatory compliance documentation, pricing analysis, and 8 curated gift products.
+Giftopia is a dual-market gift and delivery service targeting both **average Tanzanian citizens** and **tourists** visiting Tanzania. The project includes an Express API, an EJS storefront backed by Vercel Postgres, an admin interface, market research, regulatory compliance documentation, and 8 curated gift products.
 
-**Last Updated**: November 2024  
+**Last Updated**: November 2026
 **Deployment Target**: Vercel (Express serverless function with EJS storefront)
 **Business Model**: One-time purchases only (no subscriptions, no corporate focus)  
 **Alcohol Policy**: Konyagi Gin included from launch (Tanzania's local spirit)
@@ -23,24 +23,21 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 
 ### 1.2 Website Specifications
 - **Framework**: Express serverless API with an EJS-rendered storefront and Tailwind CSS CDN
-- **Fonts**: Playfair Display (headings) + Inter (body) from Google Fonts
+- **Fonts**: Playfair Display and Plus Jakarta Sans from Google Fonts
 - **Responsive**: Mobile-first design, works phone to desktop
 - **Deployment**: Vercel builds the Node.js function and serves the admin interface
-- **File count**: 9 files total (see folder structure)
 
 ### 1.3 Folder Structure
 ```
-/home/quackyduck/Documents/Giftopia/
-├── views/index.ejs     | Storefront rendered with live database data
-├── server.js           | Express API and storefront routes
-├── vercel.json         | 234B | Vercel deployment config
-├── README.md           | 1.8KB | Deployment instructions
-├── public/             | -    | Asset directory
-├── RESEARCH_FINDINGS.md| 17KB | 30-min market analysis (Tanzania gift delivery)
-├── REGULATORY_REQUIREMENTS.md| 13KB | Alcohol delivery compliance guide
-├── PRICE_ANALYSIS.md   | 24KB | Detailed TZS/USD price structures
-├── GENERATED_PRODUCTS.md| 15KB | Initial product concepts
-└── PROJECT_DOCUMENTATION.md| New| This complete project summary
+.
+├── server.js
+├── views/index.ejs
+├── admin.html
+├── vercel.json
+├── package.json
+├── test/storefront.test.js
+├── README.md
+└── project and market research documents
 ```
 
 ---
@@ -55,18 +52,17 @@ Giftopia curates authentic Tanzania experiences in gift form, featuring:
 - **Delivery Transparency**: Separate fees displayed at checkout (not bundled)
 
 ### 2.2 Key Pages/Sections
-1. **Hero**: Brand introduction, tier selection, occasion selection
-2. **Budget Section** (id="budget"): 3 products for average Tanzanian + budget tourists
-3. **Premium Section** (id="premium"): 4 products for tourists/special occasions
-4. **About Section** (id="about"): Brand story, featured local brands
-5. **Footer**: Navigation, product links, legal links
+1. **Hero**: Brand introduction and collection tier controls
+2. **Catalog**: Products rendered from the database, with search, tier filters, and sorting
+3. **Campaigns and offers**: Active database content displayed above the storefront
+4. **About and footer**: Brand story, local products, account, and admin links
+5. **Dialogs**: Customer sign-in, cart, checkout, and order confirmation
 
 ### 2.3 JavaScript Functionality
-- Mobile menu toggle (hamburger → close)
-- Budget/Premium tier filtering (show/hide products)
-- Category tag active states
-- Cart badge update
-- Anchor link navigation for section scrolling
+- Search, tier filtering, and product sorting
+- Cart persistence and checkout interactions
+- Customer authentication and account dialogs
+- Mobile navigation and responsive controls
 
 ### 2.4 Product Showcase (8 Products)
 
@@ -383,23 +379,18 @@ Each product designed for BOTH:
 - **Tailwind CSS**: Via CDN (no local installation needed)
 - **Google Fonts**: Playfair Display + Inter
 - **Responsive breakpoints**: Mobile (<640px), tablet (640-1024px), desktop (1024px+)
-- **Image optimization**: Product images from Purpink source, optimized for web
-- **No JavaScript framework**: Vanilla JS only (mobile menu, tier filtering)
+- **Product images**: Unsplash-hosted image URLs
+- **Client-side behavior**: Vanilla JavaScript for filters, search, cart, and account interactions
 - **Accessibility**: Semantic HTML, color contrast adequate, focus states present
 
-### 7.2 File Details
-| **File** | **Size** | **Lines** | **Purpose** |
-|----------|----------|-----------|-------------|
-| views/index.ejs | - | - | Server-rendered storefront with database products and tier filtering |
-| server.js | - | - | Express API and dynamic page routes |
-| vercel.json | - | - | Vercel function routing and file inclusion |
-| README.md | 1.8KB | ~50 | Deployment instructions |
-| RESEARCH_FINDINGS.md | 17.9KB | ~250 | Market analysis |
-| REGULATORY_REQUIREMENTS.md | 13.5KB | ~200 | Alcohol compliance guide |
-| PRICE_ANALYSIS.md | 24.5KB | ~300 | Price structures |
-| GENERATED_PRODUCTS.md | 14.9KB | ~180 | Initial product concepts |
-| PROJECT_DOCUMENTATION.md | ~15KB | ~200 | This complete summary |
-| public/ | - | - | Asset directory (empty, for future use) |
+### 7.2 Key Files
+| **File** | **Purpose** |
+|----------|-------------|
+| `server.js` | Express API and dynamic page routes |
+| `views/index.ejs` | Server-rendered storefront |
+| `admin.html` | Admin interface |
+| `vercel.json` | Vercel function routing and included files |
+| `test/storefront.test.js` | EJS rendering and escaping tests |
 
 ### 7.3 Vercel Deployment
 - **Build**: Defined by `vercel.json` using the Vercel Node.js runtime
@@ -464,7 +455,7 @@ Each product designed for BOTH:
 ## 9. NEXT IMMEDIATE STEPS
 
 ### **Week 1-2: Pre-Launch Setup**
-- [ ] Finalize server-rendered storefront content in `views/index.ejs`
+- [x] Replace the static homepage with the server-rendered `views/index.ejs` storefront
 - [ ] Register business with BRELA (TSh 500,000)
 - [ ] Apply for LGA trade license
 - [ ] Apply for Liquor Dealer License + Delivery Permit
